@@ -31,9 +31,10 @@ def adapter = tasks.register('generateAdapter', Sync) {
                 code = code.replace('Identifier','ResourceLocation')
                 code = code.replace('private static final KeyMapping.Category CATEGORY=KeyMapping.Category.register(ResourceLocation.parse("cinematiczoom:main"));', 'private static final String CATEGORY="key.categories.cinematiczoom";')
             }
-            if (mcTarget == '1.21.7') code = code.replace('RegisterKeyMappingsEvent.BUS', 'RegisterKeyMappingsEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())')
+            if (mcTarget == '1.21.7') code = code.replace('AddGuiOverlayLayersEvent.BUS', 'AddGuiOverlayLayersEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())').replace('RegisterKeyMappingsEvent.BUS', 'RegisterKeyMappingsEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())')
             if (mcTarget in ['1.21.1','1.21.5']) {
                 code = code.replace('RegisterKeyMappingsEvent.BUS', 'net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus()')
+                code = code.replace('AddGuiOverlayLayersEvent.BUS', 'net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus()')
                 ['TickEvent.ClientTickEvent.Post','ViewportEvent.ComputeFov','InputEvent.MouseScrollingEvent','ClientPlayerNetworkEvent.LoggingOut'].each { event -> code=code.replace(event+'.BUS','net.minecraftforge.common.MinecraftForge.EVENT_BUS') }
                 code=code.replace('RenderHandEvent.BUS.addListener((java.util.function.Predicate<RenderHandEvent>) event -> ZoomManager.shouldHideHands());','net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(this::hands);')
                 code=code.replace('event -> {ZoomManager.reset', '(ClientPlayerNetworkEvent.LoggingOut event) -> {ZoomManager.reset')
@@ -46,6 +47,7 @@ def adapter = tasks.register('generateAdapter', Sync) {
                 code=code.replace('method="render"','method="extractRenderState"')
                 ['Crosshair','Hotbar','Effects','DebugOverlay','BossOverlay','ScoreboardSidebar'].each { part -> code=code.replace('render'+part,'extract'+part) }
             }
+            if (mcTarget in ['26.2','26.3'] && file.name == 'GuiMixin.java') code=code.replace('net.minecraft.client.gui.Gui;', 'net.minecraft.client.gui.Hud;').replace('@Mixin(Gui.class)', '@Mixin(Hud.class)')
             if (mcTarget in ['26.2','26.3']) code=code.replace('client.screen','client.gui.screen()').replace('Minecraft.getInstance().screen','Minecraft.getInstance().gui.screen()').replace('minecraft.setScreen(', 'minecraft.gui.setScreen(')
             if (mcTarget=='26.3') {
                 code=code.replace('code,CATEGORY','com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD,code,CATEGORY')
@@ -67,3 +69,17 @@ processResources {
 jar { from('../../LICENSE'); manifest.attributes('MixinConfigs':'cinematiczoom.platform.mixins.json') }
 tasks.withType(AbstractArchiveTask).configureEach { preserveFileTimestamps=false; reproducibleFileOrder=true }
 apply from: '../client-tests.gradle'
+
+// Forge's development scanner must see metadata and annotated classes in one mod root.
+sourceSets.main.output.resourcesDir = layout.buildDirectory.dir('classes/java/main').get().asFile
+tasks.named('processResources') { destinationDir = sourceSets.main.output.resourcesDir }
+
+// Directory-based development mods need the same mixin manifest as packaged jars.
+tasks.named('processResources') {
+    doLast {
+        def manifestFile = new File(destinationDir, 'META-INF/MANIFEST.MF')
+        manifestFile.parentFile.mkdirs()
+        manifestFile.text = 'Manifest-Version: 1.0\nMixinConfigs: cinematiczoom.platform.mixins.json\n\n'
+    }
+}
+jar { duplicatesStrategy = DuplicatesStrategy.EXCLUDE }

@@ -18,6 +18,7 @@ public final class CinematicZoomClient {
         if(FMLEnvironment.dist!=Dist.CLIENT) return;
         ZoomConfig.configureDirectory(FMLPaths.CONFIGDIR.get()); ZoomConfig.INSTANCE.load();
         RegisterKeyMappingsEvent.BUS.addListener(this::keys);
+        AddGuiOverlayLayersEvent.BUS.addListener(this::layers);
         TickEvent.ClientTickEvent.Post.BUS.addListener(this::tick);
         ViewportEvent.ComputeFov.BUS.addListener(this::fov);
         InputEvent.MouseScrollingEvent.BUS.addListener(this::scroll);
@@ -27,6 +28,9 @@ public final class CinematicZoomClient {
     }
     private KeyMapping key(String name,int code,RegisterKeyMappingsEvent event) {
         KeyMapping key=new KeyMapping("key.cinematiczoom."+name,code,CATEGORY);event.register(key);return key;
+    }
+    private void layers(AddGuiOverlayLayersEvent event) {
+        event.getLayeredDraw().add(Identifier.parse("cinematiczoom_extended:bars"), (graphics, time) -> ZoomManager.renderBars(graphics));
     }
     private void keys(RegisterKeyMappingsEvent event) {
         ZOOM_KEYBIND=key("zoom",67,event);ZOOM_NO_BARS_KEYBIND=key("zoom_no_bars",90,event);

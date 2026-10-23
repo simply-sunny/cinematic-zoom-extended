@@ -149,6 +149,7 @@ public final class ZoomManager {
         int height = context.guiHeight();
         var window = Minecraft.getInstance().getWindow();
         int color = Math.round(ZoomConfig.INSTANCE.barOpacity * 255) << 24;
-        ZOOM.barGeometry(window.getWidth(), window.getHeight()).draw(width, height, color, context::fill);
+        var geometry = ZOOM.barGeometry(window.getWidth(), window.getHeight());
+        geometry.draw(width, height, color, context::fill);
     }
 }

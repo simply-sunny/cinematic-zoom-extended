@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+from verify_captures import verify
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSIONS = ['1.20.1', '1.21.1', '1.21.2', '1.21.5', '1.21.7', '1.21.11', '26.1', '26.2', '26.3']
@@ -37,6 +38,11 @@ for version in args.versions or VERSIONS:
     # Explicit test controls: old worlds may have the pre-refactor regular binding unbound.
     options = run / 'options.txt'
     lines = options.read_text().splitlines() if options.exists() else []
+    # Modern key names require the current options schema version, not the pre-LWJGL3 fixer.
+    if not any(line.startswith('version:') for line in lines):
+        fixture_options = ROOT / 'versions' / version / 'run/options.txt'
+        if fixture_options.exists():
+            lines.extend(line for line in fixture_options.read_text().splitlines() if line.startswith('version:'))
     overrides = {'onboardAccessibility':'false', 'tutorialStep':'none', 'pauseOnLostFocus':'false',
                  'key_key.cinematiczoom.zoom':'key.keyboard.c', 'key_key.cinematiczoom.zoom_no_bars':'key.keyboard.z',
                  'key_key.cinematiczoom.previous_aspect':'key.keyboard.left', 'key_key.cinematiczoom.next_aspect':'key.keyboard.right'}
@@ -67,7 +73,12 @@ for version in args.versions or VERSIONS:
     destination.mkdir(parents=True, exist_ok=True)
     for feature in FEATURES:
         image = run/'screenshots'/(target_name+'-'+feature+'.png')
-        if good and image.exists(): shutil.copy(image, destination/(feature+'.png'))
+        if good and image.exists():
+            shutil.copy(image, destination/(feature+'.png'))
+            try: verify(image, feature)
+            except AssertionError as error:
+                print(args.loader, version, 'pixel failure:', error, flush=True)
+                good = False
         elif good: good = False
     result = dict(version=version, status='pass' if good else 'fail', log=str(log.relative_to(ROOT)))
     results.append(result)
