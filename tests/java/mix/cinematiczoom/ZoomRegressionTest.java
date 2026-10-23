@@ -625,6 +625,7 @@ public final class ZoomRegressionTest {
             throw new AssertionError(failures + " of " + checks + " regression checks failed");
         }
         System.out.println(checks + " regression checks passed");
+        FeatureRegressionTest.main(args);
     }
 
     private static void disabledToggle(boolean regularMode) {
@@ -667,6 +668,13 @@ public final class ZoomRegressionTest {
                 field.set(CFG, field.get(defaults));
             }
         }
+        // This suite freezes the legacy settings contract; new defaults have separate tests.
+        CFG.aspectRatio = AspectRatios.LEGACY;
+        CFG.aspectProfiles.add(AspectRatios.LEGACY);
+        CFG.fovMode = FovMode.LEGACY;
+        CFG.logarithmicScroll = false;
+        CFG.minZoomMultiplier = 1f/30f;
+        CFG.barEnterMs = CFG.barExitMs = 0;
         CFG.cinematicZoomInMs = CFG.cinematicZoomOutMs = 0;
         CFG.regularZoomInMs = CFG.regularZoomOutMs = 0;
         client = new Minecraft();

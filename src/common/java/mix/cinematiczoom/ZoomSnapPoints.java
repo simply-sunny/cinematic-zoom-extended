@@ -9,6 +9,10 @@ public final class ZoomSnapPoints {
     }
 
     public static List<Float> parse(String raw, double baseFov, float minMul, float maxMul) {
+        return parse(raw, baseFov, minMul, maxMul, FovMode.LEGACY);
+    }
+
+    public static List<Float> parse(String raw, double baseFov, float minMul, float maxMul, FovMode mode) {
         if (raw == null || raw.trim().isEmpty()) {
             return Collections.emptyList();
         }
@@ -37,10 +41,10 @@ public final class ZoomSnapPoints {
                     val = Float.parseFloat(token);
                     isFov = (val >= 20.0f);
                 }
-                if (val <= 0f) continue;
+                if (!Float.isFinite(val) || val <= 0f || (isFov && val >= 180)) continue;
 
-                float mul = isFov ? (float) (val / baseFov) : (1.0f / val);
-                if (mul >= minMul - 1e-4f && mul <= maxMul + 1e-4f) {
+                float mul = isFov ? (float) ZoomMath.multiplierForFov(baseFov, val, mode) : (1.0f / val);
+                if (mul >= minMul - 1e-8f && mul <= maxMul + 1e-8f) {
                     mul = Math.max(minMul, Math.min(maxMul, mul));
                     if (!list.contains(mul)) {
                         list.add(mul);
@@ -59,7 +63,7 @@ public final class ZoomSnapPoints {
             return current;
         }
 
-        int notches = (int) Math.round(Math.abs(vertical));
+        int notches = (int) Math.min(snaps.size(), Math.round(Math.abs(vertical)));
         if (notches < 1) notches = 1;
 
         float result = current;
@@ -68,7 +72,7 @@ public final class ZoomSnapPoints {
                 // Zooming in (smaller multiplier)
                 Float nextSmaller = null;
                 for (float s : snaps) {
-                    if (s < result - 1e-4f) {
+                    if (s < result - 1e-8f) {
                         if (nextSmaller == null || s > nextSmaller) {
                             nextSmaller = s;
                         }
@@ -84,7 +88,7 @@ public final class ZoomSnapPoints {
                 // Zooming out (larger multiplier)
                 Float nextLarger = null;
                 for (float s : snaps) {
-                    if (s > result + 1e-4f) {
+                    if (s > result + 1e-8f) {
                         if (nextLarger == null || s < nextLarger) {
                             nextLarger = s;
                         }

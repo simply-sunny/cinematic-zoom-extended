@@ -17,7 +17,9 @@ public class MinecraftMixin {
                 CinematicZoomClient.ZOOM_KEYBIND,
                 CinematicZoomClient.ZOOM_NO_BARS_KEYBIND,
                 CinematicZoomClient.INCREASE_BARS_KEYBIND,
-                CinematicZoomClient.DECREASE_BARS_KEYBIND
+                CinematicZoomClient.DECREASE_BARS_KEYBIND,
+                CinematicZoomClient.PREVIOUS_ASPECT_KEYBIND,
+                CinematicZoomClient.NEXT_ASPECT_KEYBIND
         );
     }
 }

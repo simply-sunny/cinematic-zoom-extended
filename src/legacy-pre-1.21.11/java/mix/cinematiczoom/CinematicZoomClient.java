@@ -14,6 +14,8 @@ public final class CinematicZoomClient implements ClientModInitializer {
     public static KeyBinding ZOOM_NO_BARS_KEYBIND;
     public static KeyBinding INCREASE_BARS_KEYBIND;
     public static KeyBinding DECREASE_BARS_KEYBIND;
+    public static KeyBinding PREVIOUS_ASPECT_KEYBIND;
+    public static KeyBinding NEXT_ASPECT_KEYBIND;
 
     @Override
     public void onInitializeClient() {
@@ -29,7 +31,7 @@ public final class CinematicZoomClient implements ClientModInitializer {
         ZOOM_NO_BARS_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.cinematiczoom.zoom_no_bars",
                 InputUtil.Type.KEYSYM,
-                InputUtil.UNKNOWN_KEY.getCode(),
+                GLFW.GLFW_KEY_Z,
                 "key.categories.cinematiczoom"
         ));
         INCREASE_BARS_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -44,13 +46,27 @@ public final class CinematicZoomClient implements ClientModInitializer {
                 GLFW.GLFW_KEY_DOWN,
                 "key.categories.cinematiczoom"
         ));
+        PREVIOUS_ASPECT_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.cinematiczoom.previous_aspect",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_LEFT,
+                "key.categories.cinematiczoom"
+        ));
+        NEXT_ASPECT_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.cinematiczoom.next_aspect",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_RIGHT,
+                "key.categories.cinematiczoom"
+        ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> ZoomManager.tick(
                 client,
                 ZOOM_KEYBIND,
                 ZOOM_NO_BARS_KEYBIND,
                 INCREASE_BARS_KEYBIND,
-                DECREASE_BARS_KEYBIND
+                DECREASE_BARS_KEYBIND,
+                PREVIOUS_ASPECT_KEYBIND,
+                NEXT_ASPECT_KEYBIND
         ));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {

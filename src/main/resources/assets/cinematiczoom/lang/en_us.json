@@ -6,84 +6,60 @@
   "key.categories.cinematiczoom": "Cinematic Zoom",
   "key.category.cinematiczoom.main": "Cinematic Zoom",
   "key.category.cinematiczoom.cinematiczoom": "Cinematic Zoom",
-
   "modmenu.descriptionTranslation.cinematiczoom_extended": "A feature-rich fork of Cinematic Zoom: dual zoom profiles, custom easing, ultra-wide, snap zoom, and granular HUD control.",
   "modmenu.summaryTranslation.cinematiczoom_extended": "Extended cinematic zoom with profiles, custom easing, and snap zoom.",
-
   "cinematiczoom.config.title": "Cinematic Zoom - Settings",
   "cinematiczoom.config.category.cinematic": "Cinematic Zoom",
   "cinematiczoom.config.category.regular": "Regular Zoom",
   "cinematiczoom.config.category.general": "General & Wheel",
-
   "cinematiczoom.option.cinematic_starting_zoom": "Starting zoom",
   "cinematiczoom.option.cinematic_starting_zoom.tooltip": "Set camera magnification applied when cinematic zoom starts.",
-
   "cinematiczoom.option.regular_starting_zoom": "Starting zoom",
   "cinematiczoom.option.regular_starting_zoom.tooltip": "Set camera magnification applied when regular zoom starts.",
-
   "cinematiczoom.option.scale_sensitivity": "Scale mouse sensitivity",
   "cinematiczoom.option.scale_sensitivity.tooltip": "Scale mouse sensitivity down proportionally with zoom level.",
-
   "cinematiczoom.option.remove_bobbing": "Remove view bobbing while zooming",
   "cinematiczoom.option.remove_bobbing.tooltip": "Disable screen bobbing motion while moving during zoom.",
-
   "cinematiczoom.option.bars_percent": "Black bars height, %",
   "cinematiczoom.option.bars_percent.tooltip": "Set screen height percentage for top and bottom black bars.",
-
   "cinematiczoom.option.arrow_keys_adjust_bars": "Adjust bar size with arrow keys",
   "cinematiczoom.option.arrow_keys_adjust_bars.tooltip": "Adjust black bar height using arrow keys while zoomed in.",
-
   "cinematiczoom.option.bar_adjust_step": "Bar adjustment step (%)",
   "cinematiczoom.option.bar_adjust_step.tooltip": "Set bar height change percentage per tick during key adjustment.",
-
   "cinematiczoom.option.smooth_bar_change": "Smooth bar size adjustment",
   "cinematiczoom.option.smooth_bar_change.tooltip": "Smoothly animate black bar height changes instead of snapping instantly.",
-
   "cinematiczoom.option.preserve_bar_adjustment": "Remember bar size adjustments",
   "cinematiczoom.option.preserve_bar_adjustment.tooltip": "Save arrow key bar height adjustments as the new default.",
-
   "cinematiczoom.option.zoom_in_ms": "Zoom in duration (ms, 0 = instant)",
   "cinematiczoom.option.zoom_in_ms.tooltip": "Set animation duration in milliseconds when zooming in.",
-
   "cinematiczoom.option.zoom_out_ms": "Zoom out duration (ms, 0 = instant)",
   "cinematiczoom.option.zoom_out_ms.tooltip": "Set animation duration in milliseconds when zooming out.",
-
   "cinematiczoom.option.zoom_in_curve": "Zoom in curve",
   "cinematiczoom.option.zoom_in_curve.tooltip": "Set easing animation curve applied when zooming in.",
-
   "cinematiczoom.option.zoom_out_curve": "Zoom out curve",
   "cinematiczoom.option.zoom_out_curve.tooltip": "Set easing animation curve applied when zooming out.",
-
   "cinematiczoom.option.mouse_wheel_enabled": "Mouse wheel during zoom",
   "cinematiczoom.option.mouse_wheel_enabled.tooltip": "Adjust magnification with the mouse wheel while zooming.",
-
   "cinematiczoom.option.discrete_scroll": "Discrete mouse wheel zoom",
   "cinematiczoom.option.discrete_scroll.tooltip": "Step zoom level by uniform magnification increments per notch.",
-
-  "cinematiczoom.option.discrete_scroll_step": "Discrete zoom step (×)",
+  "cinematiczoom.option.discrete_scroll_step": "Discrete zoom step (\u00d7)",
   "cinematiczoom.option.discrete_scroll_step.tooltip": "Set magnification increment added or subtracted per wheel notch.",
-
-  "cinematiczoom.option.allow_ultrawide": "Allow ultrawide zoom (0.5×)",
-  "cinematiczoom.option.allow_ultrawide.tooltip": "Allow scrolling backwards past 1× to 0.5× for an ultrawide view.",
-
+  "cinematiczoom.option.allow_ultrawide": "Allow ultrawide zoom (0.5\u00d7)",
+  "cinematiczoom.option.allow_ultrawide.tooltip": "Allow scrolling backwards past 1\u00d7 to 0.5\u00d7 for an ultrawide view.",
   "cinematiczoom.option.magnetize": "Magnetize zoom targets",
   "cinematiczoom.option.magnetize.tooltip": "Step scroll strictly between configured target values instead of smooth zooming.",
-
   "cinematiczoom.option.snap_points": "Target values (zoom or FOV)",
   "cinematiczoom.option.snap_points.tooltip": "Set comma-separated target zoom levels or camera FOV values.",
-
   "cinematiczoom.option.hide_hud": "Hide HUD while zooming",
   "cinematiczoom.option.hide_hud.tooltip": "Hide the hotbar, health, and status effects while zoomed in.",
-
   "cinematiczoom.option.hide_crosshair": "Hide crosshair while zooming",
   "cinematiczoom.option.hide_crosshair.tooltip": "Hide the center crosshair reticle while zoomed in.",
-
   "cinematiczoom.option.hide_hands": "Hide hands while zooming",
   "cinematiczoom.option.hide_hands.tooltip": "Hide first-person hands and held items while zoomed in.",
-
   "cinematiczoom.option.cinematic_cam": "Enable cinematic camera while zooming",
   "cinematiczoom.option.cinematic_cam.tooltip": "Enable smooth cinematic camera rotation while zoomed in.",
-
   "cinematiczoom.option.toggle_mode": "Toggle zoom",
-  "cinematiczoom.option.toggle_mode.tooltip": "Toggle zoom on and off with each key press instead of holding."
+  "cinematiczoom.option.toggle_mode.tooltip": "Toggle zoom on and off with each key press instead of holding.",
+  "key.cinematiczoom.previous_aspect": "Previous Aspect Ratio",
+  "key.cinematiczoom.next_aspect": "Next Aspect Ratio"
 }

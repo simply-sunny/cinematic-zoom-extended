@@ -15,6 +15,8 @@ public final class CinematicZoomClient implements ClientModInitializer {
     public static ZoomKeyMapping ZOOM_NO_BARS_KEYBIND;
     public static ZoomKeyMapping INCREASE_BARS_KEYBIND;
     public static ZoomKeyMapping DECREASE_BARS_KEYBIND;
+    public static ZoomKeyMapping PREVIOUS_ASPECT_KEYBIND;
+    public static ZoomKeyMapping NEXT_ASPECT_KEYBIND;
 
     public static ZoomKeyMapping[] getKeyMappings() {
         if (ZOOM_KEYBIND == null) {
@@ -28,7 +30,7 @@ public final class CinematicZoomClient implements ClientModInitializer {
             ZOOM_NO_BARS_KEYBIND = new ZoomKeyMapping(
                     "key.cinematiczoom.zoom_no_bars",
                     InputConstants.Type.KEYSYM,
-                    InputConstants.UNKNOWN.getValue(),
+                    GLFW.GLFW_KEY_Z,
                     category
             );
             INCREASE_BARS_KEYBIND = new ZoomKeyMapping(
@@ -43,12 +45,26 @@ public final class CinematicZoomClient implements ClientModInitializer {
                     GLFW.GLFW_KEY_DOWN,
                     category
             );
+            PREVIOUS_ASPECT_KEYBIND = new ZoomKeyMapping(
+                    "key.cinematiczoom.previous_aspect",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_LEFT,
+                    category
+            );
+            NEXT_ASPECT_KEYBIND = new ZoomKeyMapping(
+                    "key.cinematiczoom.next_aspect",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_RIGHT,
+                    category
+            );
         }
         return new ZoomKeyMapping[] {
                 ZOOM_KEYBIND,
                 ZOOM_NO_BARS_KEYBIND,
                 INCREASE_BARS_KEYBIND,
-                DECREASE_BARS_KEYBIND
+                DECREASE_BARS_KEYBIND,
+                PREVIOUS_ASPECT_KEYBIND,
+                NEXT_ASPECT_KEYBIND
         };
     }
 

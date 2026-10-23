@@ -8,6 +8,8 @@ public final class ZoomManager {
     private static final ZoomController ZOOM = new ZoomController();
 
     private static boolean smoothCameraForcedByUs;
+    private static boolean wasPrevious, wasNext;
+    private static boolean canRender;
     private static final ZoomInputState INPUT = new ZoomInputState();
     private static ZoomMode currentAppliedMode = ZoomMode.NONE;
 
@@ -16,6 +18,11 @@ public final class ZoomManager {
 
     public static void tick(Minecraft client, KeyMapping cinematicKey, KeyMapping regularKey,
                             KeyMapping increaseBarsKey, KeyMapping decreaseBarsKey) {
+        tick(client, cinematicKey, regularKey, increaseBarsKey, decreaseBarsKey, null, null);
+    }
+
+    public static void tick(Minecraft client, KeyMapping cinematicKey, KeyMapping regularKey,
+                            KeyMapping increaseBarsKey, KeyMapping decreaseBarsKey, KeyMapping previousAspect, KeyMapping nextAspect) {
         boolean inWorld = client.level != null && client.player != null;
         boolean canInteract = inWorld
                 && client.gui.screen() == null
@@ -27,6 +34,12 @@ public final class ZoomManager {
         ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown);
 
         ZOOM.update(desiredMode);
+        canRender = canInteract;
+        boolean previous = isZoomKeyDown(client, previousAspect);
+        boolean next = isZoomKeyDown(client, nextAspect);
+        if (canInteract && previous && !wasPrevious && !next) ZOOM.cycleAspect(-1);
+        if (canInteract && next && !wasNext && !previous) ZOOM.cycleAspect(1);
+        wasPrevious = previous; wasNext = next;
 
         if (canInteract && ZOOM.isActive() && ZoomConfig.INSTANCE.arrowKeysAdjustBars) {
             boolean up = isZoomKeyDown(client, increaseBarsKey);
@@ -66,6 +79,7 @@ public final class ZoomManager {
 
     public static void reset(Minecraft client) {
         INPUT.reset();
+        wasPrevious = wasNext = canRender = false;
         applyOverrides(client, ZoomMode.NONE);
         currentAppliedMode = ZoomMode.NONE;
         ZOOM.reset();
@@ -130,15 +144,11 @@ public final class ZoomManager {
     }
 
     public static void renderBars(GuiGraphicsExtractor context) {
-        float barsPercent = ZOOM.currentBarsPercent();
-        if (barsPercent <= 0.0001f) return;
-
+        if (!canRender) return;
         int width = context.guiWidth();
         int height = context.guiHeight();
-        int barHeight = Math.round(height * barsPercent / 100f);
-        if (barHeight <= 0) return;
-
-        context.fill(0, 0, width, barHeight, 0xFF000000);
-        context.fill(0, height - barHeight, width, height, 0xFF000000);
+        var window = Minecraft.getInstance().getWindow();
+        int color = Math.round(ZoomConfig.INSTANCE.barOpacity * 255) << 24;
+        ZOOM.barGeometry(window.getWidth(), window.getHeight()).draw(width, height, color, context::fill);
     }
 }

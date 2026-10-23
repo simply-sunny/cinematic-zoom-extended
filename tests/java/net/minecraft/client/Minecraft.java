@@ -1,6 +1,11 @@
 package net.minecraft.client;
 
 public final class Minecraft {
+    private static Minecraft instance;
+    public Minecraft() { instance = this; }
+    public static Minecraft getInstance() { return instance; }
+    public Window getWindow() { return new Window(); }
+    public static final class Window { public int getWidth() { return 1920; } public int getHeight() { return 1080; } }
     public Object level = new Object();
     public Object player = new Object();
     public final Options options = new Options();

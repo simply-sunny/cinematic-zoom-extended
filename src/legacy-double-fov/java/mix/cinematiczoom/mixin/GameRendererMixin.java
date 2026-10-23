@@ -36,7 +36,7 @@ public class GameRendererMixin {
         ZoomManager.setBaseFov(fov);
         double mul = ZoomManager.getCurrentFovMul();
         if (mul != 1.0) {
-            double zoomed = fov * mul;
+            double zoomed = mix.cinematiczoom.ZoomMath.fov(fov, mul, mix.cinematiczoom.ZoomConfig.INSTANCE.fovMode);
             if (zoomed > 175.0) zoomed = 175.0;
             cir.setReturnValue(zoomed);
         }

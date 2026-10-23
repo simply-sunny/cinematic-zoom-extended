@@ -18,7 +18,7 @@ public class CameraMixin {
         ZoomManager.setBaseFov(fov);
         double mul = ZoomManager.getCurrentFovMul();
         if (mul != 1.0) {
-            float zoomed = (float) (fov * mul);
+            float zoomed = (float) mix.cinematiczoom.ZoomMath.fov(fov, mul, mix.cinematiczoom.ZoomConfig.INSTANCE.fovMode);
             if (zoomed > 175.0f) zoomed = 175.0f;
             cir.setReturnValue(zoomed);
         }

@@ -8,6 +8,8 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.network.chat.Component;
 import mix.cinematiczoom.ZoomConfig;
 import mix.cinematiczoom.ZoomCurve;
+import mix.cinematiczoom.BarAnimationMode;
+import mix.cinematiczoom.FovMode;
 
 public final class ModMenuIntegration implements ModMenuApi {
     @Override
@@ -302,6 +304,23 @@ public final class ModMenuIntegration implements ModMenuApi {
                   })
                   .build()
             );
+
+            ConfigCategory aspect = builder.getOrCreateCategory(Component.literal("Aspect ratio and bars"));
+            aspect.addEntry(eb.startStrField(Component.literal("Selected aspect ratio (Auto, 2.39:1, 4:3, Legacy...)"), cfg.aspectRatio).setSaveConsumer(v -> cfg.aspectRatio = v).build());
+            aspect.addEntry(eb.startStrList(Component.literal("Enabled profiles (ordered, custom W:H allowed)"), cfg.aspectProfiles).setSaveConsumer(v -> cfg.aspectProfiles = v).build());
+            aspect.addEntry(eb.startBooleanToggle(Component.literal("Allow cycling outside cinematic zoom"), cfg.globalProfileCycling).setSaveConsumer(v -> cfg.globalProfileCycling = v).build());
+            aspect.addEntry(eb.startBooleanToggle(Component.literal("Animate profile changes"), cfg.animateProfileCycle).setSaveConsumer(v -> cfg.animateProfileCycle = v).build());
+            aspect.addEntry(eb.startEnumSelector(Component.literal("Entry animation"), BarAnimationMode.class, cfg.barEnterMode).setSaveConsumer(v -> cfg.barEnterMode = v).build());
+            aspect.addEntry(eb.startIntField(Component.literal("Entry duration (ms)"), cfg.barEnterMs).setMin(0).setMax(60000).setSaveConsumer(v -> cfg.barEnterMs = v).build());
+            aspect.addEntry(eb.startEnumSelector(Component.literal("Exit animation"), BarAnimationMode.class, cfg.barExitMode).setSaveConsumer(v -> cfg.barExitMode = v).build());
+            aspect.addEntry(eb.startIntField(Component.literal("Exit duration (ms)"), cfg.barExitMs).setMin(0).setMax(60000).setSaveConsumer(v -> cfg.barExitMs = v).build());
+            aspect.addEntry(eb.startEnumSelector(Component.literal("Profile change animation"), BarAnimationMode.class, cfg.barSwitchMode).setSaveConsumer(v -> cfg.barSwitchMode = v).build());
+            aspect.addEntry(eb.startIntField(Component.literal("Profile change duration (ms)"), cfg.barSwitchMs).setMin(0).setMax(60000).setSaveConsumer(v -> cfg.barSwitchMs = v).build());
+            aspect.addEntry(eb.startFloatField(Component.literal("Bar opacity (0–1)"), cfg.barOpacity).setMin(0f).setMax(1f).setSaveConsumer(v -> cfg.barOpacity = v).build());
+            generalCat.addEntry(eb.startEnumSelector(Component.literal("FOV calculation"), FovMode.class, cfg.fovMode).setSaveConsumer(v -> cfg.fovMode = v).build());
+            generalCat.addEntry(eb.startFloatField(Component.literal("Maximum magnification"), 1f / cfg.minZoomMultiplier).setMin(1f).setMax(500f).setSaveConsumer(v -> cfg.minZoomMultiplier = 1f / v).build());
+            generalCat.addEntry(eb.startBooleanToggle(Component.literal("Logarithmic wheel zoom"), cfg.logarithmicScroll).setSaveConsumer(v -> cfg.logarithmicScroll = v).build());
+            generalCat.addEntry(eb.startFloatField(Component.literal("Wheel sensitivity"), cfg.wheelStep).setMin(.01f).setMax(.25f).setSaveConsumer(v -> cfg.wheelStep = v).build());
 
             return builder.build();
         };

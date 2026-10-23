@@ -1,255 +1,171 @@
 package mix.cinematiczoom;
 
-final class ZoomController {
-    private ZoomMode activeMode = ZoomMode.NONE;
-    private ZoomMode lastActiveMode = ZoomMode.CINEMATIC;
+import java.util.List;
+import java.util.function.LongSupplier;
 
-    private float currentMultiplier = 1.0f;
-    private float targetMultiplier = 1.0f;
-    private float heldMultiplier = startingMultiplier(ZoomMode.CINEMATIC);
-    private float heldBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
-    private float currentBarsPercent;
-    private float targetBarsPercent;
+/** Loader-neutral zoom state. Only magnification is interpolated; bars have their own clock. */
+public final class ZoomController {
+    private final LongSupplier clock;
+    private final BarAnimator bars;
+    private ZoomMode activeMode = ZoomMode.NONE, lastActiveMode = ZoomMode.CINEMATIC;
+    private double current = 1, target = 1, held = 3, start = 1;
+    private long started;
+    private int duration;
+    private ZoomCurve curve = ZoomCurve.LINEAR;
+    private float heldBarsPercent = 15;
+    private BarGeometry geometry = BarGeometry.NONE;
+    private int width = 1920, height = 1080;
+    private double baseFov = 70;
+    private String snapKey = "";
+    private List<Float> cachedSnaps = List.of();
+    private String geometryProfile;
+    private int geometryWidth, geometryHeight;
+    private float geometryLegacyPercent;
+    private BarGeometry cachedGeometry = BarGeometry.NONE;
 
-    private float animStartMultiplier = 1.0f;
-    private float animStartBarsPercent = 0.0f;
-    private double animElapsedMs = 0.0;
-    private int animDurationMs = 240;
-    private ZoomCurve animCurve = ZoomCurve.EXPONENTIAL;
+    public ZoomController() { this(System::nanoTime); }
+    public ZoomController(LongSupplier clock) { this.clock = clock; this.bars = new BarAnimator(clock); }
 
-    private long lastFrameNanos;
-    private double baseFov = 70.0;
-
-    void update(ZoomMode mode) {
-        boolean starting = mode.isActive() && !activeMode.isActive();
-
-        if (mode.isActive()) {
-            lastActiveMode = mode;
+    public void update(ZoomMode mode) {
+        updateFrame();
+        boolean entering = mode.isActive() && !activeMode.isActive();
+        ZoomMode previous = activeMode;
+        if (entering) {
+            ZoomConfig cfg = ZoomConfig.INSTANCE;
+            held = bounded(mode == ZoomMode.REGULAR ? cfg.regularStartingZoom : cfg.cinematicStartingZoom);
+            heldBarsPercent = cfg.cinematicBarsPercent;
         }
-
-        if (starting) {
-            heldMultiplier = startingMultiplier(mode);
-            heldBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
+        activeMode = mode;
+        if (mode.isActive()) lastActiveMode = mode;
+        transition(mode.isActive() ? held : 1);
+        if (mode == ZoomMode.REGULAR) {
+            bars.reset(); // Regular zoom has no cinematic overlay, including mode switches.
+        } else if (previous != mode) {
+            ZoomConfig cfg = ZoomConfig.INSTANCE;
+            bars.target(barTarget(), mode == ZoomMode.CINEMATIC ? cfg.barEnterMs : cfg.barExitMs,
+                    mode == ZoomMode.CINEMATIC ? cfg.barEnterMode : cfg.barExitMode);
         }
-
-        this.activeMode = mode;
-
-        float prevTargetMultiplier = targetMultiplier;
-        float prevTargetBars = targetBarsPercent;
-
-        if (mode == ZoomMode.CINEMATIC) {
-            targetMultiplier = heldMultiplier;
-            targetBarsPercent = heldBarsPercent;
-        } else if (mode == ZoomMode.REGULAR) {
-            targetMultiplier = heldMultiplier;
-            targetBarsPercent = 0f;
-        } else {
-            targetMultiplier = 1.0f;
-            targetBarsPercent = 0f;
-        }
-
-        if (targetMultiplier != prevTargetMultiplier || targetBarsPercent != prevTargetBars) {
-            startAnimation(mode.isActive());
-        }
+        geometry = bars.value();
     }
 
-    void reset() {
-        activeMode = ZoomMode.NONE;
-        lastActiveMode = ZoomMode.CINEMATIC;
-        currentMultiplier = 1.0f;
-        targetMultiplier = 1.0f;
-        heldMultiplier = startingMultiplier(ZoomMode.CINEMATIC);
-        heldBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
-        currentBarsPercent = 0f;
-        targetBarsPercent = 0f;
-        animStartMultiplier = 1.0f;
-        animStartBarsPercent = 0f;
-        animElapsedMs = 0.0;
-        animDurationMs = ZoomConfig.INSTANCE.cinematicZoomOutMs;
-        animCurve = ZoomConfig.INSTANCE.cinematicZoomOutCurve;
-        lastFrameNanos = 0L;
-        this.baseFov = 70.0;
+    private double bounded(double value) {
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        return ZoomMath.finiteClamp(value, 1.0 / cfg.maxZoomMultiplier,
+                Math.min(500, 1.0 / cfg.minZoomMultiplier), 1);
     }
 
-    void updateFrame() {
-        long now = System.nanoTime();
-        if (lastFrameNanos == 0L) {
-            lastFrameNanos = now;
-            return;
-        }
-
-        double deltaMs = Math.min((now - lastFrameNanos) * 1e-6, 50.0);
-        lastFrameNanos = now;
-
-        if (currentMultiplier == targetMultiplier && currentBarsPercent == targetBarsPercent) {
-            return;
-        }
-
-        if (currentMultiplier == targetMultiplier) {
-            if (ZoomConfig.INSTANCE.smoothBarChange) {
-                double factor = 1.0 - Math.exp(-deltaMs / 60.0);
-                currentBarsPercent = (float) (currentBarsPercent + (targetBarsPercent - currentBarsPercent) * factor);
-                if (Math.abs(currentBarsPercent - targetBarsPercent) < 1e-3f) {
-                    currentBarsPercent = targetBarsPercent;
-                }
-            } else {
-                currentBarsPercent = targetBarsPercent;
-            }
-            return;
-        }
-
-        if (animDurationMs <= 0) {
-            currentMultiplier = targetMultiplier;
-            currentBarsPercent = targetBarsPercent;
-            return;
-        }
-
-        animElapsedMs += deltaMs;
-        double progress = animDurationMs > 0 ? Math.min(1.0, animElapsedMs / animDurationMs) : 1.0;
-        double eased = animCurve != null ? animCurve.apply(progress) : progress;
-
-        currentMultiplier = (float) lerp(animStartMultiplier, targetMultiplier, eased);
-        currentBarsPercent = (float) lerp(animStartBarsPercent, targetBarsPercent, eased);
-
-        if (progress >= 1.0 || Math.abs(currentMultiplier - targetMultiplier) < 1e-4f) {
-            currentMultiplier = targetMultiplier;
-            currentBarsPercent = targetBarsPercent;
-        }
-    }
-
-    private void startAnimation(boolean zoomingIn) {
-        animStartMultiplier = currentMultiplier;
-        animStartBarsPercent = currentBarsPercent;
-        animElapsedMs = 0.0;
-
+    private void transition(double next) {
+        if (next == target) return;
+        updateFrame();
+        start = current; target = next; started = clock.getAsLong();
+        boolean in = next > current;
         ZoomConfig cfg = ZoomConfig.INSTANCE;
         if (lastActiveMode == ZoomMode.REGULAR) {
-            animDurationMs = zoomingIn ? cfg.regularZoomInMs : cfg.regularZoomOutMs;
-            animCurve = zoomingIn ? cfg.regularZoomInCurve : cfg.regularZoomOutCurve;
+            duration = in ? cfg.regularZoomInMs : cfg.regularZoomOutMs;
+            curve = in ? cfg.regularZoomInCurve : cfg.regularZoomOutCurve;
         } else {
-            animDurationMs = zoomingIn ? cfg.cinematicZoomInMs : cfg.cinematicZoomOutMs;
-            animCurve = zoomingIn ? cfg.cinematicZoomInCurve : cfg.cinematicZoomOutCurve;
+            duration = in ? cfg.cinematicZoomInMs : cfg.cinematicZoomOutMs;
+            curve = in ? cfg.cinematicZoomInCurve : cfg.cinematicZoomOutCurve;
         }
-
-        if (animCurve == null) {
-            animCurve = ZoomCurve.EXPONENTIAL;
-        }
+        if (curve == null) curve = ZoomCurve.LINEAR;
+        updateFrame();
     }
 
-    boolean onWheel(double vertical) {
-        if (!activeMode.isActive() || !ZoomConfig.INSTANCE.mouseWheelEnabled || vertical == 0.0) {
-            return false;
+    public void updateFrame() {
+        double progress = duration <= 0 ? 1 : Math.max(0, Math.min(1, (clock.getAsLong()-started)/(duration*1_000_000.0)));
+        current = progress >= 1 ? target : start + (target-start)*curve.apply(progress);
+        geometry = bars.value();
+    }
+
+    private BarGeometry barTarget() {
+        if (activeMode != ZoomMode.CINEMATIC) return BarGeometry.NONE;
+        String profile = ZoomConfig.INSTANCE.aspectRatio;
+        if (width != geometryWidth || height != geometryHeight || heldBarsPercent != geometryLegacyPercent
+                || !java.util.Objects.equals(profile, geometryProfile)) {
+            geometryWidth = width; geometryHeight = height;
+            geometryProfile = profile; geometryLegacyPercent = heldBarsPercent;
+            cachedGeometry = AspectRatios.geometry(width, height, profile, heldBarsPercent);
         }
+        return cachedGeometry;
+    }
 
-        float prevTarget = heldMultiplier;
+    public BarGeometry barGeometry(int framebufferWidth, int framebufferHeight) {
+        boolean resized = width != framebufferWidth || height != framebufferHeight;
+        width = framebufferWidth; height = framebufferHeight;
         ZoomConfig cfg = ZoomConfig.INSTANCE;
-        ZoomMode mode = activeMode.isActive() ? activeMode : lastActiveMode;
-        boolean magnetize = (mode == ZoomMode.REGULAR) ? cfg.regularMagnetize : cfg.cinematicMagnetize;
-        String snapList = (mode == ZoomMode.REGULAR) ? cfg.regularSnapPoints : cfg.cinematicSnapPoints;
-        java.util.List<Float> snaps = ZoomSnapPoints.parse(snapList, baseFov, cfg.minZoomMultiplier, cfg.maxZoomMultiplier);
+        if (activeMode == ZoomMode.CINEMATIC) {
+            bars.target(barTarget(), resized ? 0 : cfg.barSwitchMs,
+                    resized ? BarAnimationMode.INSTANT : cfg.barSwitchMode);
+        }
+        updateFrame();
+        return geometry;
+    }
 
-        if (magnetize && !snaps.isEmpty()) {
-            heldMultiplier = ZoomSnapPoints.stepBetweenSnaps(heldMultiplier, snaps, vertical);
+    public boolean cycleAspect(int direction) {
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        if (activeMode != ZoomMode.CINEMATIC && !cfg.globalProfileCycling) return false;
+        cfg.aspectRatio = AspectRatios.cycle(cfg.aspectProfiles, cfg.aspectRatio, direction);
+        bars.target(barTarget(), cfg.animateProfileCycle ? cfg.barSwitchMs : 0, cfg.barSwitchMode);
+        cfg.save();
+        return true;
+    }
+
+    public boolean adjustBars(float delta) {
+        if (activeMode != ZoomMode.CINEMATIC || !Float.isFinite(delta)) return false;
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        heldBarsPercent = (float)ZoomMath.finiteClamp(heldBarsPercent + delta, 0, 50, 15);
+        cfg.aspectRatio = AspectRatios.LEGACY;
+        if (!cfg.aspectProfiles.contains(AspectRatios.LEGACY)) cfg.aspectProfiles.add(AspectRatios.LEGACY);
+        if (cfg.preserveBarAdjustment) cfg.cinematicBarsPercent = heldBarsPercent;
+        bars.target(barTarget(), cfg.smoothBarChange ? cfg.barSwitchMs : 0,
+                cfg.smoothBarChange ? cfg.barSwitchMode : BarAnimationMode.INSTANT);
+        geometry = bars.value();
+        return true;
+    }
+
+    public boolean onWheel(double vertical) {
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        if (!activeMode.isActive() || !cfg.mouseWheelEnabled || !Double.isFinite(vertical) || vertical == 0) return false;
+        String raw = activeMode == ZoomMode.REGULAR ? cfg.regularSnapPoints : cfg.cinematicSnapPoints;
+        String key = raw + "/" + baseFov + "/" + cfg.minZoomMultiplier + "/" + cfg.maxZoomMultiplier + "/" + cfg.fovMode;
+        if (!key.equals(snapKey)) {
+            cachedSnaps = ZoomSnapPoints.parse(raw,baseFov,cfg.minZoomMultiplier,cfg.maxZoomMultiplier,cfg.fovMode);
+            snapKey = key;
+        }
+        boolean magnetize = activeMode == ZoomMode.REGULAR ? cfg.regularMagnetize : cfg.cinematicMagnetize;
+        if (magnetize && !cachedSnaps.isEmpty()) {
+            held = 1.0 / ZoomSnapPoints.stepBetweenSnaps((float)(1/held),cachedSnaps,vertical);
         } else if (cfg.discreteScroll) {
-            float currentZoom = heldMultiplier <= 0f ? 1.0f : 1.0f / heldMultiplier;
-            float step = Math.max(0.1f, cfg.discreteScrollStep);
-            float newZoom;
-            if (vertical > 0) {
-                int notches = (int) Math.round(vertical);
-                if (notches < 1) notches = 1;
-                newZoom = (float) (Math.floor(currentZoom / step + 1e-4) + notches) * step;
-            } else {
-                int notches = (int) Math.round(-vertical);
-                if (notches < 1) notches = 1;
-                newZoom = (float) (Math.ceil(currentZoom / step - 1e-4) - notches) * step;
-            }
-            float minZoom = 1.0f / cfg.maxZoomMultiplier;
-            float maxZoom = 1.0f / cfg.minZoomMultiplier;
-            newZoom = clamp(newZoom, minZoom, maxZoom);
-            heldMultiplier = 1.0f / newZoom;
+            double step = Math.max(.1,cfg.discreteScrollStep), notches = Math.max(1,Math.min(10000,Math.round(Math.abs(vertical))));
+            held = (vertical > 0 ? Math.floor(held/step+1e-4)+notches : Math.ceil(held/step-1e-4)-notches)*step;
+        } else if (cfg.logarithmicScroll) {
+            held *= Math.exp(Math.max(-20,Math.min(20,vertical*cfg.wheelStep*3)));
         } else {
-            heldMultiplier = clamp(
-                    heldMultiplier - (float) vertical * cfg.wheelStep,
-                    cfg.minZoomMultiplier,
-                    cfg.maxZoomMultiplier
-            );
+            held = 1 / ZoomMath.finiteClamp(1/held-vertical*cfg.wheelStep,cfg.minZoomMultiplier,cfg.maxZoomMultiplier,1);
         }
-        targetMultiplier = heldMultiplier;
-
-        if (targetMultiplier != prevTarget) {
-            startAnimation(true);
-        }
+        held = bounded(held);
+        transition(held);
         return true;
     }
 
-    boolean adjustBars(float delta) {
-        if (!activeMode.isActive() || activeMode != ZoomMode.CINEMATIC) return false;
-        heldBarsPercent = clamp(heldBarsPercent + delta, 0.0f, 50.0f);
-        if (ZoomConfig.INSTANCE.preserveBarAdjustment) {
-            ZoomConfig.INSTANCE.cinematicBarsPercent = heldBarsPercent;
-        }
-        targetBarsPercent = heldBarsPercent;
-        if (!ZoomConfig.INSTANCE.smoothBarChange) {
-            currentBarsPercent = heldBarsPercent;
-        }
-        return true;
+    public void reset() {
+        activeMode = ZoomMode.NONE; lastActiveMode = ZoomMode.CINEMATIC;
+        current = target = start = 1; duration = 0; started = clock.getAsLong();
+        bars.reset(); geometry = BarGeometry.NONE; baseFov = 70; snapKey = "";
     }
-
-    double currentMultiplier() {
-        return currentMultiplier;
+    public double currentMultiplier() { return 1/current; }
+    public double magnification() { return current; }
+    public void setBaseFov(double fov) { if (Double.isFinite(fov) && fov>0 && fov<180) baseFov=fov; }
+    public double getBaseFov() { return baseFov; }
+    public float currentBarsPercent() { return (float)(geometry.top()*100); }
+    public boolean isActive() { return activeMode.isActive() || current != 1 || geometry.visible(); }
+    public double getSensitivityMultiplier() {
+        ZoomConfig cfg=ZoomConfig.INSTANCE;
+        boolean scale=lastActiveMode==ZoomMode.REGULAR ? cfg.regularScaleSensitivity : cfg.cinematicScaleSensitivity;
+        return isActive() && scale ? Math.min(1,1/current) : 1;
     }
-
-    void setBaseFov(double fov) {
-        if (fov > 10.0 && fov < 170.0) {
-            this.baseFov = fov;
-        }
-    }
-
-    double getBaseFov() {
-        return baseFov;
-    }
-
-    double getSensitivityMultiplier() {
-        if (!isActive()) return 1.0;
-        ZoomConfig cfg = ZoomConfig.INSTANCE;
-        boolean scale = lastActiveMode == ZoomMode.REGULAR
-                ? cfg.regularScaleSensitivity
-                : cfg.cinematicScaleSensitivity;
-        return scale ? Math.min(1.0, currentMultiplier) : 1.0;
-    }
-
-    boolean shouldRemoveBobbing() {
-        if (!isActive()) return false;
-        ZoomConfig cfg = ZoomConfig.INSTANCE;
-        return lastActiveMode == ZoomMode.REGULAR
-                ? cfg.regularRemoveBobbing
-                : cfg.cinematicRemoveBobbing;
-    }
-
-    boolean isActive() {
-        return activeMode.isActive() || Math.abs(currentMultiplier - 1.0f) > 1e-4f || currentBarsPercent > 1e-3f;
-    }
-
-    float currentBarsPercent() {
-        return currentBarsPercent;
-    }
-
-    private static double lerp(double start, double end, double amount) {
-        return start + (end - start) * amount;
-    }
-
-    private static float clamp(float value, float min, float max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    private static float startingMultiplier(ZoomMode mode) {
-        float zoom = (mode == ZoomMode.REGULAR)
-                ? ZoomConfig.INSTANCE.regularStartingZoom
-                : ZoomConfig.INSTANCE.cinematicStartingZoom;
-        return clamp(
-                zoom <= 0f ? 1.0f : 1.0f / zoom,
-                ZoomConfig.INSTANCE.minZoomMultiplier,
-                ZoomConfig.INSTANCE.maxZoomMultiplier
-        );
+    public boolean shouldRemoveBobbing() {
+        ZoomConfig cfg=ZoomConfig.INSTANCE;
+        return isActive() && (lastActiveMode==ZoomMode.REGULAR ? cfg.regularRemoveBobbing : cfg.cinematicRemoveBobbing);
     }
 }
