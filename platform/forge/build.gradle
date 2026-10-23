@@ -1,0 +1,69 @@
+plugins { id 'java'; id 'net.minecraftforge.gradle' version '7.0.40' }
+version='1.1.0'
+group='mix.cinematiczoom'
+def targets = ['1.21.1':['52.1.20',21], '1.21.5':['55.1.18',21], '1.21.7':['57.0.0',21], '1.21.11':['61.2.4',21], '26.1':['62.0.9',25], '26.2':['65.1.5',25], '26.3':['66.1.0',25]]
+ext.mcTarget = findProperty('mc') ?: '1.21.11'
+def target = targets[mcTarget]
+if (!target) throw new GradleException("Unavailable Forge target ${mcTarget}")
+layout.buildDirectory = file("build/${mcTarget}")
+base { archivesName="cinematiczoom-extended-${mcTarget}-forge" }
+java { toolchain.languageVersion=JavaLanguageVersion.of(target[1]); withSourcesJar() }
+minecraft {
+    mappings channel:'official', version:mcTarget
+    runs { configureEach { mods { register("cinematiczoom_extended") }; workingDir=layout.projectDirectory.dir("runs/${mcTarget}"); if (System.getProperty("os.name").toLowerCase().contains("mac")) jvmArgs "-XstartOnFirstThread" }; register('client') }
+}
+repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+dependencies { implementation minecraft.dependency("net.minecraftforge:forge:${mcTarget}-${target[0]}") }
+def generated = layout.buildDirectory.dir('generated/adapter')
+def adapter = tasks.register('generateAdapter', Sync) {
+    from 'src/main/java'
+    into generated
+    inputs.property 'target', mcTarget
+    doLast {
+        fileTree(generated).matching { include '**/*.java' }.each { file ->
+            def code = file.text
+            if (mcTarget in ['1.21.1','1.21.5','1.21.7']) {
+                code = code.replace('Identifier','ResourceLocation')
+                code = code.replace('private static final KeyMapping.Category CATEGORY=KeyMapping.Category.register(ResourceLocation.parse("cinematiczoom:main"));', 'private static final String CATEGORY="key.categories.cinematiczoom";')
+            }
+            if (mcTarget == '1.21.7') code = code.replace('RegisterKeyMappingsEvent.BUS', 'RegisterKeyMappingsEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())')
+            if (mcTarget in ['1.21.1','1.21.5']) {
+                code = code.replace('RegisterKeyMappingsEvent.BUS', 'net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus()')
+                ['TickEvent.ClientTickEvent.Post','ViewportEvent.ComputeFov','InputEvent.MouseScrollingEvent','ClientPlayerNetworkEvent.LoggingOut'].each { event -> code=code.replace(event+'.BUS','net.minecraftforge.common.MinecraftForge.EVENT_BUS') }
+                code=code.replace('RenderHandEvent.BUS.addListener((java.util.function.Predicate<RenderHandEvent>) event -> ZoomManager.shouldHideHands());','net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(this::hands);')
+                code=code.replace('event -> {ZoomManager.reset', '(ClientPlayerNetworkEvent.LoggingOut event) -> {ZoomManager.reset')
+                code=code.replace('private boolean scroll(InputEvent.MouseScrollingEvent event)', 'private void hands(RenderHandEvent event) { if (ZoomManager.shouldHideHands()) event.setCanceled(true); }\n    private void scroll(InputEvent.MouseScrollingEvent event)')
+                code=code.replace('return Minecraft.getInstance().screen==null && ZoomManager.onWheel(event.getDeltaY());','if (Minecraft.getInstance().screen==null && ZoomManager.onWheel(event.getDeltaY())) event.setCanceled(true);')
+            }
+            if (mcTarget.startsWith('26.')) {
+                code=code.replace('GuiGraphics','GuiGraphicsExtractor').replace('drawCenteredString','centeredText').replace('drawString','text')
+                code=code.replace('void render(', 'void extractRenderState(').replace('super.render(', 'super.extractRenderState(')
+                code=code.replace('method="render"','method="extractRenderState"')
+                ['Crosshair','Hotbar','Effects','DebugOverlay','BossOverlay','ScoreboardSidebar'].each { part -> code=code.replace('render'+part,'extract'+part) }
+            }
+            if (mcTarget in ['26.2','26.3']) code=code.replace('client.screen','client.gui.screen()').replace('Minecraft.getInstance().screen','Minecraft.getInstance().gui.screen()').replace('minecraft.setScreen(', 'minecraft.gui.setScreen(')
+            if (mcTarget=='26.3') {
+                code=code.replace('code,CATEGORY','com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD,code,CATEGORY')
+                ['67':'C','90':'Z','265':'UP','264':'DOWN','263':'LEFT','262':'RIGHT'].each { number,key -> code=code.replace(",${number},event",",com.mojang.blaze3d.platform.InputConstants.KEY_${key},event") }
+            }
+            file.text=code
+        }
+    }
+}
+sourceSets.main.java.setSrcDirs([generated,file('../../src/common/java')])
+tasks.named('compileJava') { dependsOn adapter }
+tasks.named('sourcesJar') { dependsOn adapter }
+sourceSets.main.resources.srcDir '../../src/main/resources'
+processResources {
+    inputs.property 'minecraft', mcTarget
+    inputs.property 'loader', target[0]
+    filesMatching('META-INF/mods.toml') { expand minecraft:mcTarget, loader:target[0], modVersion:project.version }
+}
+jar { from('../../LICENSE'); manifest.attributes('MixinConfigs':'cinematiczoom.platform.mixins.json') }
+tasks.withType(AbstractArchiveTask).configureEach { preserveFileTimestamps=false; reproducibleFileOrder=true }
+apply from: '../client-tests.gradle'

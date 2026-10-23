@@ -1,0 +1,44 @@
+// Test instrumentation is generated only for development runs; release sources stay clean.
+if (project.hasProperty('testClient')) {
+    def generated = layout.buildDirectory.dir('generated/client-test')
+    def instrument = tasks.register('instrumentClient', Sync) {
+        if (project.tasks.findByName('generateAdapter')) {
+            dependsOn 'generateAdapter'
+            from layout.buildDirectory.dir('generated/adapter')
+        } else { from 'src/main/java' }
+        into generated
+        doLast {
+            def entry = generated.get().file('mix/cinematiczoom/CinematicZoomClient.java').asFile
+            def code = entry.text
+            code = code.replace('public final class CinematicZoomClient {', '''public final class CinematicZoomClient {
+    private final mix.cinematiczoom.autotest.AutoTestClient automation = new mix.cinematiczoom.autotest.AutoTestClient();''')
+            code = code.replace('ZoomConfig.INSTANCE.load();', 'ZoomConfig.INSTANCE.load(); automation.start();')
+            if (project.name.contains('forge-1.20.1')) {
+                code = code.replace('if(event.phase==TickEvent.Phase.END) ZoomManager.tick', 'if(event.phase==TickEvent.Phase.END) automation.tick(Minecraft.getInstance());\n        if(event.phase==TickEvent.Phase.END) ZoomManager.tick')
+            } else {
+                code = code.replace('private void tick(TickEvent.ClientTickEvent.Post event) {', 'private void tick(TickEvent.ClientTickEvent.Post event) {\n        automation.tick(Minecraft.getInstance());')
+                code = code.replace('private void tick(ClientTickEvent.Post event) {', 'private void tick(ClientTickEvent.Post event) {\n        automation.tick(Minecraft.getInstance());')
+            }
+            entry.text = code
+        }
+    }
+    sourceSets.main.java.setSrcDirs([generated, file('../../src/common/java'), file('../../src/testclient/java')])
+    sourceSets.main.java.exclude '**/FabricTestClient.java'
+    tasks.named('compileJava') { dependsOn instrument }
+    def testTarget = project.name + (project.hasProperty('mcTarget') ? '-' + project.mcTarget : '')
+    def testArgs = project.hasProperty('bootstrap') ? ['--demo','--width','1280','--height','720'] : ['--demo','--quickPlaySingleplayer','Demo_World','--width','1280','--height','720']
+    def loader = project.extensions.findByName('legacyForge') ?: project.extensions.findByName('neoForge')
+    if (loader) {
+        loader.runs.client {
+            systemProperty 'cinematiczoom.test.target', testTarget
+            systemProperty 'cinematiczoom.test.bootstrap', project.hasProperty('bootstrap') ? 'true' : 'false'
+            programArguments = testArgs
+        }
+    } else {
+        minecraft.runs.named('client') {
+            systemProperty 'cinematiczoom.test.target', testTarget
+            systemProperty 'cinematiczoom.test.bootstrap', project.hasProperty('bootstrap') ? 'true' : 'false'
+            args testArgs
+        }
+    }
+}

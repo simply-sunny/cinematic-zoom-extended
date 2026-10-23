@@ -1,0 +1,29 @@
+plugins { id 'net.neoforged.moddev.legacyforge' version '2.0.148' }
+version = '1.1.0'
+group = 'mix.cinematiczoom'
+def legacyNeo = project.hasProperty('legacyNeo')
+layout.buildDirectory = file(legacyNeo ? 'build/neoforge' : 'build/forge')
+base { archivesName = 'cinematiczoom-extended-1.20.1-' + (legacyNeo ? 'neoforge' : 'forge') }
+java { toolchain.languageVersion = JavaLanguageVersion.of(17); withSourcesJar() }
+legacyForge {
+    enable { if (legacyNeo) neoForgeVersion = '1.20.1-47.1.106'; else forgeVersion = '1.20.1-47.4.28'; disableRecompilation = true }
+    runs { client { client(); gameDirectory = file(legacyNeo ? 'run-neoforge' : 'run') } }
+    mods { cinematiczoom_extended { sourceSet sourceSets.main } }
+}
+repositories { maven { url = 'https://maven.shedaniel.me/' } }
+dependencies { modImplementation 'me.shedaniel.cloth:cloth-config-forge:11.1.136' }
+sourceSets.main.java.srcDir '../../src/common/java'
+sourceSets.main.resources.srcDir '../../src/main/resources'
+tasks.withType(AbstractArchiveTask).configureEach { preserveFileTimestamps = false; reproducibleFileOrder = true }
+jar { from('../../LICENSE') }
+
+dependencies { annotationProcessor 'org.spongepowered:mixin:0.8.5:processor' }
+mixin { add sourceSets.main, 'cinematiczoom.refmap.json'; config 'cinematiczoom.platform.mixins.json' }
+jar { manifest.attributes('MixinConfigs': 'cinematiczoom.platform.mixins.json') }
+
+apply from: "../client-tests.gradle"
+
+processResources {
+    inputs.property 'legacyNeo', legacyNeo
+    filesMatching('META-INF/mods.toml') { filter { line -> legacyNeo ? line.replace('[47.4.28,)', '[47.1.106,)') : line } }
+}

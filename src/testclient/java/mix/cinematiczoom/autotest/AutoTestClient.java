@@ -1,7 +1,7 @@
 package mix.cinematiczoom.autotest;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+
+
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  * and stops the client. All game classes are accessed reflectively so one source file works
  * across every supported Minecraft version.</p>
  */
-public final class AutoTestClient implements ClientModInitializer {
+public final class AutoTestClient {
     private static final String TARGET = System.getProperty("cinematiczoom.test.target", "unknown");
     private static final int WORLD_TIMEOUT_TICKS = 20 * 180;
     private static final int PHASE_TIMEOUT_TICKS = 20 * 12;
@@ -36,6 +36,7 @@ public final class AutoTestClient implements ClientModInitializer {
         PRESS_ZOOM,
         WAIT_ZOOM,
         WAIT_ZOOMED,
+        FEATURES,
         DONE,
         ERROR
     }
@@ -47,21 +48,23 @@ public final class AutoTestClient implements ClientModInitializer {
 
     private Phase phase = Phase.WAIT_WORLD;
     private int ticks;
+    private int featureIndex;
+    private static final String[] FEATURES = {"aspect-4-3", "aspect-1-1", "regular-500x", "exit", "settings", "linear-midpoint", "smooth-midpoint"};
     private boolean rotated;
     private volatile boolean normalShotDone;
     private volatile boolean zoomShotDone;
 
-    @Override
-    public void onInitializeClient() {
+    public void start() {
         outputDirectory.mkdirs();
         normalFile.delete();
         zoomedFile.delete();
+        for (String feature : FEATURES) new File(new File(runDirectory, "screenshots"), TARGET + "-" + feature + ".png").delete();
         new File(outputDirectory, "status.txt").delete();
         log("starting automation for " + TARGET);
-        ClientTickEvents.END_CLIENT_TICK.register(this::tick);
+
     }
 
-    private void tick(Object client) {
+    public void tick(Object client) {
         try {
             if (BOOTSTRAP) {
                 bootstrapTick(client);
@@ -74,6 +77,7 @@ public final class AutoTestClient implements ClientModInitializer {
                 case PRESS_ZOOM -> pressZoom(client);
                 case WAIT_ZOOM -> waitForZoom(client);
                 case WAIT_ZOOMED -> waitForZoomed(client);
+                case FEATURES -> featureTick(client);
                 case DONE -> stopAfterDelay(client);
                 case ERROR -> stopAfterError(client);
             }
@@ -105,7 +109,7 @@ public final class AutoTestClient implements ClientModInitializer {
             return;
         }
         if (ticks % 20 == 0) {
-            pressTitleButton(client, "Play Demo World", "Continue");
+            pressTitleButton(client, "Play Demo World", "Continue", "Proceed to main menu");
         }
     }
 
@@ -117,6 +121,14 @@ public final class AutoTestClient implements ClientModInitializer {
         Object world = get(client, "world", "level");
         Object player = get(client, "player");
         Object screen = currentScreen(client);
+        if (screen != null && screen.getClass().getSimpleName().equals("LoadingErrorScreen") && ticks % 20 == 0) {
+            Object errors = getQuietly(screen, "modLoadErrors");
+            Object warnings = getQuietly(screen, "modLoadWarnings");
+            log("loader diagnostics: errors=" + errors + " warnings=" + warnings);
+            if (errors instanceof java.util.Collection<?> c && !c.isEmpty()) {
+                fail("loader rejected mod: " + errors); return;
+            }
+        }
         if (world != null && player != null) {
             if (screen != null) {
                 log("dismissing screen " + screen.getClass().getSimpleName());
@@ -136,7 +148,7 @@ public final class AutoTestClient implements ClientModInitializer {
                     + " world=" + (world != null) + " player=" + (player != null));
         }
         if (world == null && ticks % 20 == 0) {
-            pressTitleButton(client, "Play Demo World", "Continue");
+            pressTitleButton(client, "Play Demo World", "Continue", "Proceed to main menu");
         }
     }
 
@@ -327,7 +339,8 @@ public final class AutoTestClient implements ClientModInitializer {
                 return;
             }
             if (!sceneSettled(client) || !normalReady(client)) {
-                log("scene or input did not settle; capturing anyway");
+                fail("scene or input did not settle before normal capture");
+                return;
             }
             takeScreenshot(client, "normal");
             phase = Phase.WAIT_NORMAL;
@@ -405,6 +418,9 @@ public final class AutoTestClient implements ClientModInitializer {
         focus(client);
         setZoomKeyDown(true);
         if (++ticks >= ZOOM_WAIT_TICKS) {
+            if (!Boolean.TRUE.equals(callStatic("mix.cinematiczoom.ZoomManager", "isZoomActive"))) {
+                fail("cinematic zoom did not activate"); return;
+            }
             takeScreenshot(client, "zoomed");
             phase = Phase.WAIT_ZOOMED;
             ticks = 0;
@@ -419,11 +435,75 @@ public final class AutoTestClient implements ClientModInitializer {
                 fail("zoomed screenshot was not written");
                 return;
             }
-            writeStatus("ok\nnormal=" + normalFile.getAbsolutePath() + "\nzoomed=" + zoomedFile.getAbsolutePath() + "\n");
-            log("done: " + zoomedFile.getAbsolutePath());
-            phase = Phase.DONE;
+            phase = Phase.FEATURES;
             ticks = 0;
+            featureIndex = 0;
+
         }
+    }
+
+    private void featureTick(Object client) throws Exception {
+        focus(client);
+        mix.cinematiczoom.ZoomConfig cfg = mix.cinematiczoom.ZoomConfig.INSTANCE;
+        setZoomKeyDown(false);
+        setKeyDown("ZOOM_NO_BARS_KEYBIND", false);
+        if (++ticks == 1) {
+            if (featureIndex >= 5) {
+                Object open = currentScreen(client);
+                if (open != null) closeScreen(open);
+                cfg.barEnterMs = 10000;
+                cfg.barEnterMode = featureIndex == 5 ? mix.cinematiczoom.BarAnimationMode.LINEAR : mix.cinematiczoom.BarAnimationMode.SMOOTH;
+                cfg.aspectRatio = "2.39:1";
+            }
+            cfg.aspectProfiles = new java.util.ArrayList<>(java.util.List.of("2.39:1","4:3","1:1"));
+            cfg.aspectRatio = featureIndex == 0 ? "2.39:1" : featureIndex == 1 ? "4:3" : "1:1";
+            if (featureIndex >= 5) cfg.aspectRatio = "2.39:1";
+            cfg.regularStartingZoom = 500;
+            cfg.minZoomMultiplier = mix.cinematiczoom.ZoomMath.MIN_MULTIPLIER;
+        }
+        // Release both modes before entering a new one, preserving starting-zoom semantics.
+        if (ticks > 10 && (featureIndex < 2 || featureIndex >= 5)) setZoomKeyDown(true);
+        if (ticks > 10 && featureIndex == 2) setKeyDown("ZOOM_NO_BARS_KEYBIND", true);
+        if (featureIndex < 2) setKeyDown("NEXT_ASPECT_KEYBIND", ticks >= 20 && ticks < 30);
+        if (featureIndex == 4 && ticks == 20) {
+            Object screen;
+            try {
+                Class<?> settings = Class.forName("mix.cinematiczoom.ZoomSettingsScreen");
+                Method create = java.util.Arrays.stream(settings.getMethods()).filter(m -> m.getName().equals("create")).findFirst().orElseThrow();
+                screen = create.invoke(null, new Object[]{null});
+            } catch (ClassNotFoundException fabric) {
+                Object integration = Class.forName("mix.cinematiczoom.integrations.ModMenuIntegration").getConstructor().newInstance();
+                Object factory = integration.getClass().getMethod("getModConfigScreenFactory").invoke(integration);
+                Class<?> factoryType = Class.forName("com.terraformersmc.modmenu.api.ConfigScreenFactory");
+                Method create = java.util.Arrays.stream(factoryType.getMethods()).filter(m -> m.getName().equals("create")).findFirst().orElseThrow();
+                screen = create.invoke(factory, new Object[]{null});
+            }
+            Object screenOwner = client;
+            Method setScreen = java.util.Arrays.stream(screenOwner.getClass().getMethods()).filter(m -> m.getName().equals("setScreen") && m.getParameterCount()==1).findFirst().orElse(null);
+            if (setScreen == null) {
+                screenOwner = get(client, "gui");
+                setScreen = java.util.Arrays.stream(screenOwner.getClass().getMethods()).filter(m -> m.getName().equals("setScreen") && m.getParameterCount()==1).findFirst().orElseThrow();
+            }
+            setScreen.invoke(screenOwner, screen);
+        }
+        if (ticks == 100) {
+            if (featureIndex < 2 && !cfg.aspectRatio.equals(featureIndex == 0 ? "4:3" : "1:1")) throw new IllegalStateException("profile key did not cycle exactly once");
+            if (featureIndex == 2) {
+                double multiplier = ((Number)callStatic("mix.cinematiczoom.ZoomManager", "getCurrentFovMul")).doubleValue();
+                if (Math.abs(multiplier - .002) > .000001) throw new IllegalStateException("500x was not reached: " + multiplier);
+            }
+            if (featureIndex == 4 && currentScreen(client) == null) throw new IllegalStateException("configuration screen did not open");
+            takeScreenshot(client, FEATURES[featureIndex]);
+        }
+        File capture = new File(new File(runDirectory,"screenshots"), TARGET + "-" + FEATURES[featureIndex] + ".png");
+        if (ticks > 100 && capture.isFile()) {
+            if (++featureIndex == FEATURES.length) {
+                writeStatus("ok\nfeatures=" + FEATURES.length + "\n");
+                phase=Phase.DONE;
+            }
+            ticks=0;
+        }
+        if (ticks > 200) fail("feature screenshot timed out");
     }
 
     private void stopAfterDelay(Object client) {
@@ -521,11 +601,20 @@ public final class AutoTestClient implements ClientModInitializer {
     }
 
     private static void focus(Object client) throws Exception {
+        Object options = getQuietly(client, "options");
+        if (options != null) {
+            Field pause = findField(options.getClass(), "pauseOnLostFocus");
+            if (pause != null && pause.getType() == boolean.class) pause.setBoolean(options, false);
+        }
+        Field active = findField(client.getClass(), "windowActive");
+        if (active != null && active.getType() == boolean.class) active.setBoolean(client, true);
+        Object screen = currentScreen(client);
+        if (screen != null && screen.getClass().getSimpleName().equals("PauseScreen")) closeScreen(screen);
         Object window = call(client, "getWindow");
         if (window == null) {
             return;
         }
-        Object handle = call(window, "handle", "getHandle");
+        Object handle = call(window, "handle", "getHandle", "getWindow");
         if (handle instanceof Number number) {
             try {
                 Class<?> glfw = Class.forName("org.lwjgl.glfw.GLFW");
@@ -542,8 +631,12 @@ public final class AutoTestClient implements ClientModInitializer {
     }
 
     private static void setZoomKeyDown(boolean down) throws Exception {
+        setKeyDown("ZOOM_KEYBIND", down);
+    }
+
+    private static void setKeyDown(String fieldName, boolean down) throws Exception {
         Class<?> clientClass = Class.forName("mix.cinematiczoom.CinematicZoomClient");
-        Field keyField = clientClass.getField("ZOOM_KEYBIND");
+        Field keyField = clientClass.getField(fieldName);
         Object key = keyField.get(null);
         if (key == null) {
             return;
@@ -789,7 +882,7 @@ public final class AutoTestClient implements ClientModInitializer {
     private static long windowHandle(Object client) {
         try {
             Object window = call(client, "getWindow");
-            Object handle = call(window, "handle", "getHandle");
+            Object handle = call(window, "handle", "getHandle", "getWindow");
             if (handle instanceof Number number && number.longValue() != 0L) {
                 return number.longValue();
             }

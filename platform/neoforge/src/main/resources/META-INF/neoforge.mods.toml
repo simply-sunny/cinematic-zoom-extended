@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+[[mods]]
+modId="cinematiczoom_extended"
+version="${modVersion}"
+displayName="Cinematic Zoom Extended"
+authors="simply-sunny, Mel1x, KubePixel"
+description='''Cinematic aspect profiles and independently configurable zoom.'''
+[[dependencies.cinematiczoom_extended]]
+modId="neoforge"
+type="required"
+versionRange="[${loader},)"
+ordering="NONE"
+side="CLIENT"
+[[dependencies.cinematiczoom_extended]]
+modId="minecraft"
+type="required"
+versionRange="[${minecraft}]"
+ordering="NONE"
+side="CLIENT"
+[[dependencies.cinematiczoom_extended]]
+modId="cloth_config"
+type="required"
+versionRange="[${cloth},)"
+ordering="NONE"
+side="CLIENT"
+
+[[mixins]]
+config="cinematiczoom.platform.mixins.json"

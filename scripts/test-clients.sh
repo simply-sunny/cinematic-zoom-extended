@@ -8,7 +8,7 @@ if [ "${#TARGETS[@]}" -eq 0 ]; then
 	TARGETS=("${ALL_TARGETS[@]}")
 fi
 
-OUT="$ROOT/build/testclient"
+OUT="$ROOT/build/testclient${QUILT:+/quilt}"
 LOGS="$OUT/logs"
 SHOTS="$OUT/screenshots"
 TIMEOUT_SECONDS="${TIMEOUT:-300}"
@@ -64,9 +64,11 @@ run_target() {
 	ensure_option "$run/options.txt" onboardAccessibility false
 	ensure_option "$run/options.txt" tutorialStep none
 	ensure_option "$run/options.txt" pauseOnLostFocus false
+	ensure_option "$run/options.txt" key_key.cinematiczoom.zoom_no_bars key.keyboard.z
 	: >"$log"
 
 	local -a gradle=(./gradlew ":$target:runClient" -PtestClient --console=plain)
+	if [ "${QUILT:-0}" = "1" ]; then gradle+=(-PquiltTest); fi
 
 	if [ ! -d "$run/saves/Demo_World" ]; then
 		echo "[$target] generating demo world"
@@ -94,7 +96,7 @@ run_target() {
 	fi
 
 	local kind
-	for kind in normal zoomed; do
+	for kind in normal zoomed aspect-4-3 aspect-1-1 regular-500x exit settings linear-midpoint smooth-midpoint; do
 		local source="$run/screenshots/$target-$kind.png"
 		if [ ! -f "$source" ]; then
 			echo "[$target] missing screenshot $source" >&2

@@ -1,0 +1,1 @@
+{"required":true,"package":"mix.cinematiczoom.mixin","compatibilityLevel":"JAVA_17","refmap":"cinematiczoom.refmap.json","client":["MouseMixin","GameRendererMixin"],"injectors":{"defaultRequire":1}}

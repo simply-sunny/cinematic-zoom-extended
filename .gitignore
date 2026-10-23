@@ -46,3 +46,7 @@ client_*.log
 
 .claude/
 handoff-*.md
+
+# Native loader development worlds
+runs/
+run-neoforge/
