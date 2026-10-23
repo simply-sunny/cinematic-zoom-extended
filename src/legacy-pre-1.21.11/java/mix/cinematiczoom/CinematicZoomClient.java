@@ -17,6 +17,7 @@ public final class CinematicZoomClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        ZoomConfig.configureDirectory(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir());
         ZoomConfig.INSTANCE.load();
 
         ZOOM_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(

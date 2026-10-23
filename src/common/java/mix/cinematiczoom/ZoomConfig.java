@@ -3,7 +3,6 @@ package mix.cinematiczoom;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,12 @@ public final class ZoomConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("cinematiczoom");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("cinematiczoom.json");
+    private static Path PATH = Path.of("config", "cinematiczoom.json");
+
+    /** Called by each loader before loading configuration. */
+    public static void configureDirectory(Path directory) {
+        PATH = java.util.Objects.requireNonNull(directory).resolve("cinematiczoom.json");
+    }
 
     // Cinematic Zoom Profile
     public float cinematicStartingZoom = 3.0f;

@@ -17,6 +17,7 @@ public final class ZoomRegressionTest {
     private static int checks;
 
     public static void main(String[] args) throws Exception {
+        ZoomConfig.configureDirectory(Path.of(System.getProperty("cinematiczoom.testConfig")));
         run("disabling cinematic toggle releases zoom", () -> disabledToggle(false));
         run("disabling regular toggle releases zoom", () -> disabledToggle(true));
         run("regular sensitivity setting survives release", () -> exitProfile(false));
