@@ -6,6 +6,7 @@
 
 <p align="center">
 <a href="https://modrinth.com/mod/cinematic-zoom-extended"><img src="https://img.shields.io/modrinth/dt/cinematic-zoom-extended?logo=modrinth&label=Modrinth&color=1bd96a" alt="Modrinth downloads"></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-extended"><img src="https://img.shields.io/curseforge/dt/1763623?logo=curseforge&label=CurseForge&color=f16436" alt="CurseForge downloads"></a>
 <a href="https://github.com/simply-sunny/CinematicZoom-Extended/releases"><img src="https://img.shields.io/github/v/release/simply-sunny/CinematicZoom-Extended?label=release&color=2ea44f" alt="Latest release"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
 </p>

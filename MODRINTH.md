@@ -10,6 +10,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Slug | `cinematic-zoom-extended` |
 | Project type | Mod |
 | Project ID | `nGcifVtU` |
+| CurseForge project ID | `1763623` (slug `cinematic-zoom-extended`), uploaded with `scripts/publish-curseforge.py` |
 | Summary | Feature-rich fork of Cinematic Zoom with dual zoom profiles, custom easing, ultra-wide, snap zoom, and granular HUD control. Fabric and Quilt 1.20.1–26.3, client-side. |
 | License | MIT |
 | Environment | Client-side only (`client_only`) |
@@ -77,7 +78,7 @@ A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabr
 - **Smooth motion.** Per-frame easing with six curves and separate in and out durations.
 - **Framing.** Adjust the bars live with the arrow keys, zoom out to 0.5x with ultra-wide, step the wheel in fixed increments, and snap to targets like `2x` or `45fov`.
 - **Camera and HUD.** Scale mouse sensitivity, remove view bobbing, and hide the HUD, crosshair and hands independently. F3 hides with the HUD.
-- **Settings screen.** Cloth Config through Mod Menu,.
+- **Settings screen.** Cloth Config through Mod Menu.
 - **Easy switching.** Cinematic Zoom 1.3 configs migrate automatically, and Zoomify, Ok Zoomer, Just Zoom and similar mods are imported on first launch.
 
 ## Installation
