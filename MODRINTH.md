@@ -10,15 +10,16 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Slug | `cinematic-zoom-extended` |
 | Project type | Mod |
 | Project ID | `nGcifVtU` |
+| Status | Under verification; retain the existing project and uploaded versions. |
 | CurseForge project ID | `1763623` (slug `cinematic-zoom-extended`), uploaded with `scripts/publish-curseforge.py` |
-| Summary | Feature-rich fork of Cinematic Zoom with dual zoom profiles, custom easing, ultra-wide, snap zoom, and granular HUD control. Fabric and Quilt 1.20.1–26.3, client-side. |
+| Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. Fabric and Quilt 1.20.1–26.3, client-side. |
 | License | MIT |
 | Environment | Client-side only (`client_only`) |
 | Featured categories | `utility`, `game-mechanics` |
 | Additional categories | `decoration` |
-| Source | https://github.com/simply-sunny/CinematicZoom-Extended |
-| Issues | https://github.com/simply-sunny/CinematicZoom-Extended/issues |
-| Wiki / docs | https://github.com/simply-sunny/CinematicZoom-Extended#configuration |
+| Source | https://github.com/simply-sunny/cinematic-zoom-extended |
+| Issues | https://github.com/simply-sunny/cinematic-zoom-extended/issues |
+| Wiki / docs | https://github.com/simply-sunny/cinematic-zoom-extended#configure |
 | Discord | *(none)* |
 | Donation links | *(none)* |
 | Icon | `src/main/resources/assets/cinematiczoom/icon.png` — 512×512 PNG |
@@ -26,7 +27,9 @@ This file is the source of truth for the Modrinth project settings, version meta
 
 ## Version metadata
 
-Upload one Modrinth version per JAR, all with version number `1.0.0`, channel `release`, loaders `fabric` and `quilt`, and the same changelog. Quilt loads Fabric mods and is confirmed to work.
+The uploaded 1.0.0 files use channel `release` and loaders `fabric` and `quilt`. The table records their original filenames. New builds use `cinematic-zoom-extended-<jar>-<version>.jar`; existing uploads retain their filenames and version identities. Quilt loads the Fabric jars.
+
+The project is under verification. Version IDs are not recorded here yet; copy them from the existing project once available. Keep the current uploads rather than uploading replacements for this repository rename.
 
 | JAR | Modrinth `game_versions` |
 | --- | --- |
@@ -74,12 +77,12 @@ A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabr
 
 ## Features
 
-- **Two profiles.** Cinematic (with bars) and Regular (without), each with its own key, zoom, timing, curves, toggle mode, snap targets and HUD options.
-- **Smooth motion.** Per-frame easing with six curves and separate in and out durations.
-- **Framing.** Adjust the bars live with the arrow keys, zoom out to 0.5x with ultra-wide, step the wheel in fixed increments, and snap to targets like `2x` or `45fov`.
-- **Camera and HUD.** Scale mouse sensitivity, remove view bobbing, and hide the HUD, crosshair and hands independently. F3 hides with the HUD.
-- **Settings screen.** Cloth Config through Mod Menu.
-- **Easy switching.** Cinematic Zoom 1.3 configs migrate automatically, and Zoomify, Ok Zoomer, Just Zoom and similar mods are imported on first launch.
+- Two profiles. Cinematic (with bars) and Regular (without), each with its own key, zoom, timing, curves, toggle mode, snap targets and HUD options.
+- Smooth motion. Per-frame easing with six curves and separate in and out durations.
+- Framing. Adjust the bars live with the arrow keys, zoom out to 0.5x with ultra-wide, step the wheel in fixed increments, and snap to targets like `2x` or `45fov`.
+- Camera and HUD. Scale mouse sensitivity, remove view bobbing, and hide the HUD, crosshair and hands independently. F3 hides with the HUD.
+- Settings screen. Cloth Config through Mod Menu.
+- Easy switching. Cinematic Zoom 1.3 configs migrate automatically, and Zoomify, Ok Zoomer, Just Zoom and similar mods are imported on first launch.
 
 ## Installation
 
@@ -101,13 +104,13 @@ Hold the zoom key to zoom and release to return, or turn on **Toggle zoom**. Scr
 ## Compatibility
 
 - **Minecraft:** 1.20.1 to 26.3 on Fabric and Quilt. Java 17 for 1.20.1, 21 for 1.21.x, 25 for 26.x.
-- **Client-side only.** Servers do not need it.
-- **Other zoom mods** conflict with FOV handling. Import their settings instead of running both.
+- Client-side only. Servers do not need it.
+- Other zoom mods conflict with FOV handling. Import their settings instead of running both.
 - **Sodium, Iris and shaders:** no known conflicts, not specifically tested in 1.0.0.
-- **Quilt** is supported (it runs the Fabric jar with Fabric API). **OptiFine** is unsupported.
+- Quilt is supported (it runs the Fabric jar with Fabric API). OptiFine is unsupported.
 
-Full configuration, import and troubleshooting notes are on [GitHub](https://github.com/simply-sunny/CinematicZoom-Extended#readme).
+Full configuration, import and troubleshooting notes are on [GitHub](https://github.com/simply-sunny/cinematic-zoom-extended#readme).
 
 ## Credits and license
 
-Thanks to **KubePixel** for the original concept, **Mel1x** for the Fabric implementation, and **ColoredChromium** for the velvet curtain texture in the icon ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), [source](https://www.deviantart.com/coloredchromium/art/Curtains-Red-Transparency-Light-424984584)). Mod code and original assets are MIT, see the [LICENSE](https://github.com/simply-sunny/CinematicZoom-Extended/blob/main/LICENSE). The icon texture remains CC BY 3.0. Minecraft is a trademark of Mojang Studios.
+Thanks to KubePixel for the original concept, Mel1x for the Fabric implementation, and ColoredChromium for the velvet curtain texture in the icon ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), [source](https://www.deviantart.com/coloredchromium/art/Curtains-Red-Transparency-Light-424984584)). Mod code and original assets are MIT, see the [LICENSE](https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/LICENSE). The icon texture remains CC BY 3.0. Minecraft is a trademark of Mojang Studios.

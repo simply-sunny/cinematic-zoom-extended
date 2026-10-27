@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload the built 1.0.0 jars to CurseForge, mirroring the Modrinth release in MODRINTH.md.
+"""Upload the built jars to CurseForge using the release sheets and gradle.properties.
 
 Usage: CURSEFORGE_API_KEY=... python3 scripts/publish-curseforge.py <project-id> [--dry-run]
 """
@@ -13,7 +13,9 @@ from pathlib import Path
 
 API = "https://minecraft.curseforge.com/api"
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "1.0.0"
+PROPERTIES = dict(re.findall(r"^([a-z_]+)=(.+)$", (ROOT / "gradle.properties").read_text(), re.M))
+VERSION = PROPERTIES["mod_version"].strip()
+ARCHIVE = PROPERTIES["archives_base_name"].strip()
 
 # jar suffix -> (display range, Minecraft versions, Java version)
 JARS = {
@@ -57,7 +59,9 @@ def version_ids():
 
 def changelog():
     text = (ROOT / "CHANGELOG.md").read_text()
-    match = re.search(rf"^## {re.escape(VERSION)}\b.*?\n(.*?)(?=^## |\Z)", text, re.S | re.M)
+    match = re.search(rf"^## (?:\[{re.escape(VERSION)}\]|{re.escape(VERSION)}\b)[^\n]*\n(.*?)(?=^## |\Z)", text, re.S | re.M)
+    if match is None:
+        sys.exit(f"missing changelog section for {VERSION}")
     return match.group(1).strip()
 
 
@@ -84,7 +88,7 @@ def main():
     notes = changelog()
 
     for suffix, (label, mc_versions, java) in JARS.items():
-        jar = ROOT / "build" / "libs" / f"cinematiczoom-extended-{suffix}-{VERSION}.jar"
+        jar = ROOT / "build" / "libs" / f"{ARCHIVE}-{suffix}-{VERSION}.jar"
         if not jar.is_file():
             sys.exit(f"missing {jar}")
         names = mc_versions + LOADERS_AND_ENV + [java]

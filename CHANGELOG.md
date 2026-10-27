@@ -2,7 +2,19 @@
 
 All notable changes to Cinematic Zoom Extended are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
-## 1.0.0 — 2026-10-20
+## [Unreleased]
+
+### Changed
+
+- Repository: use `cinematic-zoom-extended` for GitHub, the Gradle project, and new build filenames. Existing release downloads, mod identity, key binds, and saved settings keep their names and contents.
+- CurseForge publishing: read the version and artifact prefix from `gradle.properties`.
+
+### Documentation
+
+- Update source, issue, release, and badge links to the renamed repository.
+- Add the CurseForge release sheet, configuration defaults, and repository instructions using the shared templates standard.
+
+## [1.0.0] - 2026-10-20
 
 First release, based on Cinematic Zoom 1.3 by Mel1x.
 

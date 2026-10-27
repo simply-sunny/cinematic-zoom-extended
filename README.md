@@ -7,7 +7,7 @@
 <p align="center">
 <a href="https://modrinth.com/mod/cinematic-zoom-extended"><img src="https://img.shields.io/modrinth/dt/cinematic-zoom-extended?logo=modrinth&label=Modrinth&color=1bd96a" alt="Modrinth downloads"></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-extended"><img src="https://img.shields.io/curseforge/dt/1763623?logo=curseforge&label=CurseForge&color=f16436" alt="CurseForge downloads"></a>
-<a href="https://github.com/simply-sunny/CinematicZoom-Extended/releases"><img src="https://img.shields.io/github/v/release/simply-sunny/CinematicZoom-Extended?label=release&color=2ea44f" alt="Latest release"></a>
+<a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases"><img src="https://img.shields.io/github/v/release/simply-sunny/cinematic-zoom-extended?label=release&color=2ea44f" alt="Latest release"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
 </p>
 
@@ -37,7 +37,7 @@ Client-side only. Servers don't need it.
 | 26.2–26.2.2 | `26.2` | 25+ | 26.2.155+ |
 | 26.3 | `26.3` | 25+ | 26.3.159+ |
 
-Jars are named `cinematiczoom-extended-<jar>-<version>.jar`.
+New builds use `cinematic-zoom-extended-<jar>-<version>.jar`. The published 1.0.0 downloads keep their original `cinematiczoom-extended-<jar>-1.0.0.jar` filenames.
 
 ## Use
 
@@ -59,11 +59,25 @@ All keys are rebindable under **Options → Controls → Key Binds → Cinematic
 
 Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is there, including both profiles, curves, timings, HUD hiding, snap targets, and wheel behavior.
 
+| Setting | Default | Notes |
+| --- | --- | --- |
+| Starting zoom | `3×` in both profiles | Each profile keeps its own magnification. |
+| Bar height | `15%` | Cinematic profile only; arrow keys adjust it by `1%`. |
+| Zoom duration | `240 ms` in and out | Separate values for each profile. |
+| Easing curve | Exponential | Separate curves for zoom in and out. |
+| Hide HUD, crosshair, hands | On | Each option is independent in each profile. |
+| Toggle zoom | Off | Hold the key by default. |
+| Mouse wheel during zoom | On | Changes magnification while zooming. |
+| Ultra-wide zoom | Off | Allows zooming out to `0.5×` when enabled. |
+| Snap targets | Empty | Set targets such as `2x` or `45fov` per profile. |
+
 Settings are saved to `config/cinematiczoom.json` in your Minecraft folder:
 
-- **Windows:** `%appdata%\.minecraft\config\cinematiczoom.json`
-- **macOS:** `~/Library/Application Support/minecraft/config/cinematiczoom.json`
-- **Linux:** `~/.minecraft/config/cinematiczoom.json`
+| OS | Path |
+| --- | --- |
+| Windows | `%appdata%\.minecraft\config\cinematiczoom.json` |
+| macOS | `~/Library/Application Support/minecraft/config/cinematiczoom.json` |
+| Linux | `~/.minecraft/config/cinematiczoom.json` |
 
 Delete the file to reset to defaults. Two keys exist only in the JSON. Edit them, then restart:
 
@@ -98,8 +112,14 @@ Requires JDK 25. 1.20.1 compiles with `--release 17`, and 1.21.x with 21.
 This runs the headless regression suite and builds every target. Jars land in `build/libs/`. To build one target:
 
 ```bash
-./gradlew :1.21.7:build
+./gradlew -PonlyTarget=1.21.7 :1.21.7:build
 ```
+
+To add a Minecraft target, add it to `minecraftTargets` in `build.gradle` and `targets` in `settings.gradle`, then put its version-specific code under `versions/<mc>/`. Shared code stays in `src/common/java`; the existing legacy and modern source sets handle API differences across targets.
+
+The repository and new artifact prefix are `cinematic-zoom-extended`. The mod ID stays `cinematiczoom_extended`, the Java package and asset namespace stay `mix.cinematiczoom` and `cinematiczoom`, and settings stay in `config/cinematiczoom.json`. Existing key binds and settings carry over without migration. The 1.0.0 tag and published downloads keep their original names and contents.
+
+Release settings and listing copy live in [MODRINTH.md](MODRINTH.md) and [CURSEFORGE.md](CURSEFORGE.md).
 
 ## Troubleshooting
 
