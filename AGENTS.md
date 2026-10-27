@@ -13,7 +13,7 @@
 
 ## Documentation and releases
 
-- Before editing documentation, read the shared [writing rules](https://github.com/simply-sunny/templates/blob/main/docs/WRITING.md) and [document inventory](https://github.com/simply-sunny/templates/blob/main/docs/WHAT_TO_WRITE.md). Follow the [mod README skeleton](https://github.com/simply-sunny/templates/blob/main/docs/mod-README-skel.md).
+- Before editing documentation, read the shared writing rules (`docs/WRITING.md`), document inventory (`docs/WHAT_TO_WRITE.md`) and mod README skeleton (`docs/mod-README-skel.md`) in the private `templates` repository, checked out next to this one at `../templates`.
 - Keep user-facing changes under `[Unreleased]` in `CHANGELOG.md`. Use the project settings and listing copy in `MODRINTH.md` and `CURSEFORGE.md` for publishing.
 - The existing Modrinth project is under verification. Preserve its project ID and uploads when maintaining repository links.
 - Write concise, factual commit subjects. Never add AI attribution or co-authorship lines to commits, PRs, or changelogs.

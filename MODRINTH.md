@@ -10,7 +10,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Slug | `cinematic-zoom-extended` |
 | Project type | Mod |
 | Project ID | `nGcifVtU` |
-| Status | Under verification; retain the existing project and uploaded versions. |
+| Status | In review on Modrinth as of 2026-10-27 (`processing`); retain the existing project and uploaded versions. |
 | CurseForge project ID | `1763623` (slug `cinematic-zoom-extended`), uploaded with `scripts/publish-curseforge.py` |
 | Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. Fabric and Quilt 1.20.1–26.3, client-side. |
 | License | MIT |
@@ -29,19 +29,19 @@ This file is the source of truth for the Modrinth project settings, version meta
 
 The uploaded 1.0.0 files use channel `release` and loaders `fabric` and `quilt`. The table records their original filenames. New builds use `cinematic-zoom-extended-<jar>-<version>.jar`; existing uploads retain their filenames and version identities. Quilt loads the Fabric jars.
 
-The project is under verification. Version IDs are not recorded here yet; copy them from the existing project once available. Keep the current uploads rather than uploading replacements for this repository rename.
+Keep the current uploads rather than uploading replacements for this repository rename.
 
-| JAR | Modrinth `game_versions` |
-| --- | --- |
-| `cinematiczoom-extended-1.20.1-1.0.0.jar` | `1.20.1` |
-| `cinematiczoom-extended-1.21.1-1.0.0.jar` | `1.21.1` |
-| `cinematiczoom-extended-1.21.2-1.21.4-1.0.0.jar` | `1.21.2`, `1.21.3`, `1.21.4` |
-| `cinematiczoom-extended-1.21.5-1.21.6-1.0.0.jar` | `1.21.5`, `1.21.6` |
-| `cinematiczoom-extended-1.21.7-1.21.8-1.0.0.jar` | `1.21.7`, `1.21.8` |
-| `cinematiczoom-extended-1.21.9-1.21.11-1.0.0.jar` | `1.21.9`, `1.21.10`, `1.21.11` |
-| `cinematiczoom-extended-26.1-1.0.0.jar` | `26.1`, `26.1.1`, `26.1.2` |
-| `cinematiczoom-extended-26.2-1.0.0.jar` | `26.2` (Modrinth has no `26.2.1`/`26.2.2` tags yet) |
-| `cinematiczoom-extended-26.3-1.0.0.jar` | `26.3` |
+| JAR | Version ID | Modrinth `game_versions` |
+| --- | --- | --- |
+| `cinematiczoom-extended-1.20.1-1.0.0.jar` | `BJswwyUg` | `1.20.1` |
+| `cinematiczoom-extended-1.21.1-1.0.0.jar` | `IB88SkKT` | `1.21.1` |
+| `cinematiczoom-extended-1.21.2-1.21.4-1.0.0.jar` | `UG64B2Oi` | `1.21.2`, `1.21.3`, `1.21.4` |
+| `cinematiczoom-extended-1.21.5-1.21.6-1.0.0.jar` | `mg1s3KGm` | `1.21.5`, `1.21.6` |
+| `cinematiczoom-extended-1.21.7-1.21.8-1.0.0.jar` | `Cyb8tdv9` | `1.21.7`, `1.21.8` |
+| `cinematiczoom-extended-1.21.9-1.21.11-1.0.0.jar` | `XeUX9PSG` | `1.21.9`, `1.21.10`, `1.21.11` |
+| `cinematiczoom-extended-26.1-1.0.0.jar` | `WdStVaNU` | `26.1`, `26.1.1`, `26.1.2` |
+| `cinematiczoom-extended-26.2-1.0.0.jar` | `O4IzsBfh` | `26.2` (Modrinth has no `26.2.1`/`26.2.2` tags yet) |
+| `cinematiczoom-extended-26.3-1.0.0.jar` | `jJlQiC12` | `26.3` |
 
 Version name format: `Cinematic Zoom Extended 1.0.0 (1.20.1)` or `Cinematic Zoom Extended 1.0.0 (1.21.2–1.21.4)`.
 
