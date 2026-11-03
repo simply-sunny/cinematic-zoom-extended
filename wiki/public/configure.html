@@ -1,0 +1,114 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="description" content="Smooth, configurable zoom with two profiles and animated cinema bars."><title>Configure · Cinematic Zoom Extended</title><link rel="stylesheet" href="./assets/base.css"><link rel="stylesheet" href="./assets/style.css"><script src="./assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header shell"><a class="brand" href="./index.html">Cinematic Zoom Extended</a><nav aria-label="Project"><a href="https://github.com/simply-sunny/cinematic-zoom-extended">Source ↗</a><a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases">Releases ↗</a></nav></header><div class="wiki shell"><aside class="sidebar"><label for="search">Find a page</label><input id="search" type="search" placeholder="Search documentation"><nav aria-label="Documentation"><a href="./index.html">Overview</a><a href="./install.html">Install</a><a href="./use.html">Use</a><a href="./configure.html" aria-current="page">Configure</a><a href="./troubleshooting.html">Troubleshooting</a><a href="./limits.html">Limits</a><a href="./changelog.html">Changelog</a><a href="./develop.html">Develop</a><a href="./license.html">License</a></nav><span class="meta" id="search-status" role="status"></span></aside><main class="wiki-main" id="main" tabindex="-1"><p class="breadcrumb meta">Documentation / Configure</p><article class="prose"><h1>Configure</h1>
+<div class="prose" id="configure"><p>Open <strong>Mod Menu → Cinematic Zoom Extended → Settings</strong>. Every setting is there, including both profiles, curves, timings, HUD hiding, snap targets, and wheel behavior.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Starting zoom</td>
+<td><code>3×</code> in both profiles</td>
+<td>Each profile keeps its own magnification.</td>
+</tr>
+<tr>
+<td>Bar height</td>
+<td><code>15%</code></td>
+<td>Cinematic profile only; arrow keys adjust it by <code>1%</code>.</td>
+</tr>
+<tr>
+<td>Zoom duration</td>
+<td><code>240 ms</code> in and out</td>
+<td>Separate values for each profile.</td>
+</tr>
+<tr>
+<td>Easing curve</td>
+<td>Exponential</td>
+<td>Separate curves for zoom in and out.</td>
+</tr>
+<tr>
+<td>Hide HUD, crosshair, hands</td>
+<td>On</td>
+<td>Each option is independent in each profile.</td>
+</tr>
+<tr>
+<td>Toggle zoom</td>
+<td>Off</td>
+<td>Hold the key by default.</td>
+</tr>
+<tr>
+<td>Mouse wheel during zoom</td>
+<td>On</td>
+<td>Changes magnification while zooming.</td>
+</tr>
+<tr>
+<td>Ultra-wide zoom</td>
+<td>Off</td>
+<td>Allows zooming out to <code>0.5×</code> when enabled.</td>
+</tr>
+<tr>
+<td>Snap targets</td>
+<td>Empty</td>
+<td>Set targets such as <code>2x</code> or <code>45fov</code> per profile.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Settings are saved to <code>config/cinematiczoom.json</code> in your Minecraft folder:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td><code>%appdata%\.minecraft\config\cinematiczoom.json</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><code>~/Library/Application Support/minecraft/config/cinematiczoom.json</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>~/.minecraft/config/cinematiczoom.json</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Delete the file to reset to defaults. Two keys exist only in the JSON. Edit them, then restart:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wheelStep</code></td>
+<td><code>0.05</code></td>
+<td>Wheel sensitivity, 0.01–0.25.</td>
+</tr>
+<tr>
+<td><code>minZoomMultiplier</code></td>
+<td><code>0.0333</code> (1/30)</td>
+<td>Lower allows more zoom. The maximum factor is <code>1 / value</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="coming-from-another-zoom-mod">Coming from another zoom mod</h3>
+<p>If <code>config/cinematiczoom.json</code> is missing, Extended imports what it recognizes on first launch:</p>
+<ul>
+<li><strong>Zoomify:</strong> <code>config/zoomify.json</code></li>
+<li><strong>Ok Zoomer:</strong> <code>config/ok_zoomer/config.toml</code> or legacy <code>okzoomer.json</code></li>
+<li><strong>Just Zoom:</strong> <code>config/justzoom/config.json</code></li>
+<li><strong>Other zoom mods:</strong> any JSON or TOML file with <code>zoom</code> in its path, matched by key name.</li>
+</ul>
+<p>WI Zoom and Logical Zoom keep no config file. An existing <code>cinematiczoom.json</code> is never overwritten. Delete it and relaunch to re-import.</p>
+<h3 id="migrating-from-cinematic-zoom-13">Migrating from Cinematic Zoom 1.3</h3>
+<p>Extended replaces the original <code>cinematiczoom-*.jar</code>. Remove that jar and install the Extended one. Extended has a new mod ID but keeps the config filename, so leave <code>config/cinematiczoom.json</code> in place. These legacy keys migrate on first launch: <code>startingZoom</code>, <code>baseZoomMultiplier</code>, <code>barsPercent</code>, <code>smoothMs</code>, <code>hideHudDuringZoom</code>, <code>enableCinematicCamera</code>, <code>toggleMode</code>, <code>minZoomMultiplier</code>. To start fresh, delete the file and relaunch.</p></div></article><footer class="site-footer"><span>Cinematic Zoom Extended</span><a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/README.md">Project documentation ↗</a></footer></main></div></body></html>

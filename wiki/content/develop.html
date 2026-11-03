@@ -1,0 +1,10 @@
+<h1>Develop</h1>
+<div class="prose" id="develop"><p>Requires JDK 25. 1.20.1 compiles with <code>--release 17</code>, and 1.21.x with 21.</p>
+<pre><code class="language-bash">./gradlew clean test buildAll
+</code></pre>
+<p>This runs the headless regression suite and builds every target. Jars land in <code>build/libs/</code>. To build one target:</p>
+<pre><code class="language-bash">./gradlew -PonlyTarget=1.21.7 :1.21.7:build
+</code></pre>
+<p>To add a Minecraft target, add it to <code>minecraftTargets</code> in <code>build.gradle</code> and <code>targets</code> in <code>settings.gradle</code>, then put its version-specific code under <code>versions/&lt;mc&gt;/</code>. Shared code stays in <code>src/common/java</code>; the existing legacy and modern source sets handle API differences across targets.</p>
+<p>The repository and new artifact prefix are <code>cinematic-zoom-extended</code>. The mod ID stays <code>cinematiczoom_extended</code>, the Java package and asset namespace stay <code>mix.cinematiczoom</code> and <code>cinematiczoom</code>, and settings stay in <code>config/cinematiczoom.json</code>. Existing key binds and settings carry over without migration. The 1.0.0 tag and published downloads keep their original names and contents.</p>
+<p>Release settings and listing copy live in <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/MODRINTH.md">MODRINTH.md</a> and <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/CURSEFORGE.md">CURSEFORGE.md</a>.</p></div>
