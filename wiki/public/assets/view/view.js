@@ -379,6 +379,95 @@ function drawGraph(ctx, g, zoom, w, h) {
 
 // --------------------------------------------------------------- settings
 
+/** A drop-down in the page's greys: a button showing the choice and a list under it, with the keys a select has. */
+let pickers = 0;
+function picker(options, value, set) {
+  const wrap = document.createElement('span');
+  wrap.className = 'cze-view__picker';
+  const id = `cze-picker-${++pickers}`;
+  const btn = Object.assign(document.createElement('button'), { type: 'button' });
+  btn.setAttribute('aria-haspopup', 'listbox');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.setAttribute('aria-controls', id);
+  const list = Object.assign(document.createElement('ul'), { id, hidden: true, tabIndex: -1 });
+  list.setAttribute('role', 'listbox');
+  const keys = Object.keys(options);
+  const items = keys.map(k => {
+    const li = Object.assign(document.createElement('li'), { id: `${id}-${k}`, textContent: options[k] });
+    li.setAttribute('role', 'option');
+    li.addEventListener('pointerdown', e => e.preventDefault());
+    li.addEventListener('click', e => {
+      // The list sits in a label, which would pass the click on to the button and open it again.
+      e.preventDefault();
+      choose(k);
+      close();
+    });
+    li.addEventListener('pointermove', () => mark(keys.indexOf(k)));
+    list.append(li);
+    return li;
+  });
+  let active = 0;
+  const mark = i => {
+    active = (i + keys.length) % keys.length;
+    items.forEach((li, j) => li.classList.toggle('is-active', j === active));
+    list.setAttribute('aria-activedescendant', items[active].id);
+    items[active].scrollIntoView({ block: 'nearest' });
+  };
+  const choose = k => {
+    value = k;
+    btn.textContent = options[k];
+    items.forEach((li, j) => li.setAttribute('aria-selected', String(keys[j] === k)));
+    set(k);
+  };
+  const open = () => {
+    list.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    mark(keys.indexOf(value));
+    list.focus({ preventScroll: true });
+  };
+  const close = (refocus = true) => {
+    if (list.hidden) return;
+    list.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    if (refocus) btn.focus({ preventScroll: true });
+  };
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    list.hidden ? open() : close();
+  });
+  btn.addEventListener('keydown', e => {
+    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+      e.preventDefault();
+      open();
+    }
+  });
+  list.addEventListener('keydown', e => {
+    const step = { ArrowDown: 1, ArrowUp: -1 }[e.key];
+    if (step) mark(active + step);
+    else if (e.key === 'Home') mark(0);
+    else if (e.key === 'End') mark(keys.length - 1);
+    else if (e.key === 'Enter' || e.key === ' ') {
+      choose(keys[active]);
+      close();
+    } else if (e.key === 'Escape') close();
+    else if (e.key === 'Tab') return close(false);
+    else if (e.key.length === 1) {
+      // Type-ahead: the next option starting with the letter.
+      const c = e.key.toLowerCase();
+      const i = keys.findIndex((k, j) => j > active && options[k].toLowerCase().startsWith(c));
+      const first = keys.findIndex(k => options[k].toLowerCase().startsWith(c));
+      if (i >= 0 || first >= 0) mark(i >= 0 ? i : first);
+    } else return;
+    e.preventDefault();
+  });
+  list.addEventListener('focusout', e => {
+    if (!wrap.contains(e.relatedTarget)) close(false);
+  });
+  choose(value);
+  wrap.append(btn, list);
+  return wrap;
+}
+
 /** The settings to try beside the view: the cinematic profile's curve, time, starting zoom and bars, and the wheel's. */
 function controls(cfg, zoom) {
   const form = document.createElement('form');
@@ -402,10 +491,10 @@ function controls(cfg, zoom) {
     sync();
     return [i, o];
   };
-  const select = document.createElement('select');
-  for (const [k, v] of Object.entries(CURVES)) select.append(new Option(v, k));
-  select.addEventListener('change', () => (cfg().cinematicZoomInCurve = cfg().cinematicZoomOutCurve = cfg().regularZoomInCurve = cfg().regularZoomOutCurve = select.value));
-  row('Easing curve', select);
+  row('Easing curve', picker(CURVES, cfg().cinematicZoomInCurve, v => {
+    const c = cfg();
+    c.cinematicZoomInCurve = c.cinematicZoomOutCurve = c.regularZoomInCurve = c.regularZoomOutCurve = v;
+  }));
   row('Zoom duration', ...range(0, 1000, 20, () => cfg().cinematicZoomInMs, v => {
     const c = cfg();
     c.cinematicZoomInMs = c.cinematicZoomOutMs = c.regularZoomInMs = c.regularZoomOutMs = v;
