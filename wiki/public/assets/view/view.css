@@ -1,0 +1,47 @@
+/* The zoom view: the panorama in a CSS 3D cube, the HUD and bars on a canvas over it, and a bar of controls under it. */
+.cze-view{margin-block:var(--s2);background:#000;color:var(--muted);font:14px/24px Plex,Arial,sans-serif}
+.cze-view__stage{position:relative;overflow:hidden;box-shadow:0 0 0 1px var(--border);background:#0b0f14;touch-action:none;outline:none;cursor:grab}
+.cze-view__stage:focus-visible{outline:1px solid var(--focus);outline-offset:4px}
+.cze-view.is-demo .cze-view__stage{cursor:default}
+.cze-view__world{position:absolute;inset:0;overflow:hidden}
+.cze-view__cam{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.cze-view__cam img{position:absolute;left:-512px;top:-512px;width:1024px;height:1024px;max-width:none;backface-visibility:hidden;user-select:none}
+.cze-view__hud{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.cze-view__keys{position:absolute;right:var(--s1);bottom:var(--s1);padding:2px var(--s1);background:#1e1e1e;color:#fff;border:1px solid #5a5a5a;border-bottom-width:3px;opacity:0;transition:opacity .2s;pointer-events:none}
+.cze-view__keys.is-shown{opacity:1}
+.cze-view__hint{position:absolute;left:var(--s1);top:var(--s1);padding:0 var(--s1);background:rgba(0,0,0,.6);color:var(--foreground);font-size:12px;line-height:24px;pointer-events:none;transition:opacity .2s}
+.cze-view:not(.is-locked) .cze-view__stage:not(:hover):not(:focus-visible) .cze-view__hint{opacity:0}
+.cze-view.is-locked .cze-view__stage{cursor:none}
+.cze-view.is-locked .cze-view__hint:not(.is-shown){opacity:0}
+.cze-view__bar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s1) var(--s2);padding:calc(var(--s1) - 1px) var(--s1) var(--s1);border-top:1px solid var(--border)}
+.cze-view__note{flex:1;min-width:12em}
+.cze-view button{font:inherit;color:var(--foreground);background:none;border:1px solid var(--border);border-radius:0;padding:0 calc(var(--s1) - 1px);height:24px;cursor:pointer;touch-action:none}
+.cze-view button:hover{border-color:var(--focus);color:#e0e0e0}
+.cze-view button[aria-pressed=true]{background:var(--foreground);border-color:var(--foreground);color:#000}
+.cze-view__seg button+button{margin-left:-1px}
+.cze-view__seg{display:flex}
+/* The settings: a label with its value over each control, drawn in the site's greys rather than the browser's blue. */
+.cze-view__controls{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,224px),1fr));gap:var(--s2) var(--s3);padding:calc(var(--s2) - 1px) var(--s1) var(--s2);border-top:1px solid var(--border)}
+.cze-view__controls label{display:grid;grid-template-columns:minmax(0,1fr) auto;align-content:start;column-gap:var(--s1);min-width:0;color:var(--muted)}
+.cze-view__controls label>:is(input,select){grid-column:1/-1}
+.cze-view__controls output{font:12px/24px PlexMono,monospace;color:var(--foreground)}
+.cze-view__controls :is(input[type=text],select){width:100%;min-width:0;height:32px;margin:0;padding:0;font:inherit;color:var(--foreground);background:none;border:0;border-bottom:1px solid var(--border);border-radius:0;outline:none}
+.cze-view__controls select{appearance:none;padding-right:var(--s2);background:linear-gradient(45deg,transparent 50%,var(--muted) 50%) right 4px center/4px 4px no-repeat,linear-gradient(-45deg,transparent 50%,var(--muted) 50%) right 0 center/4px 4px no-repeat;cursor:pointer}
+.cze-view__controls select option{background:#111;color:var(--foreground)}
+.cze-view__controls :is(input[type=text],select):focus-visible{border-bottom-color:var(--focus)}
+.cze-view__controls input[type=text]::placeholder{color:#555}
+.cze-view__controls input[type=range]{appearance:none;width:100%;height:32px;margin:0;background:none;cursor:pointer}
+.cze-view__controls input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--border)}
+.cze-view__controls input[type=range]::-moz-range-track{height:1px;background:var(--border)}
+.cze-view__controls input[type=range]::-moz-range-progress{height:1px;background:var(--muted)}
+.cze-view__controls input[type=range]::-webkit-slider-thumb{appearance:none;width:8px;height:16px;margin-top:-8px;background:var(--foreground);border:0;border-radius:0}
+.cze-view__controls input[type=range]::-moz-range-thumb{width:8px;height:16px;background:var(--foreground);border:0;border-radius:0}
+.cze-view__controls input[type=range]:hover::-webkit-slider-thumb{background:#fff}
+.cze-view__controls input[type=range]:focus-visible{outline:1px solid var(--focus);outline-offset:0}
+.cze-view__checks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:var(--s1) var(--s3)}
+.cze-view__controls label.is-check{grid-template-columns:16px minmax(0,1fr);align-items:center;gap:var(--s1);color:var(--foreground);cursor:pointer}
+.cze-view__controls label.is-check>input{grid-column:auto}
+.cze-view__controls input[type=checkbox]{appearance:none;width:16px;height:16px;margin:0;border:1px solid var(--focus);border-radius:0;background:none;cursor:pointer}
+.cze-view__controls input[type=checkbox]:checked{background:var(--foreground);box-shadow:inset 0 0 0 3px #000}
+.cze-view__controls input[type=checkbox]:focus-visible{outline:1px solid var(--focus);outline-offset:4px}
+.cze-view:fullscreen{display:flex;flex-direction:column}
