@@ -18,8 +18,6 @@
 .cze-view button{font:inherit;color:var(--foreground);background:none;border:1px solid var(--border);border-radius:0;padding:0 calc(var(--s1) - 1px);height:24px;cursor:pointer;touch-action:none}
 .cze-view button:hover{border-color:var(--focus);color:#e0e0e0}
 .cze-view button[aria-pressed=true]{background:var(--foreground);border-color:var(--foreground);color:#000}
-.cze-view__seg button+button{margin-left:-1px}
-.cze-view__seg{display:flex}
 /* The settings: a label with its value over each control, drawn in the site's greys rather than the browser's blue. */
 .cze-view__controls{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,224px),1fr));gap:var(--s2) var(--s3);padding:calc(var(--s2) - 1px) var(--s1) var(--s2);border-top:1px solid var(--border)}
 .cze-view__controls label{display:grid;grid-template-columns:minmax(0,1fr) auto;align-content:start;column-gap:var(--s1);min-width:0;color:var(--muted)}

@@ -1,7 +1,7 @@
 // The zoom on the page, as the game draws it: the title screen's panorama seen through a camera whose field of view
 // the ported ZoomController sets, the HUD drawn over it at a whole-number GUI scale, and the bars over that.
 //
-//   <div class="cze-view"></div>                         a view to try: hold C, scroll, ↑ ↓, drag to look
+//   <div class="cze-view"></div>                         a view to try: hold C or V, scroll, ↑ ↓, look around
 //   <div class="cze-view" data-controls></div>           the same with the settings beside it
 //   <div class="cze-view" data-demo="tour"></div>        a scripted run with captions (tour, curves, snaps, profiles, ultrawide)
 //
@@ -126,7 +126,6 @@ async function mount(root) {
   // Esc; touch drags instead.
   const self = { root };
   views.push(self);
-  let profile = 'CINEMATIC';
   if (!script) {
     stage.tabIndex = 0;
     stage.setAttribute('role', 'application');
@@ -194,32 +193,25 @@ async function mount(root) {
     });
     stage.addEventListener('pointerup', () => (drag = null));
 
-    const hold = button('Hold to zoom (C)');
-    const picked = document.createElement('div');
-    picked.className = 'cze-view__seg';
-    picked.setAttribute('role', 'group');
-    picked.setAttribute('aria-label', 'Profile the button uses');
-    const seg = ['CINEMATIC', 'REGULAR'].map(m => {
-      const b = button(m === 'CINEMATIC' ? 'With bars' : 'Without bars');
-      b.addEventListener('click', () => {
-        profile = m;
-        seg.forEach((s, i) => s.setAttribute('aria-pressed', String(['CINEMATIC', 'REGULAR'][i] === m)));
-        hold.textContent = m === 'CINEMATIC' ? 'Hold to zoom (C)' : 'Hold to zoom (V)';
+    // One button for each profile, like the two keys: held, or clicked on and off when the profile toggles.
+    const toggles = m => (m === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle);
+    const holds = [['CINEMATIC', 'Zoom with bars (C)'], ['REGULAR', 'Zoom without bars (V)']].map(([m, label]) => {
+      const b = button(label);
+      b.addEventListener('pointerdown', e => {
+        held = toggles(m) && held === m ? null : m;
+        b.setPointerCapture(e.pointerId);
       });
-      b.setAttribute('aria-pressed', String(m === 'CINEMATIC'));
-      picked.append(b);
-      return b;
+      const letGo = () => {
+        if (held === m && !toggles(m)) held = null;
+      };
+      b.addEventListener('pointerup', letGo);
+      b.addEventListener('pointercancel', letGo);
+      return [m, b];
     });
-    hold.addEventListener('pointerdown', e => {
-      held = profile;
-      hold.setPointerCapture(e.pointerId);
-    });
-    const letGo = () => (held = null);
-    hold.addEventListener('pointerup', letGo);
-    hold.addEventListener('pointercancel', letGo);
+    self.pressed = () => holds.forEach(([m, b]) => b.setAttribute('aria-pressed', String(held === m)));
     self.note = document.createElement('span');
     self.note.className = 'cze-view__note';
-    bar.append(hold, picked, self.note);
+    bar.append(...holds.map(([, b]) => b), self.note);
     if ('controls' in root.dataset) root.append(controls(() => cfg, () => zoom));
   } else {
     // A demo: play/pause and restart, and its caption. With reduced motion it waits to be played.
@@ -318,6 +310,7 @@ async function mount(root) {
     const zoomTimes = 1 / zoom.currentMultiplier;
     const reading = `${zoomTimes >= 10 ? zoomTimes.toFixed(0) : zoomTimes.toFixed(1)}× · ${fov.toFixed(0)}° field of view${barsPct > 0.05 ? ` · bars ${barsPct.toFixed(0)}%` : ''}`;
     self.note.textContent = demo ? demo.caption : reading;
+    self.pressed?.();
     if (visible || document.fullscreenElement === root) requestAnimationFrame(frame);
   }
 }
