@@ -44,7 +44,7 @@ New builds use `cinematic-zoom-extended-<jar>-<version>.jar`. The published 1.0.
 | Action | Default key |
 | --- | --- |
 | Cinematic Zoom (hold or toggle) | `C` |
-| Zoom without bars | Unbound. Bind it in Controls. |
+| Zoom without bars | `V` |
 | Increase bar size | `↑` |
 | Decrease bar size | `↓` |
 

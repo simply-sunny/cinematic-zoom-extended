@@ -95,7 +95,7 @@ A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabr
 | Action | Default key |
 | --- | --- |
 | Cinematic zoom | `C` |
-| Zoom without bars | Unbound, set in Controls |
+| Zoom without bars | `V` |
 | Increase bar size | `↑` |
 | Decrease bar size | `↓` |
 
