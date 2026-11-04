@@ -1,69 +1,34 @@
 <h1>Install</h1>
-<p>Client-side only. Install <a href="https://fabricmc.net/use/">Fabric Loader</a> (or Quilt), <a href="https://modrinth.com/mod/fabric-api">Fabric API</a>, <a href="https://modrinth.com/mod/cloth-config">Cloth Config</a> and <a href="https://modrinth.com/mod/modmenu">Mod Menu</a>, then put the jar for your version in <code>mods</code>. Remove any other Cinematic Zoom jar first; only one can load.</p>
+<div class="prose" id="install"><p>Client-side only. Servers don't need it.</p>
+<ol>
+<li>Install <a href="https://fabricmc.net/use/">Fabric Loader</a> (or Quilt Loader), <a href="https://modrinth.com/mod/fabric-api">Fabric API</a>, <a href="https://modrinth.com/mod/cloth-config">Cloth Config</a>, and <a href="https://modrinth.com/mod/modmenu">Mod Menu</a> for your Minecraft version. Cloth Config and Mod Menu are required.</li>
+<li>Put the jar for your Minecraft version in <code>mods</code>.</li>
+<li>Remove any other Cinematic Zoom build. Only one can be installed.</li>
+</ol>
+<p>Choose the jar for your Minecraft version and loader:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
+<th>Loader</th>
 <th>Minecraft</th>
-<th>Jar</th>
-<th>Java</th>
-<th>Cloth Config</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1.20.1</td>
-<td><code>1.20.1</code></td>
-<td>17+</td>
-<td>11.1.136+</td>
+<td>Fabric, Quilt</td>
+<td>1.20.1, 1.21.1, 1.21.2–1.21.4, 1.21.5–1.21.6, 1.21.7–1.21.8, 1.21.9–1.21.11, 26.1–26.1.2, 26.2, 26.3</td>
 </tr>
 <tr>
-<td>1.21.1</td>
-<td><code>1.21.1</code></td>
-<td>21+</td>
-<td>15.0.140+</td>
+<td>NeoForge</td>
+<td>1.20.1, 1.21.1, 1.21.2, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, 26.3</td>
 </tr>
 <tr>
-<td>1.21.2–1.21.4</td>
-<td><code>1.21.2-1.21.4</code></td>
-<td>21+</td>
-<td>16.0.143+</td>
-</tr>
-<tr>
-<td>1.21.5–1.21.6</td>
-<td><code>1.21.5-1.21.6</code></td>
-<td>21+</td>
-<td>18.0.145+</td>
-</tr>
-<tr>
-<td>1.21.7–1.21.8</td>
-<td><code>1.21.7-1.21.8</code></td>
-<td>21+</td>
-<td>19.0.147+</td>
-</tr>
-<tr>
-<td>1.21.9–1.21.11</td>
-<td><code>1.21.9-1.21.11</code></td>
-<td>21+</td>
-<td>20.0.149+</td>
-</tr>
-<tr>
-<td>26.1–26.1.2</td>
-<td><code>26.1</code></td>
-<td>25+</td>
-<td>26.1.154+</td>
-</tr>
-<tr>
-<td>26.2–26.2.2</td>
-<td><code>26.2</code></td>
-<td>25+</td>
-<td>26.2.155+</td>
-</tr>
-<tr>
-<td>26.3</td>
-<td><code>26.3</code></td>
-<td>25+</td>
-<td>26.3.159+</td>
+<td>Forge</td>
+<td>1.20.1, 1.21.1, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, 26.3</td>
 </tr>
 </tbody>
 </table></div>
-<p class="meta">Jars are <code>cinematic-zoom-extended-&lt;jar&gt;-&lt;version&gt;.jar</code>; 1.0.0 kept <code>cinematiczoom-extended-…</code>.</p>
+<p>Forge published no 1.21.2 loader.</p>
+<p>Fabric needs Fabric API, Cloth Config, and Mod Menu. NeoForge needs its matching Cloth Config distribution. Forge 1.20.1 needs Cloth Config for Forge; newer Forge uses a built-in settings screen and needs neither Cloth Config nor Mod Menu. Open settings through your loader's mod list.</p>
+<p>Java requirements: 17 for 1.20.1, 21 for 1.21.x, and 25 for 26.x. Quilt runs the Fabric jar. See <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/docs/VERIFICATION.md">verification</a> for results and limits.</p>
+<p>New builds use <code>cinematic-zoom-extended-&lt;jar&gt;-&lt;loader&gt;-&lt;version&gt;.jar</code>. The published 1.0.0 downloads keep their original <code>cinematiczoom-extended-&lt;jar&gt;-1.0.0.jar</code> filenames.</p></div>

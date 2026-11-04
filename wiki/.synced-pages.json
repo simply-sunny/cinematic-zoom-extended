@@ -1,8 +1,9 @@
 [
+  "overview",
   "install",
+  "use",
+  "configure",
   "troubleshooting",
   "develop",
-  "limits",
-  "license",
   "changelog"
 ]
