@@ -41,7 +41,7 @@ def adapter = tasks.register('generateAdapter', Sync) {
             if (mcTarget in ['26.2','26.3']) code = code.replace('client.screen','client.gui.screen()').replace('Minecraft.getInstance().screen','Minecraft.getInstance().gui.screen()')
             if (mcTarget == '26.3') {
                 code = code.replace('code,CATEGORY','com.mojang.blaze3d.platform.InputConstants.Type.KEYBOARD,code,CATEGORY')
-                ['67':'C','90':'Z','265':'UP','264':'DOWN','263':'LEFT','262':'RIGHT'].each { number, key ->
+                ['67':'C','86':'V','265':'UP','264':'DOWN','263':'LEFT','262':'RIGHT'].each { number, key ->
                     code = code.replace(",${number},event", ",com.mojang.blaze3d.platform.InputConstants.KEY_${key},event")
                 }
             }
