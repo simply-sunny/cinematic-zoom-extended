@@ -32,7 +32,7 @@ Forge uses ForgeGradle 7.0.40 for 1.21.1 onward. The legacy Forge adapter and Ne
 
 ## Real client checks
 
-The native screenshot runner requires Python 3 with Pillow. Pixel assertions are part of the pass criteria; successful game exit alone is insufficient.
+The client suites require Python 3 with Pillow. Every capture must pass `scripts/verify_captures.py`; successful game exit alone is insufficient. Run `python3 scripts/verify_captures.py --sheet sheet.png <captures>` to check captures again and get a contact sheet to look at.
 
 ```sh
 OPEN_RESULTS=0 scripts/test-clients.sh

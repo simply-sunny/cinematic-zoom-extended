@@ -107,6 +107,11 @@ run_target() {
 		fi
 		cp "$source" "$SHOTS/$target-$kind.png"
 	done
+	if ! python3 "$ROOT/scripts/verify_captures.py" "$SHOTS"/"$target"-*.png >>"$log" 2>&1; then
+		echo "[$target] pixel check failed:" >&2
+		tail -n 5 "$log" >&2
+		return 1
+	fi
 	echo "[$target] OK"
 }
 
@@ -138,13 +143,15 @@ figcaption { padding: 8px 12px; color: #9198a1; font-size: 14px; }
 <body>
 <main>
 <h1>Cinematic Zoom Extended - live client screenshots</h1>
-<p>Normal view and cinematic zoom, captured by the test entrypoint.</p>
+<p>Every capture from the test entrypoint. Each one passed the pixel check.</p>
 HTML
 		local target
 		for target in ${SUCCEEDED[@]+"${SUCCEEDED[@]}"}; do
 			echo "<section><h2>$target</h2><div class=\"grid\">"
-			echo "<figure><img src=\"screenshots/$target-normal.png\" alt=\"$target normal view\"><figcaption>Normal</figcaption></figure>"
-			echo "<figure><img src=\"screenshots/$target-zoomed.png\" alt=\"$target zoomed view\"><figcaption>Cinematic zoom</figcaption></figure>"
+			local kind
+			for kind in normal zoomed aspect-4-3 aspect-1-1 regular-500x exit settings linear-midpoint smooth-midpoint; do
+				echo "<figure><img src=\"screenshots/$target-$kind.png\" alt=\"$target $kind\"><figcaption>$kind</figcaption></figure>"
+			done
 			echo "</div></section>"
 		done
 		if [ "${#FAILED[@]}" -gt 0 ]; then
