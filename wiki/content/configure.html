@@ -1,5 +1,5 @@
 <h1>Configure</h1>
-<div class="prose" id="configure"><p>Open <strong>Mod Menu → Cinematic Zoom Extended → Settings</strong>. Every setting is there, including both profiles, curves, timings, HUD hiding, snap targets, and wheel behavior. Try the main ones here, for both profiles at once:</p>
+<div class="prose" id="configure"><p><strong>Mod Menu → Cinematic Zoom Extended → Settings.</strong> The main ones, live, for both profiles:</p>
 <div class="cze-view" data-controls><p>The zoom view needs JavaScript.</p></div>
 <div class="table-wrap"><table>
 <thead>
@@ -57,34 +57,11 @@
 </tr>
 </tbody>
 </table></div>
-<p>The six easing curves, slowed down:</p>
+<h2>Easing curves</h2><p>Slowed down:</p>
 <div class="cze-view" data-demo="curves"><p>The zoom view needs JavaScript.</p></div>
-<p><strong>Target values</strong> list zooms (<code>2x</code>) or fields of view (<code>45fov</code>, <code>45deg</code>, <code>45°</code>). With <strong>Magnetize zoom targets</strong> on, each wheel notch goes to the next one:</p>
+<h2>Snap targets</h2><p><strong>Target values</strong> list zooms (<code>2x</code>) or fields of view (<code>45fov</code>, <code>45deg</code>, <code>45°</code>). With <strong>Magnetize zoom targets</strong> on, each wheel notch goes to the next one:</p>
 <div class="cze-view" data-demo="snaps"><p>The zoom view needs JavaScript.</p></div>
-<p>Settings are saved to <code>config/cinematiczoom.json</code> in your Minecraft folder:</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>OS</th>
-<th>Path</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Windows</td>
-<td><code>%appdata%\.minecraft\config\cinematiczoom.json</code></td>
-</tr>
-<tr>
-<td>macOS</td>
-<td><code>~/Library/Application Support/minecraft/config/cinematiczoom.json</code></td>
-</tr>
-<tr>
-<td>Linux</td>
-<td><code>~/.minecraft/config/cinematiczoom.json</code></td>
-</tr>
-</tbody>
-</table></div>
-<p>Delete the file to reset to defaults. Two keys exist only in the JSON. Edit them, then restart:</p>
+<p>Saved in <code>.minecraft/config/cinematiczoom.json</code>; delete it to reset. Two keys exist only there (restart after editing):</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -106,14 +83,14 @@
 </tr>
 </tbody>
 </table></div>
-<h3 id="coming-from-another-zoom-mod">Coming from another zoom mod</h3>
-<p>If <code>config/cinematiczoom.json</code> is missing, Extended imports what it recognizes on first launch:</p>
+<h2 id="coming-from-another-zoom-mod">Coming from another zoom mod</h2>
+<p>On first launch, with no <code>cinematiczoom.json</code> yet, Extended imports what it recognizes from:</p>
 <ul>
 <li><strong>Zoomify:</strong> <code>config/zoomify.json</code></li>
 <li><strong>Ok Zoomer:</strong> <code>config/ok_zoomer/config.toml</code> or legacy <code>okzoomer.json</code></li>
 <li><strong>Just Zoom:</strong> <code>config/justzoom/config.json</code></li>
 <li><strong>Other zoom mods:</strong> any JSON or TOML file with <code>zoom</code> in its path, matched by key name.</li>
 </ul>
-<p>WI Zoom and Logical Zoom keep no config file. An existing <code>cinematiczoom.json</code> is never overwritten. Delete it and relaunch to re-import.</p>
-<h3 id="migrating-from-cinematic-zoom-13">Migrating from Cinematic Zoom 1.3</h3>
-<p>Extended replaces the original <code>cinematiczoom-*.jar</code>. Remove that jar and install the Extended one. Extended has a new mod ID but keeps the config filename, so leave <code>config/cinematiczoom.json</code> in place. These legacy keys migrate on first launch: <code>startingZoom</code>, <code>baseZoomMultiplier</code>, <code>barsPercent</code>, <code>smoothMs</code>, <code>hideHudDuringZoom</code>, <code>enableCinematicCamera</code>, <code>toggleMode</code>, <code>minZoomMultiplier</code>. To start fresh, delete the file and relaunch.</p></div>
+<p>WI Zoom and Logical Zoom keep no config. Delete <code>cinematiczoom.json</code> and relaunch to import again.</p>
+<h2 id="migrating-from-cinematic-zoom-13">Migrating from Cinematic Zoom 1.3</h2>
+<p>Swap the <code>cinematiczoom-*.jar</code> for Extended and keep <code>config/cinematiczoom.json</code>. These keys carry over: <code>startingZoom</code>, <code>baseZoomMultiplier</code>, <code>barsPercent</code>, <code>smoothMs</code>, <code>hideHudDuringZoom</code>, <code>enableCinematicCamera</code>, <code>toggleMode</code>, <code>minZoomMultiplier</code>.</p></div>

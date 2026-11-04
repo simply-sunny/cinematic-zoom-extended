@@ -230,3 +230,18 @@ export class Zoom {
     return clamp(zoom <= 0 ? 1 : 1 / zoom, this.cfg.minZoomMultiplier, this.cfg.maxZoomMultiplier);
   }
 }
+
+// Framing presets for the website preview. Bars are measured per edge.
+export const ASPECT_PRESETS = [
+ {label:'Auto',ratio:0}, {label:'2.39:1',ratio:2.39}, {label:'2.35:1',ratio:2.35},
+ {label:'2:1',ratio:2}, {label:'1.85:1',ratio:1.85}, {label:'16:9',ratio:16/9},
+ {label:'16:10',ratio:1.6}, {label:'4:3',ratio:4/3}, {label:'1:1',ratio:1}, {label:'Legacy',ratio:null}
+];
+export function aspectGeometry(frameAspect, preset, legacyPercent=15) {
+ if (preset.ratio===null) return {top:Math.max(0,Math.min(50,legacyPercent)),side:0};
+ if (!preset.ratio) return {top:0,side:0};
+ return preset.ratio>frameAspect ? {top:50*(1-frameAspect/preset.ratio),side:0} : {top:0,side:50*(1-preset.ratio/frameAspect)};
+}
+export function barsForAspect(frameAspect, targetAspect) {
+ return aspectGeometry(frameAspect,{ratio:targetAspect}).top;
+}

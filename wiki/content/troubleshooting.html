@@ -1,48 +1,19 @@
 <h1>Troubleshooting</h1>
-<div class="prose" id="troubleshooting"><div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Problem</th>
-<th>Fix</th>
-</tr>
-</thead>
+<div class="table-wrap"><table>
+<thead><tr><th>Problem</th><th>Fix</th></tr></thead>
 <tbody>
-<tr>
-<td><code>requires cloth-config2</code></td>
-<td>Install Cloth Config for your Minecraft version.</td>
-</tr>
-<tr>
-<td><code>requires modmenu</code></td>
-<td>Install Mod Menu for your Minecraft version.</td>
-</tr>
-<tr>
-<td><code>incompatible with cinematiczoom</code></td>
-<td>Keep only one Cinematic Zoom jar in <code>mods</code>.</td>
-</tr>
-<tr>
-<td>Crash on launch</td>
-<td>Check Java: 17, 21, or 25, depending on Minecraft.</td>
-</tr>
-<tr>
-<td>Settings screen missing</td>
-<td>Install both Mod Menu and Cloth Config.</td>
-</tr>
-<tr>
-<td>Zoom key does nothing</td>
-<td>Bind <strong>Cinematic Zoom</strong> under Controls.</td>
-</tr>
-<tr>
-<td>Wheel does not zoom</td>
-<td>Enable <strong>Mouse wheel during zoom</strong> and hold the zoom key.</td>
-</tr>
-<tr>
-<td>Bars do not appear</td>
-<td>Use the cinematic key and set the bar height above 0.</td>
-</tr>
-<tr>
-<td>Broken config</td>
-<td>Delete <code>config/cinematiczoom.json</code> and relaunch.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Logs are in <code>.minecraft/logs/latest.log</code>. Include the log and your Minecraft, mod, and loader versions when you report an issue.</p></div>
+<tr><td><code>requires cloth-config2</code> or <code>modmenu</code>, or no settings screen</td><td>Install Cloth Config and Mod Menu for your version.</td></tr>
+<tr><td><code>incompatible with cinematiczoom</code></td><td>Keep one Cinematic Zoom jar in <code>mods</code>.</td></tr>
+<tr><td>Crash on launch</td><td>Check Java: 17, 21 or 25, per the <a href="./install.html">install table</a>.</td></tr>
+<tr><td>Zoom key does nothing</td><td>Bind <strong>Cinematic Zoom</strong> under Controls.</td></tr>
+<tr><td>Wheel does not zoom</td><td>Turn on <strong>Mouse wheel during zoom</strong>, and hold the zoom key.</td></tr>
+<tr><td>No bars</td><td>Use the cinematic key (<code>C</code>) with a bar height above 0.</td></tr>
+<tr><td>Broken config</td><td>Delete <code>config/cinematiczoom.json</code>.</td></tr>
+</tbody></table></div>
+<p>Report issues with <code>logs/latest.log</code> and your Minecraft, mod and loader versions.</p>
+<h2 id="limits">Limits</h2>
+<ul>
+<li>Other zoom mods fight over the FOV. Run one; Extended imports their settings instead.</li>
+<li>Quilt works through its Fabric support. OptiFine is unsupported.</li>
+<li>Sodium, Iris and shader packs: no known conflicts, though not specifically tested.</li>
+</ul>

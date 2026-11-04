@@ -4,6 +4,12 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ## [Unreleased]
 
+### Documentation
+
+
+- Wiki: add left/right aspect presets and letterbox/pillarbox visuals matching the installed 1.1.0 configuration; preserve demos on source refresh.
+
+
 ### Changed
 
 - Zoom without bars: bind it to `V` by default. Players who already set this key keep their choice.

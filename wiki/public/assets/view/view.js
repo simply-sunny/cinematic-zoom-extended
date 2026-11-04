@@ -8,7 +8,7 @@
 // The panorama comes from Mojang's asset server and the HUD sprites from the game's client jar, both when the page
 // opens; the wiki keeps no copies (tools/view-data.py writes data.json, which says where they are).
 
-import { Zoom, defaultConfig, setUltrawide, CURVES, curve } from './zoom.js';
+import { Zoom, defaultConfig, setUltrawide, CURVES, curve, ASPECT_PRESETS, barsForAspect, aspectGeometry } from './zoom.js';
 
 const BASE = new URL('.', import.meta.url);
 const GUI_WIDTH = 480;
@@ -87,7 +87,7 @@ async function mount(root) {
     cam.append(img);
   });
 
-  let cfg, zoom, mode = 'NONE', held = null, yaw = 0, pitch = 0, look = { yaw: 0, pitch: 0 }, demo = null;
+  let cfg, zoom, mode = 'NONE', held = null, previewFraming = false, yaw = 0, pitch = 0, look = { yaw: 0, pitch: 0 }, demo = null;
   const build = () => {
     cfg = defaultConfig();
     zoom = new Zoom(cfg);
@@ -100,6 +100,9 @@ async function mount(root) {
 
   // Size: 16:9 on the page's 8px grid, the HUD at a whole-number scale like the game's GUI scale.
   let w = 0, h = 0, scale = 1, guiW = 0, guiH = 0;
+  let aspectIndex = ASPECT_PRESETS.length - 1;
+  let sidePercent = 0, targetSidePercent = 0;
+  let refreshAspect = () => {};
   const resize = () => {
     const dpr = window.devicePixelRatio || 1, full = document.fullscreenElement === root;
     w = stage.clientWidth;
@@ -111,9 +114,31 @@ async function mount(root) {
     canvas.height = Math.round(h * dpr);
     guiW = Math.floor(canvas.width / scale);
     guiH = Math.floor(canvas.height / scale);
+    if (aspectIndex >= 0) applyAspect(aspectIndex);
+    refreshAspect();
   };
   new ResizeObserver(resize).observe(root);
   resize();
+
+  function applyAspect(index) {
+    aspectIndex = (index + ASPECT_PRESETS.length) % ASPECT_PRESETS.length;
+    const geometry = aspectGeometry(w / h, ASPECT_PRESETS[aspectIndex], cfg.cinematicBarsPercent);
+    const percent = geometry.top;
+    targetSidePercent = geometry.side;
+    // Preserve the configured Legacy height when selecting a ratio.
+    zoom.heldBarsPercent = percent;
+    if (zoom.activeMode === 'CINEMATIC') {
+      zoom.targetBarsPercent = percent;
+      if (!cfg.smoothBarChange) zoom.currentBarsPercent = percent;
+    }
+    refreshAspect();
+  }
+  function stepAspect(direction) {
+    const live = (w / h) / Math.max(.01, 1 - 2 * zoom.heldBarsPercent / 100);
+    const closest = ASPECT_PRESETS.reduce((best, preset, i) => Math.abs(preset.ratio - live) < Math.abs(ASPECT_PRESETS[best].ratio - live) ? i : best, 0);
+    applyAspect((aspectIndex < 0 ? closest : aspectIndex) + direction);
+    showKeys(direction > 0 ? '→' : '←');
+  }
 
   let keysLeft = 0;
   const showKeys = text => {
@@ -129,7 +154,7 @@ async function mount(root) {
   if (!script) {
     stage.tabIndex = 0;
     stage.setAttribute('role', 'application');
-    stage.setAttribute('aria-label', 'Zoom view. Hold C to zoom with bars, V without. Scroll while zoomed. Up and down arrows resize the bars. Click to lock the mouse and look around; Escape lets go.');
+    stage.setAttribute('aria-label', 'Zoom view. Hold C to zoom with bars, V without. Scroll while zoomed. Up and down arrows resize the bars. Left and right arrows cycle framing presets while zoomed. Click to lock the mouse and look around; Escape lets go.');
     const hint = root.querySelector('.cze-view__hint');
     const locked = () => document.pointerLockElement === stage;
     let refused = false;
@@ -163,7 +188,13 @@ async function mount(root) {
         held = toggle && held === m ? null : m;
         e.preventDefault();
       } else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && cfg.arrowKeysAdjustBars) {
-        if (zoom.adjustBars(e.key === 'ArrowUp' ? cfg.barAdjustStep : -cfg.barAdjustStep)) e.preventDefault();
+        if (zoom.adjustBars(e.key === 'ArrowUp' ? cfg.barAdjustStep : -cfg.barAdjustStep)) { aspectIndex = ASPECT_PRESETS.length - 1; cfg.cinematicBarsPercent = zoom.heldBarsPercent; targetSidePercent = 0; refreshAspect(); e.preventDefault(); }
+      }
+    });
+    stage.addEventListener('keydown', e => {
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && zoom.activeMode === 'CINEMATIC' && cfg.arrowKeysAdjustBars) {
+        stepAspect(e.key === 'ArrowRight' ? 1 : -1);
+        e.preventDefault();
       }
     });
     stage.addEventListener('keyup', e => {
@@ -171,7 +202,7 @@ async function mount(root) {
       if (m && held === m && !(m === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle)) held = null;
     });
     stage.addEventListener('blur', () => {
-      if (held && !(held === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle)) held = null;
+      if (held && !previewFraming && !(held === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle)) held = null;
     });
     stage.addEventListener('wheel', e => {
       const v = -Math.sign(e.deltaY) * Math.max(1, Math.round(Math.abs(e.deltaMode === 1 ? e.deltaY / 3 : e.deltaY / 100)));
@@ -212,6 +243,28 @@ async function mount(root) {
     self.note = document.createElement('span');
     self.note.className = 'cze-view__note';
     bar.append(...holds.map(([, b]) => b), self.note);
+    const framing = document.createElement('div');
+    framing.className = 'cze-view__framing';
+    framing.setAttribute('role','group');framing.setAttribute('aria-label','Aspect ratio presets');
+    const previous = button('←'), next = button('→');
+    previous.setAttribute('aria-label','Previous aspect ratio');next.setAttribute('aria-label','Next aspect ratio');
+    const sample=document.createElement('span');sample.className='cze-view__frame-sample';sample.setAttribute('aria-hidden','true');
+    const label=document.createElement('output');label.setAttribute('aria-live','polite');
+    const preview=button('Preview framing');preview.setAttribute('aria-pressed','false');
+    
+    preview.addEventListener('click',()=>{previewFraming=!previewFraming;held=previewFraming?'CINEMATIC':null;preview.setAttribute('aria-pressed',String(previewFraming));});
+    previous.addEventListener('click',()=>stepAspect(-1));next.addEventListener('click',()=>stepAspect(1));
+    refreshAspect=()=>{
+      const preset=ASPECT_PRESETS[aspectIndex];
+      const geometry=aspectGeometry(w/h,preset,cfg.cinematicBarsPercent);
+      const percent=geometry.top;
+      const ratio=(w/h)/Math.max(.01,1-2*percent/100);
+      label.textContent=preset.label+' · '+(geometry.side>0?'side bars '+geometry.side.toFixed(1)+'%':percent>0?'top / bottom '+percent.toFixed(1)+'%':'full frame');
+      sample.style.setProperty('--frame-bar',percent+'%');
+      sample.style.setProperty('--frame-side',geometry.side+'%');
+    };
+    framing.append(previous,sample,label,next,preview);root.append(framing);refreshAspect();
+
     if ('controls' in root.dataset) root.append(controls(() => cfg, () => zoom));
   } else {
     // A demo: play/pause and restart, and its caption. With reduced motion it waits to be played.
@@ -274,7 +327,14 @@ async function mount(root) {
         mode = held || 'NONE';
         zoom.update(mode);
       }
+      if (!script && mode === 'CINEMATIC' && aspectIndex >= 0) {
+        const g=aspectGeometry(w/h,ASPECT_PRESETS[aspectIndex],cfg.cinematicBarsPercent);
+        zoom.heldBarsPercent=g.top;zoom.targetBarsPercent=g.top;targetSidePercent=g.side;
+      }
+      const desiredSide=mode==='CINEMATIC'?targetSidePercent:0;
+      sidePercent+=(desiredSide-sidePercent)*(1-Math.exp(-ms/60));
       zoom.frame(ms);
+      if (!script) refreshAspect();
       // Vanilla's smooth camera while the cinematic profile asks for it; the title screen's slow turn when nobody looks.
       const smooth = mode === 'CINEMATIC' ? cfg.cinematicCamera : mode === 'REGULAR' ? cfg.regularCinematicCamera : false;
       if (demo) look.yaw += ms * 0.004;
@@ -302,6 +362,10 @@ async function mount(root) {
       const fullW = canvas.width / scale, fullH = canvas.height / scale;
       ctx.fillRect(0, 0, fullW, barH);
       ctx.fillRect(0, fullH - barH, fullW, barH);
+    }
+    if (sidePercent > .01) {
+      ctx.fillStyle='#000';const side=canvas.width/scale*sidePercent/100;
+      ctx.fillRect(0,0,side,canvas.height/scale);ctx.fillRect(canvas.width/scale-side,0,side,canvas.height/scale);
     }
     if (!hides('HideHud')) drawHud(ctx, sprites, guiW, guiH);
     if (!hides('HideCrosshair')) blit(ctx, sprites, 'hud/crosshair', Math.floor((guiW - 15) / 2), Math.floor((guiH - 15) / 2), 15, 15);
@@ -584,6 +648,12 @@ const DEMOS = {
     yield* d.wait(600);
     yield* d.bars(-1, 10);
     yield* d.wait(400);
+    yield* d.say('← and → cycle framing presets in the web preview.');
+    for (const ratio of [1.85, 2.35, 2.39]) {
+      d.zoom().adjustBars(barsForAspect(16/9,ratio)-d.zoom().heldBarsPercent);
+      d.keys('→ '+ratio+':1');
+      yield* d.wait(1200);
+    }
     yield* d.say('Let go of C and it eases back out.');
     d.press(null, 'C let go');
     yield* d.wait(2200);
