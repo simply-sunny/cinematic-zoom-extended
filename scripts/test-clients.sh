@@ -64,7 +64,8 @@ run_target() {
 	ensure_option "$run/options.txt" onboardAccessibility false
 	ensure_option "$run/options.txt" tutorialStep none
 	ensure_option "$run/options.txt" pauseOnLostFocus false
-	ensure_option "$run/options.txt" key_key.cinematiczoom.zoom_no_bars key.keyboard.z
+	# Leave the no-bars key unset so the run uses and saves the mod's default.
+	sed -i.bak '/^key_key.cinematiczoom.zoom_no_bars:/d' "$run/options.txt" && rm -f "$run/options.txt.bak"
 	ensure_option "$run/options.txt" key_key.cinematiczoom.previous_aspect key.keyboard.left
 	ensure_option "$run/options.txt" key_key.cinematiczoom.next_aspect key.keyboard.right
 	: >"$log"

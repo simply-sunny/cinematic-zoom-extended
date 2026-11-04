@@ -44,9 +44,10 @@ for version in args.versions or VERSIONS:
         if fixture_options.exists():
             lines.extend(line for line in fixture_options.read_text().splitlines() if line.startswith('version:'))
     overrides = {'onboardAccessibility':'false', 'tutorialStep':'none', 'pauseOnLostFocus':'false',
-                 'key_key.cinematiczoom.zoom':'key.keyboard.c', 'key_key.cinematiczoom.zoom_no_bars':'key.keyboard.z',
+                 'key_key.cinematiczoom.zoom':'key.keyboard.c',
                  'key_key.cinematiczoom.previous_aspect':'key.keyboard.left', 'key_key.cinematiczoom.next_aspect':'key.keyboard.right'}
-    lines = [line for line in lines if line.split(':',1)[0] not in overrides]
+    # The no-bars key stays unset so the run uses and saves the mod's default.
+    lines = [line for line in lines if line.split(':',1)[0] not in overrides and not line.startswith('key_key.cinematiczoom.zoom_no_bars:')]
     options.write_text('\n'.join(lines + [key + ':' + value for key,value in overrides.items()]) + '\n')
     (run/'config/cinematiczoom.json').unlink(missing_ok=True)
     status = run/'autotest/status.txt'

@@ -351,18 +351,18 @@ public final class ZoomRegressionTest {
 
             CFG.smoothBarChange = true;
             require(ZoomManager.adjustBars(10.0f), "adjustBars failed");
-            near(ZoomManager.getCurrentBarsPercent(), 20);
+            // The animation starts at once, so allow for the time since adjustBars.
+            require(ZoomManager.getCurrentBarsPercent() < 21.0f, "smooth change should not jump");
 
-            Thread.sleep(20);
-            ZoomManager.frameUpdate();
-            float intermediate = ZoomManager.getCurrentBarsPercent();
-            require(intermediate > 20.0f && intermediate < 30.0f,
-                    "bars should animate smoothly between frames, got " + intermediate);
-
-            for (int i = 0; i < 40 && Math.abs(ZoomManager.getCurrentBarsPercent() - 30.0f) > 1e-3f; i++) {
-                Thread.sleep(15);
+            // Sample often so a slow machine can't sleep past the whole animation between frames.
+            boolean sawIntermediate = false;
+            for (int i = 0; i < 2000 && Math.abs(ZoomManager.getCurrentBarsPercent() - 30.0f) > 1e-3f; i++) {
+                Thread.sleep(1);
                 ZoomManager.frameUpdate();
+                float current = ZoomManager.getCurrentBarsPercent();
+                sawIntermediate |= current > 20.0f && current < 30.0f;
             }
+            require(sawIntermediate, "bars should animate smoothly between frames");
             near(ZoomManager.getCurrentBarsPercent(), 30);
         });
         run("arrow keys do nothing when zoom is inactive or in regular zoom", () -> {
