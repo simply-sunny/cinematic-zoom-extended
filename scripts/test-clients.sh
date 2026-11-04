@@ -3,9 +3,15 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ALL_TARGETS=(1.20.1 1.21.1 1.21.2 1.21.5 1.21.7 1.21.11 26.1 26.2 26.3)
+# Each jar also covers these versions. Run one as <jar target>@<Minecraft version>. They need CLEAN=1
+# because a world from a newer version won't open in an older one.
+COMPAT_TARGETS=(1.21.2@1.21.3 1.21.2@1.21.4 1.21.5@1.21.6 1.21.7@1.21.8 1.21.11@1.21.9 1.21.11@1.21.10 26.1@26.1.1 26.1@26.1.2)
 TARGETS=("$@")
 if [ "${#TARGETS[@]}" -eq 0 ]; then
 	TARGETS=("${ALL_TARGETS[@]}")
+elif [ "$1" = "compat" ]; then
+	TARGETS=("${COMPAT_TARGETS[@]}")
+	CLEAN=1
 fi
 
 OUT="$ROOT/build/testclient${QUILT:+/quilt}"
@@ -44,7 +50,10 @@ ensure_option() {
 }
 
 run_target() {
-	local target="$1"
+	local label="$1"
+	local target="${label%@*}"
+	local compat=""
+	if [ "$label" != "$target" ]; then compat="${label#*@}"; fi
 	local java_home
 	java_home="$(java_for "$target")"
 	if [ ! -x "$java_home/bin/java" ]; then
@@ -53,7 +62,7 @@ run_target() {
 	fi
 
 	local run="$ROOT/versions/$target/run"
-	local log="$LOGS/$target.log"
+	local log="$LOGS/$label.log"
 	mkdir -p "$run"
 	if [ "$CLEAN" = "1" ]; then
 		rm -rf "$run/saves"
@@ -71,6 +80,7 @@ run_target() {
 	: >"$log"
 
 	local -a gradle=(./gradlew ":$target:runClient" -PtestClient --console=plain)
+	if [ -n "$compat" ]; then gradle+=("-PcompatProject=$target" "-PcompatVersion=$compat"); fi
 	if [ "${QUILT:-0}" = "1" ]; then gradle+=(-PquiltTest); fi
 
 	if [ ! -d "$run/saves/Demo_World" ]; then
@@ -105,9 +115,9 @@ run_target() {
 			echo "[$target] missing screenshot $source" >&2
 			return 1
 		fi
-		cp "$source" "$SHOTS/$target-$kind.png"
+		cp "$source" "$SHOTS/$label-$kind.png"
 	done
-	if ! python3 "$ROOT/scripts/verify_captures.py" "$SHOTS"/"$target"-*.png >>"$log" 2>&1; then
+	if ! python3 "$ROOT/scripts/verify_captures.py" "$SHOTS/$label"-[a-z]*.png >>"$log" 2>&1; then
 		echo "[$target] pixel check failed:" >&2
 		tail -n 5 "$log" >&2
 		return 1

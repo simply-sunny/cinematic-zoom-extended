@@ -76,7 +76,9 @@ def compatibilityTargets = [
 	'1.21.8': [yarn: '1.21.8+build.1', fabricApi: '0.136.1+1.21.8', clothConfig: '19.0.147', modMenu: '15.0.2'],
 	'1.21.9': [yarn: '1.21.9+build.1', fabricApi: '0.134.1+1.21.9', clothConfig: '20.0.149', modMenu: '16.0.1'],
 	'1.21.10': [yarn: '1.21.10+build.3', fabricApi: '0.138.4+1.21.10', clothConfig: '20.0.149', modMenu: '16.0.1'],
-	'1.21.11': [yarn: '1.21.11+build.6', fabricApi: '0.141.4+1.21.11', clothConfig: '21.11.153', modMenu: '17.0.1-beta.1']
+	'1.21.11': [yarn: '1.21.11+build.6', fabricApi: '0.141.4+1.21.11', clothConfig: '21.11.153', modMenu: '17.0.1-beta.1'],
+	'26.1.1': [fabricApi: '0.155.3+26.1.2', clothConfig: '26.1.154', modMenu: '18.0.2'],
+	'26.1.2': [fabricApi: '0.155.3+26.1.2', clothConfig: '26.1.154', modMenu: '18.0.2']
 ]
 
 subprojects {
@@ -104,7 +106,7 @@ subprojects {
 	group = rootProject.maven_group
 
 	base {
-		archivesName = "${rootProject.archives_base_name}-${target.minecraft}-fabric"
+		archivesName = "${rootProject.archives_base_name}-${target.releaseName ?: target.minecraft}-fabric"
 	}
 
 	repositories {
