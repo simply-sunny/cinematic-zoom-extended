@@ -10,9 +10,9 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Slug | `cinematic-zoom-extended` |
 | Project type | Mod |
 | Project ID | `nGcifVtU` |
-| Status | In review on Modrinth as of 2026-10-27 (`processing`); retain the existing project and uploaded versions. |
+| Status | In review on Modrinth as of 2026-11-04 (`processing`); retain the existing project and uploaded versions. |
 | CurseForge project ID | `1763623` (slug `cinematic-zoom-extended`), uploaded with `scripts/publish-curseforge.py` |
-| Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. Fabric and Quilt 1.20.1–26.3, client-side. |
+| Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. Fabric, Quilt, Forge and NeoForge 1.20.1–26.3, client-side. |
 | License | MIT |
 | Environment | Client-side only (`client_only`) |
 | Featured categories | `utility`, `game-mechanics` |
@@ -26,6 +26,20 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Featured gallery image | 1280×720 screenshot |
 
 ## Version metadata
+
+Version 1.1.0 uses channel `release` and one version per jar. Fabric jars list loaders `fabric` and `quilt` and the versions below. Forge and NeoForge jars list `forge` or `neoforge` and their exact Minecraft version: 1.20.1, 1.21.1, 1.21.2 (NeoForge only), 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, or 26.3. Filenames are `cinematic-zoom-extended-<jar>-<loader>-1.1.0.jar`. Version names follow `Cinematic Zoom Extended 1.1.0 (1.21.2–1.21.4, Fabric)`.
+
+| Jar | Fabric and Quilt `game_versions` |
+| --- | --- |
+| `1.20.1` | `1.20.1` |
+| `1.21.1` | `1.21.1` |
+| `1.21.2-1.21.4` | `1.21.2`, `1.21.3`, `1.21.4` |
+| `1.21.5-1.21.6` | `1.21.5`, `1.21.6` |
+| `1.21.7-1.21.8` | `1.21.7`, `1.21.8` |
+| `1.21.9-1.21.11` | `1.21.9`, `1.21.10`, `1.21.11` |
+| `26.1` | `26.1`, `26.1.1`, `26.1.2` |
+| `26.2` | `26.2` |
+| `26.3` | `26.3` |
 
 The uploaded 1.0.0 files use channel `release` and loaders `fabric` and `quilt`. The table records their original filenames. New builds use `cinematic-zoom-extended-<jar>-<version>.jar`; existing uploads retain their filenames and version identities. Quilt loads the Fabric jars.
 
@@ -47,12 +61,12 @@ Version name format: `Cinematic Zoom Extended 1.0.0 (1.20.1)` or `Cinematic Zoom
 
 ### Dependencies
 
-| Project | ID | Type |
-| --- | --- | --- |
-| Fabric API | `P7dR8mSH` | Required |
-| Cloth Config API | `9s6osm5g` | Required |
-| Mod Menu | `mOgUt4GM` | Required |
-| Cinematic Zoom (Fabric) | `LBKcRJTu` | Incompatible |
+| Project | ID | Type | Applies to |
+| --- | --- | --- | --- |
+| Fabric API | `P7dR8mSH` | Required | Fabric |
+| Cloth Config API | `9s6osm5g` | Required | Fabric, NeoForge, Forge 1.20.1 |
+| Mod Menu | `mOgUt4GM` | Required | Fabric |
+| Cinematic Zoom (Fabric) | `LBKcRJTu` | Incompatible | Fabric |
 
 ## Gallery plan
 
@@ -78,16 +92,21 @@ A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabr
 ## Features
 
 - Two profiles. Cinematic (with bars) and Regular (without), each with its own key, zoom, timing, curves, toggle mode, snap targets and HUD options.
-- Smooth motion. Per-frame easing with six curves and separate in and out durations.
+- Smooth motion. Per-frame easing with six curves and separate in and out durations. Bars have their own Instant, Linear, or Smooth animation.
+- High magnification. Zoom accurately up to 500×.
+- Aspect ratios. Frame the view at 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, 1:1, or your own ratio. Wide ratios add top and bottom bars, and narrow ratios add side bars. Switch with the left and right arrow keys.
 - Framing. Adjust the bars live with the arrow keys, zoom out to 0.5x with ultra-wide, step the wheel in fixed increments, and snap to targets like `2x` or `45fov`.
 - Camera and HUD. Scale mouse sensitivity, remove view bobbing, and hide the HUD, crosshair and hands independently. F3 hides with the HUD.
-- Settings screen. Cloth Config through Mod Menu.
+- Settings screen. Cloth Config on Fabric, NeoForge and Forge 1.20.1. A built-in screen on newer Forge.
 - Easy switching. Cinematic Zoom 1.3 configs migrate automatically, and Zoomify, Ok Zoomer, Just Zoom and similar mods are imported on first launch.
 
 ## Installation
 
-1. Install Fabric Loader, Fabric API, Cloth Config and Mod Menu for your Minecraft version.
-2. Put the jar for your Minecraft version in `mods`.
+1. Install your loader and these mods for your Minecraft version:
+   - Fabric or Quilt: Fabric API, Cloth Config and Mod Menu.
+   - NeoForge and Forge 1.20.1: Cloth Config.
+   - Forge 1.21.1 and newer: nothing else.
+2. Put the jar for your Minecraft version and loader in `mods`.
 3. Remove any other Cinematic Zoom build; only one can be installed.
 
 ## Usage
@@ -96,18 +115,22 @@ A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabr
 | --- | --- |
 | Cinematic zoom | `C` |
 | Zoom without bars | `V` |
+| Previous / next aspect ratio | `←` / `→` |
 | Increase bar size | `↑` |
 | Decrease bar size | `↓` |
 
-Hold the zoom key to zoom and release to return, or turn on **Toggle zoom**. Scroll the mouse wheel while zooming to change magnification. Settings are under **Mod Menu → Cinematic Zoom Extended**.
+Hold the zoom key to zoom and release to return, or turn on **Toggle zoom**. Scroll the mouse wheel while zooming to change magnification. Settings are under **Mod Menu → Cinematic Zoom Extended**, or your loader's mod list on Forge and NeoForge.
 
 ## Compatibility
 
-- **Minecraft:** 1.20.1 to 26.3 on Fabric and Quilt. Java 17 for 1.20.1, 21 for 1.21.x, 25 for 26.x.
+- **Fabric and Quilt:** 1.20.1, 1.21.1 to 1.21.11, 26.1 to 26.1.2, 26.2 and 26.3.
+- **NeoForge:** 1.20.1, 1.21.1, 1.21.2, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2 and 26.3.
+- **Forge:** the same versions as NeoForge, except 1.21.2.
+- **Java:** 17 for 1.20.1, 21 for 1.21.x, 25 for 26.x.
 - Client-side only. Servers do not need it.
 - Other zoom mods conflict with FOV handling. Import their settings instead of running both.
-- **Sodium, Iris and shaders:** no known conflicts, not specifically tested in 1.0.0.
-- Quilt is supported (it runs the Fabric jar with Fabric API). OptiFine is unsupported.
+- **Sodium, Iris and shaders:** no known conflicts, not specifically tested.
+- Quilt runs the Fabric jar with Fabric API. OptiFine is unsupported.
 
 Full configuration, import and troubleshooting notes are on [GitHub](https://github.com/simply-sunny/cinematic-zoom-extended#readme).
 

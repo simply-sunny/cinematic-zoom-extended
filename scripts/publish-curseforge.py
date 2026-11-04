@@ -17,24 +17,41 @@ PROPERTIES = dict(re.findall(r"^([a-z_]+)=(.+)$", (ROOT / "gradle.properties").r
 VERSION = PROPERTIES["mod_version"].strip()
 ARCHIVE = PROPERTIES["archives_base_name"].strip()
 
-# jar suffix -> (display range, Minecraft versions, Java version)
-JARS = {
-    "1.20.1": ("1.20.1", ["1.20.1"], "Java 17"),
-    "1.21.1": ("1.21.1", ["1.21.1"], "Java 21"),
-    "1.21.2-1.21.4": ("1.21.2–1.21.4", ["1.21.2", "1.21.3", "1.21.4"], "Java 21"),
-    "1.21.5-1.21.6": ("1.21.5–1.21.6", ["1.21.5", "1.21.6"], "Java 21"),
-    "1.21.7-1.21.8": ("1.21.7–1.21.8", ["1.21.7", "1.21.8"], "Java 21"),
-    "1.21.9-1.21.11": ("1.21.9–1.21.11", ["1.21.9", "1.21.10", "1.21.11"], "Java 21"),
-    "26.1": ("26.1", ["26.1", "26.1.1", "26.1.2"], "Java 25"),
-    "26.2": ("26.2", ["26.2"], "Java 25"),
-    "26.3": ("26.3", ["26.3"], "Java 25"),
+TARGETS = ["1.20.1", "1.21.1", "1.21.2", "1.21.5", "1.21.7", "1.21.11", "26.1", "26.2", "26.3"]
+LABELS = {"fabric": "Fabric", "forge": "Forge", "neoforge": "NeoForge"}
+# Fabric jars that cover more than one Minecraft version: target -> (jar name, versions).
+FABRIC_RANGES = {
+    "1.21.2": ("1.21.2-1.21.4", ["1.21.2", "1.21.3", "1.21.4"]),
+    "1.21.5": ("1.21.5-1.21.6", ["1.21.5", "1.21.6"]),
+    "1.21.7": ("1.21.7-1.21.8", ["1.21.7", "1.21.8"]),
+    "1.21.11": ("1.21.9-1.21.11", ["1.21.9", "1.21.10", "1.21.11"]),
+    "26.1": ("26.1", ["26.1", "26.1.1", "26.1.2"]),
 }
-LOADERS_AND_ENV = ["Fabric", "Quilt", "Client"]
-RELATIONS = [
-    {"slug": "fabric-api", "type": "requiredDependency"},
-    {"slug": "cloth-config", "type": "requiredDependency"},
-    {"slug": "modmenu", "type": "requiredDependency"},
-]
+FABRIC_API = {"slug": "fabric-api", "type": "requiredDependency"}
+CLOTH_CONFIG = {"slug": "cloth-config", "type": "requiredDependency"}
+MOD_MENU = {"slug": "modmenu", "type": "requiredDependency"}
+
+
+def java_for(minecraft):
+    return "Java 17" if minecraft == "1.20.1" else "Java 21" if minecraft.startswith("1.") else "Java 25"
+
+
+def jar_dir(minecraft, loader):
+    if loader == "fabric":
+        return ROOT / "build" / "libs"
+    if minecraft == "1.20.1":
+        return ROOT / "platform" / "forge-1.20.1" / "build" / loader / "libs"
+    return ROOT / "platform" / loader / "build" / minecraft / "libs"
+
+
+def builds():
+    """Yield (target, jar name, versions, loader, loader tags, relations). Forge published no 1.21.2 loader."""
+    for target in TARGETS:
+        name, versions = FABRIC_RANGES.get(target, (target, [target]))
+        yield target, name, versions, "fabric", ["Fabric", "Quilt"], [FABRIC_API, CLOTH_CONFIG, MOD_MENU]
+        yield target, target, [target], "neoforge", ["NeoForge"], [CLOTH_CONFIG]
+        if target != "1.21.2":
+            yield target, target, [target], "forge", ["Forge"], [CLOTH_CONFIG] if target == "1.20.1" else []
 
 
 def request(path, data=None, content_type=None):
@@ -87,21 +104,21 @@ def main():
     ids = version_ids()
     notes = changelog()
 
-    for suffix, (label, mc_versions, java) in JARS.items():
-        jar = ROOT / "build" / "libs" / f"{ARCHIVE}-{suffix}-{VERSION}.jar"
+    for target, name, versions, loader, loader_tags, relations in builds():
+        jar = jar_dir(target, loader) / f"{ARCHIVE}-{name}-{loader}-{VERSION}.jar"
         if not jar.is_file():
             sys.exit(f"missing {jar}")
-        names = mc_versions + LOADERS_AND_ENV + [java]
+        names = [*versions, *loader_tags, "Client", java_for(target)]
         missing = [n for n in names if n not in ids]
         if missing:
             sys.exit(f"CurseForge has no version tag for {missing}")
         metadata = {
             "changelog": notes,
             "changelogType": "markdown",
-            "displayName": f"Cinematic Zoom Extended {VERSION} ({label})",
+            "displayName": f"Cinematic Zoom Extended {VERSION} ({name.replace('-', '–')}, {LABELS[loader]})",
             "gameVersions": [ids[n] for n in names],
             "releaseType": "release",
-            "relations": {"projects": RELATIONS},
+            "relations": {"projects": relations},
         }
         if dry_run:
             print(jar.name, json.dumps({**metadata, "changelog": f"<{len(notes)} chars>"}))

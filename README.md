@@ -25,13 +25,21 @@ Client-side only. Servers don't need it.
 2. Put the jar for your Minecraft version in `mods`.
 3. Remove any other Cinematic Zoom build. Only one can be installed.
 
-Choose the artifact bearing your Minecraft version and loader name. The primary targets are 1.20.1, 1.21.1, 1.21.2, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, and 26.3. Forge has no published 1.21.2 loader, so there is no artifact for that combination. Release metadata uses exact Minecraft versions; older broad patch-version claims are not carried forward without verification.
+Choose the jar for your Minecraft version and loader:
+
+| Loader | Minecraft |
+| --- | --- |
+| Fabric, Quilt | 1.20.1, 1.21.1, 1.21.2–1.21.4, 1.21.5–1.21.6, 1.21.7–1.21.8, 1.21.9–1.21.11, 26.1–26.1.2, 26.2, 26.3 |
+| NeoForge | 1.20.1, 1.21.1, 1.21.2, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, 26.3 |
+| Forge | 1.20.1, 1.21.1, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, 26.3 |
+
+Forge published no 1.21.2 loader.
 
 Fabric needs Fabric API, Cloth Config, and Mod Menu. NeoForge needs its matching Cloth Config distribution. Forge 1.20.1 needs Cloth Config for Forge; newer Forge uses a built-in settings screen and needs neither Cloth Config nor Mod Menu. Open settings through your loader's mod list.
 
-Java requirements: 17 for 1.20.1, 21 for 1.21.x, and 25 for 26.x. Quilt runs the Fabric artifact where verified; see [verification](docs/VERIFICATION.md) for actual results and limitations.
+Java requirements: 17 for 1.20.1, 21 for 1.21.x, and 25 for 26.x. Quilt runs the Fabric jar. See [verification](docs/VERIFICATION.md) for results and limits.
 
-New builds use `cinematic-zoom-extended-<minecraft>-<loader>-<version>.jar`. The published 1.0.0 downloads keep their original `cinematiczoom-extended-<jar>-1.0.0.jar` filenames.
+New builds use `cinematic-zoom-extended-<jar>-<loader>-<version>.jar`. The published 1.0.0 downloads keep their original `cinematiczoom-extended-<jar>-1.0.0.jar` filenames.
 
 ## Use
 
@@ -139,8 +147,9 @@ Logs are in `.minecraft/logs/latest.log`. Include the log and your Minecraft, mo
 
 - **Original Cinematic Zoom:** not compatible. Only one build can be installed.
 - **Other zoom mods:** may conflict with FOV handling. Don't run them together. Import their settings instead.
-- **Sodium, Iris, and shaders:** no known conflicts, but not specifically tested in 1.0.0.
-- **Quilt:** compatibility must be verified with the actual loader; consult the verification report.
+- **Sodium, Iris, and shaders:** no known conflicts, but not specifically tested.
+- **Quilt:** tested with the actual loader on every Fabric version. See the [verification report](docs/VERIFICATION.md).
+- **Forge and NeoForge:** each jar loads only on its exact Minecraft version.
 - **OptiFine:** unsupported.
 
 ## License

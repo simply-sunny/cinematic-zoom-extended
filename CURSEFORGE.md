@@ -13,13 +13,13 @@ This file records the CurseForge project settings and uploaded release filenames
 | Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. |
 | License | MIT |
 | Environment | Client-side only |
-| Loaders | Fabric, Quilt |
+| Loaders | Fabric, Quilt, Forge, NeoForge |
 | Avatar | `src/main/resources/assets/cinematiczoom/icon.png` |
 | Description | The listing body from `MODRINTH.md`, everything after the horizontal rule. |
 | Source | https://github.com/simply-sunny/cinematic-zoom-extended |
 | Issues | https://github.com/simply-sunny/cinematic-zoom-extended/issues |
 | Wiki / docs | https://github.com/simply-sunny/cinematic-zoom-extended#configure |
-| Required dependencies | Fabric API (`fabric-api`), Cloth Config (`cloth-config`), Mod Menu (`modmenu`) |
+| Required dependencies | Fabric: Fabric API (`fabric-api`), Cloth Config (`cloth-config`), Mod Menu (`modmenu`). NeoForge and Forge 1.20.1: Cloth Config. Forge 1.21.1 and newer: none. |
 
 ## Version metadata
 
@@ -37,10 +37,14 @@ The published 1.0.0 files retain these filenames. File IDs are not recorded in t
 | `cinematiczoom-extended-26.2-1.0.0.jar` | 26.2 | 25 |
 | `cinematiczoom-extended-26.3-1.0.0.jar` | 26.3 | 25 |
 
-New builds use `cinematic-zoom-extended-<jar>-<version>.jar`. The upload script reads the version and prefix from `gradle.properties`. Keep the existing 1.0.0 uploads when applying the repository rename; bump `mod_version` and add release notes before publishing changed jars.
+1.1.0 and newer use `cinematic-zoom-extended-<jar>-<loader>-<version>.jar`, one file per jar. Fabric jars carry the Quilt tag and the same Minecraft versions as the table in `MODRINTH.md`. Forge and NeoForge jars carry their exact Minecraft version. The upload script reads the version and prefix from `gradle.properties` and the notes from `CHANGELOG.md`. Bump `mod_version` and add release notes before publishing changed jars.
 
 ```bash
 ./gradlew test buildAll
+for mc in 1.21.1 1.21.5 1.21.7 1.21.11 26.1 26.2 26.3; do ./gradlew -p platform/forge build -Pmc=$mc; done
+for mc in 1.21.1 1.21.2 1.21.5 1.21.7 1.21.11 26.1 26.2 26.3; do ./gradlew -p platform/neoforge build -Pmc=$mc; done
+./gradlew -p platform/forge-1.20.1 build
+./gradlew -p platform/forge-1.20.1 build -PlegacyNeo
 python3 scripts/publish-curseforge.py 1763623 --dry-run
 ```
 

@@ -4,22 +4,30 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ## [Unreleased]
 
-### Documentation
+## [1.1.0] - 2026-11-04
 
+### Added
 
-- Wiki: add left/right aspect presets and letterbox/pillarbox visuals matching the installed 1.1.0 configuration; preserve demos on source refresh.
-
+- Forge and NeoForge: native builds for 1.20.1, 1.21.1, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, and 26.3, plus NeoForge 1.21.2. Forge published no 1.21.2 loader. Each jar loads only on its exact Minecraft version.
+- Aspect ratio profiles: Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1, plus custom ratios. Ratios wider than the window add top and bottom bars. Narrower ratios add side bars.
+- Profile cycling: `←` and `→` switch ratios during cinematic zoom. Enable global cycling to switch outside zoom. The selection is saved.
+- Bar animation: entry, exit, and profile changes each have their own Instant, Linear, or Smooth mode and duration.
+- Accurate magnification up to 500× for new installations.
+- Forge settings: a built-in settings screen on 1.21.1 and newer, with no Cloth Config or Mod Menu needed.
 
 ### Changed
 
 - Zoom without bars: bind it to `V` by default. Players who already set this key keep their choice.
+- Jar names: Fabric jars now include the loader, such as `cinematic-zoom-extended-1.21.2-1.21.4-fabric-1.1.0.jar`.
+- 26.2: this jar now covers 26.2 only. 26.2.1 and 26.2.2 have no Fabric builds to test against.
+- Existing settings: saved configs keep their FOV behavior, percentage bars, and zoom limits. Migration writes `cinematiczoom.json.v1.bak` first.
 - Repository: use `cinematic-zoom-extended` for GitHub, the Gradle project, and new build filenames. Existing release downloads, mod identity, key binds, and saved settings keep their names and contents.
-- CurseForge publishing: read the version and artifact prefix from `gradle.properties`.
+- CurseForge publishing: read the version and artifact prefix from `gradle.properties`, and upload every loader.
 
 ### Documentation
 
 - Update source, issue, release, and badge links to the renamed repository.
-- Wiki: interactive and animated zoom views, run on the mod's zoom code over the game's title screen panorama.
+- Wiki: interactive and animated zoom views, run on the mod's zoom code over the game's title screen panorama. Add left and right aspect presets and letterbox and pillarbox visuals.
 - Add the CurseForge release sheet, configuration defaults, and repository instructions using the shared templates standard.
 
 ## [1.0.0] - 2026-10-20

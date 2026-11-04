@@ -39,7 +39,11 @@ OPEN_RESULTS=0 scripts/test-clients.sh
 python3 scripts/test-platforms.py --loader forge
 python3 scripts/test-platforms.py --loader neoforge
 QUILT=1 OPEN_RESULTS=0 scripts/test-clients.sh
+OPEN_RESULTS=0 scripts/test-clients.sh compat
+QUILT=1 OPEN_RESULTS=0 scripts/test-clients.sh compat
 ```
+
+`compat` runs each intermediate version a Fabric jar covers, such as 1.21.3 on the 1.21.2–1.21.4 jar. It compiles the mod against that version and replaces the demo worlds, so run the main suite with `CLEAN=1` afterward.
 
 These create isolated demo worlds. They exercise cinematic input, edge-triggered ratio switching, regular 500× zoom, exit, settings opening, and intermediate linear/smooth bars. A successful process exit alone is insufficient: each client must write `ok` and the expected feature count. Captures and logs live under `build/testclient`. Test instrumentation is generated only with `-PtestClient` and must never appear in release jars.
 
