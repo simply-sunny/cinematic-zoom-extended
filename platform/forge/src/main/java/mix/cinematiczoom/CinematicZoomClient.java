@@ -33,7 +33,7 @@ public final class CinematicZoomClient {
         event.getLayeredDraw().add(Identifier.parse("cinematiczoom_extended:bars"), (graphics, time) -> ZoomManager.renderBars(graphics));
     }
     private void keys(RegisterKeyMappingsEvent event) {
-        ZOOM_KEYBIND=key("zoom",67,event);ZOOM_NO_BARS_KEYBIND=key("zoom_no_bars",90,event);
+        ZOOM_KEYBIND=key("zoom",67,event);ZOOM_NO_BARS_KEYBIND=key("zoom_no_bars",86,event);
         INCREASE_BARS_KEYBIND=key("increase_bars",265,event);DECREASE_BARS_KEYBIND=key("decrease_bars",264,event);
         PREVIOUS_ASPECT_KEYBIND=key("previous_aspect",263,event);NEXT_ASPECT_KEYBIND=key("next_aspect",262,event);
     }

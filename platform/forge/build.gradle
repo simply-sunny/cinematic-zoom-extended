@@ -6,7 +6,7 @@ ext.mcTarget = findProperty('mc') ?: '1.21.11'
 def target = targets[mcTarget]
 if (!target) throw new GradleException("Unavailable Forge target ${mcTarget}")
 layout.buildDirectory = file("build/${mcTarget}")
-base { archivesName="cinematiczoom-extended-${mcTarget}-forge" }
+base { archivesName="cinematic-zoom-extended-${mcTarget}-forge" }
 java { toolchain.languageVersion=JavaLanguageVersion.of(target[1]); withSourcesJar() }
 minecraft {
     mappings channel:'official', version:mcTarget

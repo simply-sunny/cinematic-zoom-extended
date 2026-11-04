@@ -1,0 +1,10 @@
+{
+  "name": "Cinematic Zoom Extended",
+  "description": "Smooth, configurable zoom with two profiles and animated cinema bars.",
+  "repo": "https://github.com/simply-sunny/cinematic-zoom-extended",
+  "source_dir": "..",
+  "downloads": {
+    "CurseForge": "https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-extended",
+    "GitHub Releases": "https://github.com/simply-sunny/cinematic-zoom-extended/releases"
+  }
+}

@@ -31,7 +31,7 @@ public final class CinematicZoomClient implements ClientModInitializer {
         ZOOM_NO_BARS_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.cinematiczoom.zoom_no_bars",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_Z,
+                GLFW.GLFW_KEY_V,
                 "key.categories.cinematiczoom"
         ));
         INCREASE_BARS_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(

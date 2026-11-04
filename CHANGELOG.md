@@ -2,7 +2,27 @@
 
 All notable changes to Cinematic Zoom Extended are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
-## 1.0.0 — 2026-10-20
+## [Unreleased]
+
+### Documentation
+
+
+- Wiki: add left/right aspect presets and letterbox/pillarbox visuals matching the installed 1.1.0 configuration; preserve demos on source refresh.
+
+
+### Changed
+
+- Zoom without bars: bind it to `V` by default. Players who already set this key keep their choice.
+- Repository: use `cinematic-zoom-extended` for GitHub, the Gradle project, and new build filenames. Existing release downloads, mod identity, key binds, and saved settings keep their names and contents.
+- CurseForge publishing: read the version and artifact prefix from `gradle.properties`.
+
+### Documentation
+
+- Update source, issue, release, and badge links to the renamed repository.
+- Wiki: interactive and animated zoom views, run on the mod's zoom code over the game's title screen panorama.
+- Add the CurseForge release sheet, configuration defaults, and repository instructions using the shared templates standard.
+
+## [1.0.0] - 2026-10-20
 
 First release, based on Cinematic Zoom 1.3 by Mel1x.
 

@@ -3,7 +3,7 @@ version = '1.1.0'
 group = 'mix.cinematiczoom'
 def legacyNeo = project.hasProperty('legacyNeo')
 layout.buildDirectory = file(legacyNeo ? 'build/neoforge' : 'build/forge')
-base { archivesName = 'cinematiczoom-extended-1.20.1-' + (legacyNeo ? 'neoforge' : 'forge') }
+base { archivesName = 'cinematic-zoom-extended-1.20.1-' + (legacyNeo ? 'neoforge' : 'forge') }
 java { toolchain.languageVersion = JavaLanguageVersion.of(17); withSourcesJar() }
 legacyForge {
     enable { if (legacyNeo) neoForgeVersion = '1.20.1-47.1.106'; else forgeVersion = '1.20.1-47.4.28'; disableRecompilation = true }

@@ -13,8 +13,8 @@
 	],
 	"contact": {
 		"homepage": "https://modrinth.com/mod/cinematic-zoom-extended",
-		"sources": "https://github.com/simply-sunny/CinematicZoom-Extended",
-		"issues": "https://github.com/simply-sunny/CinematicZoom-Extended/issues"
+		"sources": "https://github.com/simply-sunny/cinematic-zoom-extended",
+		"issues": "https://github.com/simply-sunny/cinematic-zoom-extended/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/cinematiczoom/icon.png",

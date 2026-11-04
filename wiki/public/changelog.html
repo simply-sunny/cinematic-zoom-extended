@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="description" content="Smooth, configurable zoom with two profiles and animated cinema bars."><title>Changelog · Cinematic Zoom Extended</title><link rel="stylesheet" href="./assets/base.css"><link rel="stylesheet" href="./assets/style.css"><script src="./assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header shell"><a class="brand" href="./index.html">Cinematic Zoom Extended</a><nav aria-label="Project"><a href="https://github.com/simply-sunny/cinematic-zoom-extended">Source ↗</a><a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases">Releases ↗</a></nav></header><div class="wiki shell"><aside class="sidebar"><label for="search">Find a page</label><input id="search" type="search" placeholder="Search documentation"><nav aria-label="Documentation"><a href="./index.html">Overview</a><a href="./install.html">Install</a><a href="./use.html">Use</a><a href="./configure.html">Configure</a><a href="./troubleshooting.html">Troubleshooting</a><a href="./changelog.html" aria-current="page">Changelog</a><a href="./develop.html">Develop</a></nav><span class="meta" id="search-status" role="status"></span></aside><main class="wiki-main" id="main" tabindex="-1"><article class="prose"><h1>Changelog</h1><p>All notable changes to Cinematic Zoom Extended are documented here. This project follows <a href="https://semver.org/">Semantic Versioning</a>.</p>
+<h2 id="unreleased">[Unreleased]</h2>
+<h3 id="changed">Changed</h3>
+<ul>
+<li>Repository: use <code>cinematic-zoom-extended</code> for GitHub, the Gradle project, and new build filenames. Existing release downloads, mod identity, key binds, and saved settings keep their names and contents.</li>
+<li>CurseForge publishing: read the version and artifact prefix from <code>gradle.properties</code>.</li>
+</ul>
+<h3 id="documentation">Documentation</h3>
+<ul>
+<li>Update source, issue, release, and badge links to the renamed repository.</li>
+<li>Add the CurseForge release sheet, configuration defaults, and repository instructions using the shared templates standard.</li>
+</ul>
+<h2 id="100-2026-10-20">[1.0.0] - 2026-10-20</h2>
+<p>First release, based on Cinematic Zoom 1.3 by Mel1x.</p>
+<h3 id="added">Added</h3>
+<ul>
+<li>Cinematic (bars) and Regular (no bars) zoom profiles with separate keys, zoom, timing, curves, toggle mode, snap targets, and HUD settings.</li>
+<li>Per-frame smoothing with six easing curves.</li>
+<li>Live arrow-key bar adjustment, ultra-wide zoom, discrete wheel steps, and snap/magnetize targets (<code>2x</code>, <code>45fov</code>).</li>
+<li>Sensitivity scaling, view-bobbing removal, and independent HUD/crosshair/hands hiding.</li>
+<li>512×512 Extended icon.</li>
+<li>First-run import from Zoomify, Ok Zoomer, Just Zoom, and other zoom-named configs.</li>
+<li>Config migration from Cinematic Zoom 1.3.</li>
+<li>40 headless regression checks.</li>
+</ul>
+<h3 id="changed_1">Changed</h3>
+<ul>
+<li>New mod ID <code>cinematiczoom_extended</code> and name <strong>Cinematic Zoom Extended</strong>; original <code>cinematiczoom</code> declared incompatible.</li>
+<li>Cloth Config and Mod Menu are now required.</li>
+<li>Fixed Fabric API and Cloth Config declarations on 26.x.</li>
+<li>Version now comes from <code>gradle.properties</code>; JARs use <code>cinematiczoom-extended-&lt;minecraft&gt;-&lt;version&gt;.jar</code>.</li>
+<li>Updated metadata, links, translations, and credits.</li>
+</ul>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li>Profile switching preserves the current zoom.</li>
+<li>HUD, crosshair, and hands hide independently.</li>
+<li>26.x builds no longer rely on undeclared runtime dependencies.</li>
+<li>Unix <code>gradlew</code> wrapper is executable.</li>
+</ul></article><footer class="site-footer"><span>Cinematic Zoom Extended</span><a href="https://github.com/simply-sunny/cinematic-zoom-extended/issues">Report an issue ↗</a></footer></main></div></body></html>

@@ -29,7 +29,7 @@ public final class CinematicZoomClient implements ClientModInitializer {
             ZOOM_NO_BARS_KEYBIND = new ZoomKeyMapping(
                     "key.cinematiczoom.zoom_no_bars",
                     InputConstants.Type.KEYBOARD,
-                    InputConstants.KEY_Z,
+                    InputConstants.KEY_V,
                     category
             );
             INCREASE_BARS_KEYBIND = new ZoomKeyMapping(
