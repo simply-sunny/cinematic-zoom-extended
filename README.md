@@ -2,7 +2,7 @@
 
 <h1 align="center">Cinematic Zoom Extended</h1>
 
-<p align="center">A configurable zoom with animated cinema bars.<br>Fabric &amp; Quilt &nbsp;|&nbsp; 1.20.1 – 26.3</p>
+<p align="center">A configurable zoom with animated cinema bars.<br>Fabric, Forge &amp; NeoForge &nbsp;|&nbsp; 1.20.1 – 26.3</p>
 
 <p align="center">
 <a href="https://modrinth.com/mod/cinematic-zoom-extended"><img src="https://img.shields.io/modrinth/dt/cinematic-zoom-extended?logo=modrinth&label=Modrinth&color=1bd96a" alt="Modrinth downloads"></a>
@@ -24,26 +24,19 @@ Client-side only. Servers don't need it.
 2. Put the jar for your Minecraft version in `mods`.
 3. Remove any other Cinematic Zoom build. Only one can be installed.
 
-| Minecraft | Jar | Java | Cloth Config |
-| --- | --- | --- | --- |
-| 1.20.1 | `1.20.1` | 17+ | 11.1.136+ |
-| 1.21.1 | `1.21.1` | 21+ | 15.0.140+ |
-| 1.21.2–1.21.4 | `1.21.2-1.21.4` | 21+ | 16.0.143+ |
-| 1.21.5–1.21.6 | `1.21.5-1.21.6` | 21+ | 18.0.145+ |
-| 1.21.7–1.21.8 | `1.21.7-1.21.8` | 21+ | 19.0.147+ |
-| 1.21.9–1.21.11 | `1.21.9-1.21.11` | 21+ | 20.0.149+ |
-| 26.1–26.1.2 | `26.1` | 25+ | 26.1.154+ |
-| 26.2–26.2.2 | `26.2` | 25+ | 26.2.155+ |
-| 26.3 | `26.3` | 25+ | 26.3.159+ |
+Choose the artifact bearing your Minecraft version and loader name. The primary targets are 1.20.1, 1.21.1, 1.21.2, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, and 26.3. Forge has no published 1.21.2 loader, so there is no artifact for that combination. Release metadata uses exact Minecraft versions; older broad patch-version claims are not carried forward without verification.
 
-Jars are named `cinematiczoom-extended-<jar>-<version>.jar`.
+Fabric needs Fabric API, Cloth Config, and Mod Menu. NeoForge needs its matching Cloth Config distribution. Forge 1.20.1 needs Cloth Config for Forge; newer Forge uses a built-in settings screen and needs neither Cloth Config nor Mod Menu. Open settings through your loader's mod list.
+
+Java requirements: 17 for 1.20.1, 21 for 1.21.x, and 25 for 26.x. Quilt runs the Fabric artifact where verified; see [verification](docs/VERIFICATION.md) for actual results and limitations.
 
 ## Use
 
 | Action | Default key |
 | --- | --- |
 | Cinematic Zoom (hold or toggle) | `C` |
-| Zoom without bars | Unbound. Bind it in Controls. |
+| Zoom without bars | `Z` |
+| Previous / next aspect profile | `←` / `→` |
 | Increase bar size | `↑` |
 | Decrease bar size | `↓` |
 
@@ -64,12 +57,13 @@ Settings are saved to `config/cinematiczoom.json` in your Minecraft folder:
 - **macOS:** `~/Library/Application Support/minecraft/config/cinematiczoom.json`
 - **Linux:** `~/.minecraft/config/cinematiczoom.json`
 
-Delete the file to reset to defaults. Two keys exist only in the JSON. Edit them, then restart:
+New installations default to accurate magnification up to **500×** and independent **Linear** bar animation. The aspect list includes Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1. Add custom ratios or remove/reorder entries to control cycling. Ratios wider than the window add top/bottom bars; narrower ratios add side bars. This crops the composition with an overlay; it does not change Minecraft's viewport or projection aspect.
 
-| Key | Default | Notes |
-| --- | --- | --- |
-| `wheelStep` | `0.05` | Wheel sensitivity, 0.01–0.25. |
-| `minZoomMultiplier` | `0.0333` (1/30) | Lower allows more zoom. The maximum factor is `1 / value`. |
+Left/right cycling works while cinematic zoom is active. Enable global cycling to select a profile outside zoom. Selection is saved. Entry, exit, and profile changes each have their own Instant, Linear, or Smooth mode and duration. Profile changes leave magnification unchanged. Regular zoom always clears bars.
+
+Existing configurations retain legacy FOV and percentage bars and their saved zoom limits. Migration creates `cinematiczoom.json.v1.bak`. Invalid files receive a separate backup; failed backups disable writes to preserve the original. Unknown settings survive saves. Delete the config to start with the new defaults.
+
+Both settings screens expose the maximum magnification, wheel settings, custom ratios, and all profile options. The Forge native editor uses comma-separated ratios in cycling order and validates entries when saving.
 
 ### Coming from another zoom mod
 
@@ -87,6 +81,8 @@ WI Zoom and Logical Zoom keep no config file. An existing `cinematiczoom.json` i
 Extended replaces the original `cinematiczoom-*.jar`. Remove that jar and install the Extended one. Extended has a new mod ID but keeps the config filename, so leave `config/cinematiczoom.json` in place. These legacy keys migrate on first launch: `startingZoom`, `baseZoomMultiplier`, `barsPercent`, `smoothMs`, `hideHudDuringZoom`, `enableCinematicCamera`, `toggleMode`, `minZoomMultiplier`. To start fresh, delete the file and relaunch.
 
 ## Develop
+
+See [multi-loader development](docs/DEVELOPMENT.md) for native builds, pinned dependencies, and real-client tests.
 
 Requires JDK 25. 1.20.1 compiles with `--release 17`, and 1.21.x with 21.
 
@@ -121,7 +117,7 @@ Logs are in `.minecraft/logs/latest.log`. Include the log and your Minecraft, mo
 - **Original Cinematic Zoom:** not compatible. Only one build can be installed.
 - **Other zoom mods:** may conflict with FOV handling. Don't run them together. Import their settings instead.
 - **Sodium, Iris, and shaders:** no known conflicts, but not specifically tested in 1.0.0.
-- **Quilt:** supported. Quilt Loader runs the Fabric jars, with Fabric API installed as on Fabric.
+- **Quilt:** compatibility must be verified with the actual loader; consult the verification report.
 - **OptiFine:** unsupported.
 
 ## License

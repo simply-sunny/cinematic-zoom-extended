@@ -3,7 +3,7 @@
 	"id": "cinematiczoom_extended",
 	"version": "${version}",
 	"name": "Cinematic Zoom Extended",
-	"description": "A feature-rich fork of Cinematic Zoom: dual zoom profiles, custom easing, ultra-wide, snap zoom, and granular HUD control.",
+	"description": "Cinematic aspect profiles, independent bar animations, dual zoom profiles, and accurate magnification up to 500x.",
 	"authors": [
 		"simply-sunny",
 		"Mel1x"
@@ -32,7 +32,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
-		"minecraft": ">=1.21.7 <1.21.9",
+		"minecraft": "1.21.7",
 		"java": ">=21",
 		"fabric-api": "*",
 		"cloth-config2": ">=19.0.147",

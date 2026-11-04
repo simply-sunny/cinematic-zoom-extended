@@ -65,6 +65,8 @@ run_target() {
 	ensure_option "$run/options.txt" tutorialStep none
 	ensure_option "$run/options.txt" pauseOnLostFocus false
 	ensure_option "$run/options.txt" key_key.cinematiczoom.zoom_no_bars key.keyboard.z
+	ensure_option "$run/options.txt" key_key.cinematiczoom.previous_aspect key.keyboard.left
+	ensure_option "$run/options.txt" key_key.cinematiczoom.next_aspect key.keyboard.right
 	: >"$log"
 
 	local -a gradle=(./gradlew ":$target:runClient" -PtestClient --console=plain)
