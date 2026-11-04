@@ -41,6 +41,37 @@ Version 1.1.0 uses channel `release` and one version per jar. Fabric jars list l
 | `26.2` | `26.2` |
 | `26.3` | `26.3` |
 
+The uploaded 1.1.0 files and their version IDs:
+
+| JAR | Version ID |
+| --- | --- |
+| `cinematic-zoom-extended-1.20.1-fabric-1.1.0.jar` | `TzxorGxh` |
+| `cinematic-zoom-extended-1.20.1-neoforge-1.1.0.jar` | `dNZABjZC` |
+| `cinematic-zoom-extended-1.20.1-forge-1.1.0.jar` | `xqp5N00l` |
+| `cinematic-zoom-extended-1.21.1-fabric-1.1.0.jar` | `EsyNbueu` |
+| `cinematic-zoom-extended-1.21.1-neoforge-1.1.0.jar` | `ajf88M1m` |
+| `cinematic-zoom-extended-1.21.1-forge-1.1.0.jar` | `BtHgzjAT` |
+| `cinematic-zoom-extended-1.21.2-1.21.4-fabric-1.1.0.jar` | `RemDYNEQ` |
+| `cinematic-zoom-extended-1.21.2-neoforge-1.1.0.jar` | `o8F3bIQz` |
+| `cinematic-zoom-extended-1.21.5-1.21.6-fabric-1.1.0.jar` | `kQTeZSC2` |
+| `cinematic-zoom-extended-1.21.5-neoforge-1.1.0.jar` | `dNlri6ZO` |
+| `cinematic-zoom-extended-1.21.5-forge-1.1.0.jar` | `HzvpAPjA` |
+| `cinematic-zoom-extended-1.21.7-1.21.8-fabric-1.1.0.jar` | `rzon62yb` |
+| `cinematic-zoom-extended-1.21.7-neoforge-1.1.0.jar` | `oQtEaJGH` |
+| `cinematic-zoom-extended-1.21.7-forge-1.1.0.jar` | `6BicYa9y` |
+| `cinematic-zoom-extended-1.21.9-1.21.11-fabric-1.1.0.jar` | `Lckvup60` |
+| `cinematic-zoom-extended-1.21.11-neoforge-1.1.0.jar` | `mXQsgtJW` |
+| `cinematic-zoom-extended-1.21.11-forge-1.1.0.jar` | `H2lEuYEx` |
+| `cinematic-zoom-extended-26.1-fabric-1.1.0.jar` | `9t8SV3Ei` |
+| `cinematic-zoom-extended-26.1-neoforge-1.1.0.jar` | `SIHvkve2` |
+| `cinematic-zoom-extended-26.1-forge-1.1.0.jar` | `WTcEfnlX` |
+| `cinematic-zoom-extended-26.2-fabric-1.1.0.jar` | `7u9RWH54` |
+| `cinematic-zoom-extended-26.2-neoforge-1.1.0.jar` | `Jyh0Jx1n` |
+| `cinematic-zoom-extended-26.2-forge-1.1.0.jar` | `Ud1gGvIM` |
+| `cinematic-zoom-extended-26.3-fabric-1.1.0.jar` | `LawMpUIQ` |
+| `cinematic-zoom-extended-26.3-neoforge-1.1.0.jar` | `cw1YK1qo` |
+| `cinematic-zoom-extended-26.3-forge-1.1.0.jar` | `ZgvOP0tJ` |
+
 The uploaded 1.0.0 files use channel `release` and loaders `fabric` and `quilt`. The table records their original filenames. New builds use `cinematic-zoom-extended-<jar>-<version>.jar`; existing uploads retain their filenames and version identities. Quilt loads the Fabric jars.
 
 Keep the current uploads rather than uploading replacements for this repository rename.

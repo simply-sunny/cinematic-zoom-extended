@@ -118,8 +118,9 @@ def main():
             "displayName": f"Cinematic Zoom Extended {VERSION} ({name.replace('-', '–')}, {LABELS[loader]})",
             "gameVersions": [ids[n] for n in names],
             "releaseType": "release",
-            "relations": {"projects": relations},
         }
+        if relations:  # CurseForge rejects an empty projects list.
+            metadata["relations"] = {"projects": relations}
         if dry_run:
             print(jar.name, json.dumps({**metadata, "changelog": f"<{len(notes)} chars>"}))
             continue
