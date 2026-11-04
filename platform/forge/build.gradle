@@ -31,7 +31,13 @@ def adapter = tasks.register('generateAdapter', Sync) {
                 code = code.replace('Identifier','ResourceLocation')
                 code = code.replace('private static final KeyMapping.Category CATEGORY=KeyMapping.Category.register(ResourceLocation.parse("cinematiczoom:main"));', 'private static final String CATEGORY="key.categories.cinematiczoom";')
             }
-            if (mcTarget == '1.21.7') code = code.replace('AddGuiOverlayLayersEvent.BUS', 'AddGuiOverlayLayersEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())').replace('RegisterKeyMappingsEvent.BUS', 'RegisterKeyMappingsEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())')
+            if (mcTarget == '1.21.7') {
+                // Forge 57 has no AddGuiOverlayLayersEvent, so the bars are drawn from GuiMixin instead.
+                code = code.replace('        AddGuiOverlayLayersEvent.BUS.addListener(this::layers);\n', '')
+                code = code.replaceFirst(/(?s)    private void layers\(AddGuiOverlayLayersEvent event\) \{.*?\n    \}\n/, '')
+                if (file.name == 'GuiMixin.java') code = code.replaceFirst(/\}\s*$/, '    @Inject(method="render",at=@At("TAIL"))\n    private void cinematiczoom\\\$bars(GuiGraphics graphics,DeltaTracker delta,CallbackInfo ci) {ZoomManager.renderBars(graphics);}\n}\n')
+            }
+            if (mcTarget == '1.21.7') code = code.replace('RegisterKeyMappingsEvent.BUS', 'RegisterKeyMappingsEvent.getBus(net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModBusGroup())')
             if (mcTarget in ['1.21.1','1.21.5']) {
                 code = code.replace('RegisterKeyMappingsEvent.BUS', 'net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus()')
                 code = code.replace('AddGuiOverlayLayersEvent.BUS', 'net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext.get().getModEventBus()')
