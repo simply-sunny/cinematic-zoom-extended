@@ -180,7 +180,7 @@ public final class AutoTestClient {
                     "forceload add -24 -44 24 12"
             };
             for (String command : setup) {
-                executeCommand(commands, source, command);
+                onServerThread(server, () -> executeCommand(commands, source, command));
             }
             log("scene ready");
         } catch (Throwable t) {
@@ -212,7 +212,7 @@ public final class AutoTestClient {
                     "fill 8 120 -20 8 124 -20 minecraft:cyan_concrete"
             };
             for (String command : fills) {
-                executeCommand(commands, source, command);
+                onServerThread(server, () -> executeCommand(commands, source, command));
             }
             log("scene blocks placed");
         } catch (Throwable t) {
@@ -272,6 +272,11 @@ public final class AutoTestClient {
         } catch (Throwable t) {
             log("could not disable demo mode: " + t);
         }
+    }
+
+    /** Commands load chunks, so running them on the client thread can hang it if the server stops. */
+    private static void onServerThread(Object server, Runnable command) {
+        ((java.util.concurrent.Executor) server).execute(command);
     }
 
     private static void executeCommand(Object handler, Object source, String command) {

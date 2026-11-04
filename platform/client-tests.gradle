@@ -26,7 +26,10 @@ if (project.hasProperty('testClient')) {
     sourceSets.main.java.exclude '**/FabricTestClient.java'
     tasks.named('compileJava') { dependsOn instrument }
     def testTarget = project.name + (project.hasProperty('mcTarget') ? '-' + project.mcTarget : '')
-    def testArgs = project.hasProperty('bootstrap') ? ['--demo','--width','1280','--height','720'] : ['--demo','--quickPlaySingleplayer','Demo_World','--width','1280','--height','720']
+    // Forge 52 and 55 start their event bus after quick play has opened the world, so the loot
+    // manager never loads and the first drop crashes. These targets join from the title screen.
+    def quickPlayCrashes = project.name == 'cinematiczoom-forge' && project.mcTarget in ['1.21.1', '1.21.5']
+    def testArgs = project.hasProperty('bootstrap') || quickPlayCrashes ? ['--demo','--width','1280','--height','720'] : ['--demo','--quickPlaySingleplayer','Demo_World','--width','1280','--height','720']
     def loader = project.extensions.findByName('legacyForge') ?: project.extensions.findByName('neoForge')
     if (loader) {
         loader.runs.client {
