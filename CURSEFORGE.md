@@ -10,7 +10,7 @@ This file records the CurseForge project settings and uploaded release filenames
 | Slug | `cinematic-zoom-extended` |
 | Project ID | `1763623` |
 | Class | Mods |
-| Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. |
+| Summary | A configurable zoom with animated cinema bars and two profiles. |
 | License | MIT |
 | Environment | Client-side only |
 | Loaders | Fabric, Quilt, Forge, NeoForge |
@@ -82,57 +82,32 @@ Set `CURSEFORGE_API_KEY` in the environment for the dry run or upload. The dry r
 
 ---
 
-Smooth, configurable zoom with animated cinema bars.
+A configurable zoom with animated cinema bars.
 
-Hold a key and the view eases in while black bars slide across the screen, then eases back out when you let go. Cinematic Zoom Extended adds two independent profiles, six easing curves, ultra-wide zoom, snap targets and fine control over what the HUD hides.
+Hold a key and the view eases in while bars slide across the screen. Let go and it eases back.
 
-A fork of [Cinematic Zoom (Fabric)](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with permission. Not affiliated with or endorsed by either author.
-
-## Features
-
-- Two profiles. Cinematic (with bars) and Regular (without), each with its own key, zoom, timing, curves, toggle mode, snap targets and HUD options.
-- Smooth motion. Per-frame easing with six curves and separate in and out durations. Bars have their own Instant, Linear, or Smooth animation.
-- High magnification. Zoom accurately up to 500×.
-- Aspect ratios. Frame the view at 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, 1:1, or your own ratio. Wide ratios add top and bottom bars, and narrow ratios add side bars. Switch with the left and right arrow keys.
-- Framing. Adjust the bars live with the arrow keys, zoom out to 0.5x with ultra-wide, step the wheel in fixed increments, and snap to targets like `2x` or `45fov`.
-- Camera and HUD. Scale mouse sensitivity, remove view bobbing, and hide the HUD, crosshair and hands independently. F3 hides with the HUD.
-- Settings screen. Cloth Config on Fabric, NeoForge and Forge 1.20.1. A built-in screen on newer Forge.
-- Easy switching. Cinematic Zoom 1.3 configs migrate automatically, and Zoomify, Ok Zoomer, Just Zoom and similar mods are imported on first launch.
+- Two profiles, each with its own key and settings
+- Six easing curves
+- Zoom from 0.5× to 500×
+- Aspect ratios from 2.39:1 to 1:1, or your own
+- Snap targets like `2x` or `45fov`
+- Hide the HUD, crosshair and hands separately
+- Imports Zoomify, Ok Zoomer and Just Zoom settings
 
 ## Installation
 
-1. Install your loader and these mods for your Minecraft version:
-   - Fabric or Quilt: Fabric API, Cloth Config and Mod Menu.
-   - NeoForge and Forge 1.20.1: Cloth Config.
-   - Forge 1.21.1 and newer: nothing else.
-2. Put the jar for your Minecraft version and loader in `mods`.
-3. Remove any other Cinematic Zoom build; only one can be installed.
+For Minecraft 1.20.1 to 26.3 on Fabric, Quilt, Forge or NeoForge. Client-side only.
 
-## Usage
+1. Install these for your Minecraft version:
+   - Fabric or Quilt: Fabric API, Cloth Config and Mod Menu
+   - NeoForge and Forge 1.20.1: Cloth Config
+2. Put the jar for your version and loader in `mods`.
+3. Remove any other Cinematic Zoom build.
 
-| Action | Default key |
-| --- | --- |
-| Cinematic zoom | `C` |
-| Zoom without bars | `V` |
-| Previous / next aspect ratio | `←` / `→` |
-| Increase bar size | `↑` |
-| Decrease bar size | `↓` |
+## More
 
-Hold the zoom key to zoom and release to return, or turn on **Toggle zoom**. Scroll the mouse wheel while zooming to change magnification. Settings are under **Mod Menu → Cinematic Zoom Extended**, or your loader's mod list on Forge and NeoForge.
+Settings and every supported version are on the [wiki](https://simply-sunny.github.io/cinematic-zoom-extended/).
 
-## Compatibility
+A fork of [Cinematic Zoom (Fabric)](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with permission. Not affiliated with or endorsed by either author.
 
-- **Fabric and Quilt:** 1.20.1, 1.21.1 to 1.21.11, 26.1 to 26.1.2, 26.2 and 26.3.
-- **NeoForge:** 1.20.1, 1.21.1, 1.21.2, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2 and 26.3.
-- **Forge:** the same versions as NeoForge, except 1.21.2.
-- **Java:** 17 for 1.20.1, 21 for 1.21.x, 25 for 26.x.
-- Client-side only. Servers do not need it.
-- Other zoom mods conflict with FOV handling. Import their settings instead of running both.
-- **Sodium, Iris and shaders:** no known conflicts, not specifically tested.
-- Quilt runs the Fabric jar with Fabric API. OptiFine is unsupported.
-
-Full configuration, import and troubleshooting notes are on [GitHub](https://github.com/simply-sunny/cinematic-zoom-extended#readme).
-
-## Credits and license
-
-Thanks to KubePixel for the original concept, Mel1x for the Fabric implementation, and ColoredChromium for the velvet curtain texture in the icon ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), [source](https://www.deviantart.com/coloredchromium/art/Curtains-Red-Transparency-Light-424984584)). Mod code and original assets are MIT, see the [LICENSE](https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/LICENSE). The icon texture remains CC BY 3.0. Minecraft is a trademark of Mojang Studios.
+MIT, see the [LICENSE](https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/LICENSE). The icon's curtain texture is by ColoredChromium ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), [source](https://www.deviantart.com/coloredchromium/art/Curtains-Red-Transparency-Light-424984584)). Minecraft is a trademark of Mojang Studios.

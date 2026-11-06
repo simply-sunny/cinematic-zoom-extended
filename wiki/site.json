@@ -1,6 +1,6 @@
 {
   "name": "Cinematic Zoom Extended",
-  "description": "Smooth, configurable zoom with two profiles and animated cinema bars.",
+  "description": "A configurable zoom with animated cinema bars and two profiles.",
   "repo": "https://github.com/simply-sunny/cinematic-zoom-extended",
   "source_dir": "..",
   "downloads": {
