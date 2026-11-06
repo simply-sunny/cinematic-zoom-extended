@@ -15,8 +15,8 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Summary | Configurable zoom with two profiles, animated cinema bars, easing curves, ultra-wide zoom, snap targets, and HUD controls. Fabric, Quilt, Forge and NeoForge 1.20.1–26.3, client-side. |
 | License | MIT |
 | Environment | Client-side only (`client_only`) |
-| Featured categories | `utility`, `game-mechanics` |
-| Additional categories | `decoration` |
+| Featured categories | `utility` |
+| Additional categories | *(none)* |
 | Source | https://github.com/simply-sunny/cinematic-zoom-extended |
 | Issues | https://github.com/simply-sunny/cinematic-zoom-extended/issues |
 | Wiki / docs | https://github.com/simply-sunny/cinematic-zoom-extended#configure |
