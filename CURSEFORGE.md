@@ -17,7 +17,7 @@ This file records the CurseForge project settings and uploaded release filenames
 | Avatar | `src/main/resources/assets/cinematiczoom/icon.png` |
 | Source | https://github.com/simply-sunny/cinematic-zoom-extended |
 | Issues | https://github.com/simply-sunny/cinematic-zoom-extended/issues |
-| Wiki / docs | https://github.com/simply-sunny/cinematic-zoom-extended#configure |
+| Wiki / docs | https://simply-sunny.github.io/cinematic-zoom-extended/ |
 | Required dependencies | Fabric: Fabric API (`fabric-api`), Cloth Config (`cloth-config`), Mod Menu (`modmenu`). NeoForge and Forge 1.20.1: Cloth Config. Forge 1.21.1 and newer: none. |
 
 ## Version metadata

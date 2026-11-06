@@ -19,7 +19,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Additional categories | *(none)* |
 | Source | https://github.com/simply-sunny/cinematic-zoom-extended |
 | Issues | https://github.com/simply-sunny/cinematic-zoom-extended/issues |
-| Wiki / docs | https://github.com/simply-sunny/cinematic-zoom-extended#configure |
+| Wiki / docs | https://simply-sunny.github.io/cinematic-zoom-extended/ |
 | Discord | *(none)* |
 | Donation links | *(none)* |
 | Icon | `src/main/resources/assets/cinematiczoom/icon.png` — 512×512 PNG |
