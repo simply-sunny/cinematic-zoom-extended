@@ -99,18 +99,16 @@ Version name format: `Cinematic Zoom Extended 1.0.0 (1.20.1)` or `Cinematic Zoom
 | Mod Menu | `mOgUt4GM` | Required | Fabric |
 | Cinematic Zoom (Fabric) | `LBKcRJTu` | Incompatible | Fabric |
 
-## Gallery plan
+## Gallery
 
-Gallery files must be under **5 MiB** each. Use PNG or JPEG screenshots.
+Upload in this order, with `cinematic` featured. Gallery files must be under **5 MiB** each.
 
-| Order | Asset | Caption |
+| File | Title | Description |
 | --- | --- | --- |
-| 1 | Hero screenshot, 1280×720 | Cinematic zoom with animated black bars |
-| 2 | Settings screen | Two independent profiles: Cinematic and Regular |
-| 3 | Ultra-wide/snap screenshot | Ultra-wide zoom and snap targets |
-| 4 | HUD comparison | Hide the HUD, crosshair, and hands independently |
-
-Alt text should repeat the caption.
+| `art/gallery/cinematic.png` | Cinematic zoom | Hold C and the view eases in while black bars slide across the screen. The HUD, crosshair and hand can each be hidden. |
+| `art/gallery/aspect-ratios.png` | Aspect ratios | Press the left and right arrow keys while zoomed to move between profiles like 2.39:1, 4:3 and 1:1. |
+| `art/gallery/regular-zoom.png` | Regular zoom | Hold V for a second profile with no bars and its own magnification, shown here at 10×. |
+| `art/gallery/settings.png` | Settings | Each profile keeps its own zoom, bar size, duration and easing curve. Open them from Mod Menu. |
 
 ---
 
@@ -118,7 +116,7 @@ Smooth, configurable zoom with animated cinema bars.
 
 Hold a key and the view eases in while black bars slide across the screen, then eases back out when you let go. Cinematic Zoom Extended adds two independent profiles, six easing curves, ultra-wide zoom, snap targets and fine control over what the HUD hides.
 
-A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with permission. Not affiliated with or endorsed by either author.
+A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://modrinth.com/mod/cinematiczoom-original) by [KubePixel](https://modrinth.com/user/KubePixel). Published with permission. Not affiliated with or endorsed by either author.
 
 ## Features
 

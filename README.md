@@ -15,13 +15,13 @@
 
 Hold a key and the view eases in while black bars slide across the screen. Release the key and it eases back out. Two independent profiles, six easing curves, ultra-wide zoom, and snap targets like `2x` or `45fov`. It also scales mouse sensitivity, removes view bobbing, and hides the HUD, crosshair, and hands independently.
 
-> A fork of [Cinematic Zoom (Fabric)](https://modrinth.com/mod/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with Mel1x's permission ([PR #8](https://github.com/mel1x/CinematicZoom/pull/8#issuecomment-6139411837)). Not affiliated with or endorsed by either author.
+> A fork of [Cinematic Zoom (Fabric)](https://github.com/mel1x/CinematicZoom) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with Mel1x's permission ([PR #8](https://github.com/mel1x/CinematicZoom/pull/8#issuecomment-6139411837)). Not affiliated with or endorsed by either author.
 
 ## Install
 
 Client-side only. Servers don't need it.
 
-1. Install [Fabric Loader](https://fabricmc.net/use/) (or Quilt Loader), [Fabric API](https://modrinth.com/mod/fabric-api), [Cloth Config](https://modrinth.com/mod/cloth-config), and [Mod Menu](https://modrinth.com/mod/modmenu) for your Minecraft version. Cloth Config and Mod Menu are required.
+1. Install [Fabric Loader](https://fabricmc.net/use/) (or Quilt Loader), [Fabric API](https://github.com/FabricMC/fabric-api), [Cloth Config](https://github.com/shedaniel/cloth-config), and [Mod Menu](https://github.com/TerraformersMC/ModMenu) for your Minecraft version. Cloth Config and Mod Menu are required.
 2. Put the jar for your Minecraft version in `mods`.
 3. Remove any other Cinematic Zoom build. Only one can be installed.
 
