@@ -4,6 +4,8 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-06
+
 ### Changed
 
 - Everything the mod saves is now in `config/cinematiczoom/`: `config.json` and `backups/`. Files from older versions move there on launch.
