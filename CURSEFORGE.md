@@ -38,6 +38,37 @@ The published 1.0.0 files retain these filenames. File IDs are not recorded in t
 
 1.1.0 and newer use `cinematic-zoom-extended-<jar>-<loader>-<version>.jar`, one file per jar. Fabric jars carry the Quilt tag and the same Minecraft versions as the table in `MODRINTH.md`. Forge and NeoForge jars carry their exact Minecraft version. The upload script reads the version and prefix from `gradle.properties` and the notes from `CHANGELOG.md`. Bump `mod_version` and add release notes before publishing changed jars.
 
+The uploaded 1.2.0 files and their file IDs:
+
+| JAR | File ID |
+| --- | --- |
+| `cinematic-zoom-extended-1.20.1-fabric-1.2.0.jar` | `9486589` |
+| `cinematic-zoom-extended-1.20.1-neoforge-1.2.0.jar` | `9486590` |
+| `cinematic-zoom-extended-1.20.1-forge-1.2.0.jar` | `9486591` |
+| `cinematic-zoom-extended-1.21.1-fabric-1.2.0.jar` | `9486592` |
+| `cinematic-zoom-extended-1.21.1-neoforge-1.2.0.jar` | `9486593` |
+| `cinematic-zoom-extended-1.21.1-forge-1.2.0.jar` | `9486594` |
+| `cinematic-zoom-extended-1.21.2-1.21.4-fabric-1.2.0.jar` | `9486595` |
+| `cinematic-zoom-extended-1.21.2-neoforge-1.2.0.jar` | `9486596` |
+| `cinematic-zoom-extended-1.21.5-1.21.6-fabric-1.2.0.jar` | `9486597` |
+| `cinematic-zoom-extended-1.21.5-neoforge-1.2.0.jar` | `9486598` |
+| `cinematic-zoom-extended-1.21.5-forge-1.2.0.jar` | `9486599` |
+| `cinematic-zoom-extended-1.21.7-1.21.8-fabric-1.2.0.jar` | `9486600` |
+| `cinematic-zoom-extended-1.21.7-neoforge-1.2.0.jar` | `9486601` |
+| `cinematic-zoom-extended-1.21.7-forge-1.2.0.jar` | `9486602` |
+| `cinematic-zoom-extended-1.21.9-1.21.11-fabric-1.2.0.jar` | `9486603` |
+| `cinematic-zoom-extended-1.21.11-neoforge-1.2.0.jar` | `9486604` |
+| `cinematic-zoom-extended-1.21.11-forge-1.2.0.jar` | `9486605` |
+| `cinematic-zoom-extended-26.1-fabric-1.2.0.jar` | `9486606` |
+| `cinematic-zoom-extended-26.1-neoforge-1.2.0.jar` | `9486607` |
+| `cinematic-zoom-extended-26.1-forge-1.2.0.jar` | `9486608` |
+| `cinematic-zoom-extended-26.2-fabric-1.2.0.jar` | `9486609` |
+| `cinematic-zoom-extended-26.2-neoforge-1.2.0.jar` | `9486610` |
+| `cinematic-zoom-extended-26.2-forge-1.2.0.jar` | `9486611` |
+| `cinematic-zoom-extended-26.3-fabric-1.2.0.jar` | `9486612` |
+| `cinematic-zoom-extended-26.3-neoforge-1.2.0.jar` | `9486613` |
+| `cinematic-zoom-extended-26.3-forge-1.2.0.jar` | `9486614` |
+
 The uploaded 1.1.0 files and their file IDs:
 
 | JAR | File ID |

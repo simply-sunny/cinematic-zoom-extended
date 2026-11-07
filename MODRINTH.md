@@ -27,7 +27,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 
 ## Version metadata
 
-Version 1.1.0 uses channel `release` and one version per jar. Fabric jars list loaders `fabric` and `quilt` and the versions below. Forge and NeoForge jars list `forge` or `neoforge` and their exact Minecraft version: 1.20.1, 1.21.1, 1.21.2 (NeoForge only), 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, or 26.3. Filenames are `cinematic-zoom-extended-<jar>-<loader>-1.1.0.jar`. Version names follow `Cinematic Zoom Extended 1.1.0 (1.21.2–1.21.4, Fabric)`.
+Versions 1.1.0 and newer use channel `release` and one version per jar. Fabric jars list loaders `fabric` and `quilt` and the versions below. Forge and NeoForge jars list `forge` or `neoforge` and their exact Minecraft version: 1.20.1, 1.21.1, 1.21.2 (NeoForge only), 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, or 26.3. Filenames are `cinematic-zoom-extended-<jar>-<loader>-1.1.0.jar`. Version names follow `Cinematic Zoom Extended 1.1.0 (1.21.2–1.21.4, Fabric)`.
 
 | Jar | Fabric and Quilt `game_versions` |
 | --- | --- |
@@ -40,6 +40,37 @@ Version 1.1.0 uses channel `release` and one version per jar. Fabric jars list l
 | `26.1` | `26.1`, `26.1.1`, `26.1.2` |
 | `26.2` | `26.2` |
 | `26.3` | `26.3` |
+
+The uploaded 1.2.0 files and their version IDs:
+
+| JAR | Version ID |
+| --- | --- |
+| `cinematic-zoom-extended-1.20.1-fabric-1.2.0.jar` | `cutTcXOh` |
+| `cinematic-zoom-extended-1.20.1-forge-1.2.0.jar` | `Y4JOIpac` |
+| `cinematic-zoom-extended-1.20.1-neoforge-1.2.0.jar` | `YS6s81Xb` |
+| `cinematic-zoom-extended-1.21.1-fabric-1.2.0.jar` | `z2OBqcEs` |
+| `cinematic-zoom-extended-1.21.1-forge-1.2.0.jar` | `9GvkurwI` |
+| `cinematic-zoom-extended-1.21.1-neoforge-1.2.0.jar` | `95p21F2N` |
+| `cinematic-zoom-extended-1.21.11-forge-1.2.0.jar` | `17TeLx7c` |
+| `cinematic-zoom-extended-1.21.11-neoforge-1.2.0.jar` | `3FVt7qff` |
+| `cinematic-zoom-extended-1.21.2-1.21.4-fabric-1.2.0.jar` | `whwFW011` |
+| `cinematic-zoom-extended-1.21.2-neoforge-1.2.0.jar` | `H10Ao8jv` |
+| `cinematic-zoom-extended-1.21.5-1.21.6-fabric-1.2.0.jar` | `jsK6nbdF` |
+| `cinematic-zoom-extended-1.21.5-forge-1.2.0.jar` | `pPPMyfNF` |
+| `cinematic-zoom-extended-1.21.5-neoforge-1.2.0.jar` | `S3EDIB8f` |
+| `cinematic-zoom-extended-1.21.7-1.21.8-fabric-1.2.0.jar` | `najcGTPb` |
+| `cinematic-zoom-extended-1.21.7-forge-1.2.0.jar` | `38f9BcFU` |
+| `cinematic-zoom-extended-1.21.7-neoforge-1.2.0.jar` | `pjH2USJZ` |
+| `cinematic-zoom-extended-1.21.9-1.21.11-fabric-1.2.0.jar` | `ZhWTPBSL` |
+| `cinematic-zoom-extended-26.1-fabric-1.2.0.jar` | `EoP2yPFr` |
+| `cinematic-zoom-extended-26.1-forge-1.2.0.jar` | `UizSJlrl` |
+| `cinematic-zoom-extended-26.1-neoforge-1.2.0.jar` | `OkmB7uA6` |
+| `cinematic-zoom-extended-26.2-fabric-1.2.0.jar` | `BQ9qRtez` |
+| `cinematic-zoom-extended-26.2-forge-1.2.0.jar` | `hH6GlMM1` |
+| `cinematic-zoom-extended-26.2-neoforge-1.2.0.jar` | `hDj7qh59` |
+| `cinematic-zoom-extended-26.3-fabric-1.2.0.jar` | `JFtoOcO1` |
+| `cinematic-zoom-extended-26.3-forge-1.2.0.jar` | `LeSGnjPN` |
+| `cinematic-zoom-extended-26.3-neoforge-1.2.0.jar` | `YIt5XAqf` |
 
 The uploaded 1.1.0 files and their version IDs:
 
