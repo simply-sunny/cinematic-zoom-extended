@@ -17,11 +17,29 @@ public final class ZoomConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("cinematiczoom");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static Path PATH = Path.of("config", "cinematiczoom.json");
+    private static Path CONFIG_DIR = Path.of("config");
+    private static Path PATH = CONFIG_DIR.resolve("cinematiczoom").resolve("config.json");
 
     /** Called by each loader before loading configuration. */
     public static void configureDirectory(Path directory) {
-        PATH = java.util.Objects.requireNonNull(directory).resolve("cinematiczoom.json");
+        CONFIG_DIR = java.util.Objects.requireNonNull(directory);
+        PATH = CONFIG_DIR.resolve("cinematiczoom").resolve("config.json");
+    }
+
+    /** Moves what older versions left directly in the config folder. A file already in the mod's folder wins. */
+    private static void moveOldFiles() {
+        moveOld(CONFIG_DIR.resolve("cinematiczoom.json"), PATH);
+        moveOld(CONFIG_DIR.resolve("cinematiczoom.json.v1.bak"), PATH.resolveSibling("backups").resolve("v1.json"));
+    }
+
+    private static void moveOld(Path from, Path to) {
+        if (!Files.exists(from) || Files.exists(to)) return;
+        try {
+            Files.createDirectories(to.getParent());
+            Files.move(from, to);
+        } catch (IOException exception) {
+            LOGGER.warn("Failed to move {} to {}", from, to, exception);
+        }
     }
 
     public int configVersion = 2;
@@ -88,10 +106,11 @@ public final class ZoomConfig {
     public void load() {
         saveAllowed = true;
         copyFrom(new ZoomConfig());
+        moveOldFiles();
         if (!Files.exists(PATH)) {
             originalJson = new JsonObject();
             try {
-                ExternalConfigImporter.importInto(this, PATH.getParent());
+                ExternalConfigImporter.importInto(this, CONFIG_DIR);
             } catch (Exception exception) {
                 LOGGER.warn("Failed to import external zoom configs", exception);
             }
@@ -201,8 +220,8 @@ public final class ZoomConfig {
                 }
 
                 if (!json.has("configVersion") || loaded.configVersion < 2) {
-                    Path backup = PATH.resolveSibling(PATH.getFileName() + ".v1.bak");
-                    if (!Files.exists(backup)) try { Files.copy(PATH, backup); }
+                    Path backup = PATH.resolveSibling("backups").resolve("v1.json");
+                    if (!Files.exists(backup)) try { Files.createDirectories(backup.getParent()); Files.copy(PATH, backup); }
                     catch (IOException backupFailure) {
                         saveAllowed = false;
                         LOGGER.warn("Migration backup failed; preserving the existing file without further writes", backupFailure);
@@ -222,7 +241,8 @@ public final class ZoomConfig {
         } catch (Exception exception) {
             LOGGER.warn("Failed to load config from {}", PATH, exception);
             try {
-                Path backup = Files.createTempFile(PATH.getParent(), "cinematiczoom-invalid-", ".json");
+                Path backups = Files.createDirectories(PATH.resolveSibling("backups"));
+                Path backup = Files.createTempFile(backups, "invalid-", ".json");
                 Files.copy(PATH, backup, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 originalJson = new JsonObject();
             } catch (IOException backupFailure) { saveAllowed = false; LOGGER.warn("Could not back up invalid configuration; saving disabled to preserve it", backupFailure); }

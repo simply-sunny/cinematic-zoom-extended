@@ -538,6 +538,7 @@ public final class ZoomRegressionTest {
             CFG.load();
             near(CFG.cinematicStartingZoom, 5);
             near(CFG.regularStartingZoom, 6);
+            if (!Files.exists(dir.resolve("zoomify.json"))) throw new AssertionError("the other mod's config stays");
             near(CFG.cinematicZoomInMs, 500);
             near(CFG.cinematicZoomOutMs, 250);
             require(CFG.cinematicZoomInCurve == ZoomCurve.LINEAR, "in curve not imported");
@@ -615,7 +616,8 @@ public final class ZoomRegressionTest {
         });
         run("existing config is not overwritten by imports", () -> {
             Path dir = freshConfigDir();
-            Files.writeString(dir.resolve("cinematiczoom.json"), "{\"cinematicStartingZoom\":2}");
+            Files.createDirectories(ownConfig(dir).getParent());
+            Files.writeString(ownConfig(dir), "{\"cinematicStartingZoom\":2}");
             Files.writeString(dir.resolve("zoomify.json"), "{\"initialZoom\":9}");
             CFG.load();
             near(CFG.cinematicStartingZoom, 2);
@@ -695,8 +697,13 @@ public final class ZoomRegressionTest {
     private static void load(String json) throws Exception {
         Path dir = Path.of(System.getProperty("cinematiczoom.testConfig"));
         Files.createDirectories(dir);
-        Files.writeString(dir.resolve("cinematiczoom.json"), json);
+        Files.createDirectories(ownConfig(dir).getParent());
+        Files.writeString(ownConfig(dir), json);
         CFG.load();
+    }
+
+    private static Path ownConfig(Path dir) {
+        return dir.resolve("cinematiczoom").resolve("config.json");
     }
 
     private static Path freshConfigDir() throws Exception {
@@ -708,7 +715,7 @@ public final class ZoomRegressionTest {
 
     private static void clearExternalConfigs() throws Exception {
         Path dir = Path.of(System.getProperty("cinematiczoom.testConfig"));
-        Files.deleteIfExists(dir.resolve("cinematiczoom.json"));
+        Files.deleteIfExists(ownConfig(dir));
         Files.deleteIfExists(dir.resolve("zoomify.json"));
         Files.deleteIfExists(dir.resolve("okzoomer.json"));
         Files.deleteIfExists(dir.resolve("ok_zoomer.json"));

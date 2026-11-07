@@ -108,6 +108,6 @@ For Minecraft 1.20.1 to 26.3 on Fabric, Quilt, Forge or NeoForge. Client-side on
 
 Settings and every supported version are on the [wiki](https://simply-sunny.github.io/cinematic-zoom-extended/).
 
-A fork of [Cinematic Zoom (Fabric)](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with permission. Not affiliated with or endorsed by either author.
+A fork of [Cinematic Zoom (Fabric)](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom-fabric) by [Mel1x](https://github.com/mel1x), based on [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with permission. Not affiliated with or endorsed by Mojang, Microsoft, Mel1x or KubePixel.
 
 MIT, see the [LICENSE](https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/LICENSE). The icon's curtain texture is by ColoredChromium ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), [source](https://www.deviantart.com/coloredchromium/art/Curtains-Red-Transparency-Light-424984584)). Minecraft is a trademark of Mojang Studios.

@@ -4,6 +4,10 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ## [Unreleased]
 
+### Changed
+
+- Everything the mod saves is now in `config/cinematiczoom/`: `config.json` and `backups/`. Files from older versions move there on launch.
+
 ## [1.1.0] - 2026-11-04
 
 ### Added
@@ -23,9 +27,6 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 - Existing settings: saved configs keep their FOV behavior, percentage bars, and zoom limits. Migration writes `cinematiczoom.json.v1.bak` first.
 - Repository: use `cinematic-zoom-extended` for GitHub, the Gradle project, and new build filenames. Existing release downloads, mod identity, key binds, and saved settings keep their names and contents.
 - CurseForge publishing: read the version and artifact prefix from `gradle.properties`, and upload every loader.
-
-### Documentation
-
 - Update source, issue, release, and badge links to the renamed repository.
 - Wiki: interactive and animated zoom views, run on the mod's zoom code over the game's title screen panorama. Add left and right aspect presets and letterbox and pillarbox visuals.
 - Add the CurseForge release sheet, configuration defaults, and repository instructions using the shared templates standard.

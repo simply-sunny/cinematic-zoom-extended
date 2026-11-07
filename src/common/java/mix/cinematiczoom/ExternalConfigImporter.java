@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 /**
  * Imports settings from other zoom mods when Cinematic Zoom Extended has no config yet.
  *
+ * <p>Other mods' files are only read, never changed or removed.</p>
+ *
  * <p>Every JSON or TOML file whose path contains {@code zoom} is considered, so the importer is
  * not limited to the mods listed below. Zoomify, Ok Zoomer, and Just Zoom are mapped explicitly by
  * key name; other zoom mods are matched through the same name patterns. WI Zoom and Logical Zoom
@@ -70,7 +72,7 @@ public final class ExternalConfigImporter {
             stream.filter(Files::isRegularFile)
                     .filter(path -> {
                         String relative = relative(configDir, path);
-                        return relative.contains("zoom") && !relative.equals("cinematiczoom.json");
+                        return relative.contains("zoom") && !relative.startsWith("cinematiczoom");
                     })
                     .sorted(Comparator.comparingInt(ExternalConfigImporter::priority)
                             .thenComparing(path -> path.toString().toLowerCase(Locale.ROOT)))

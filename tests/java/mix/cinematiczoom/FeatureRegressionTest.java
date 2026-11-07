@@ -74,11 +74,12 @@ public final class FeatureRegressionTest {
         check(Float.isFinite(CFG.cinematicStartingZoom) && Float.isFinite(CFG.minZoomMultiplier) && Float.isFinite(CFG.barOpacity),"finite config sanitation");
         Path dir=Files.createTempDirectory("cinematiczoom-migration-");
         ZoomConfig.configureDirectory(dir);
-        Path file=dir.resolve("cinematiczoom.json");
-        Files.writeString(file,"{\"cinematicStartingZoom\":7,\"cinematicBarsPercent\":22,\"minZoomMultiplier\":0.2,\"customUnknown\":42}");
+        Path file=dir.resolve("cinematiczoom").resolve("config.json");
+        Files.writeString(dir.resolve("cinematiczoom.json"),"{\"cinematicStartingZoom\":7,\"cinematicBarsPercent\":22,\"minZoomMultiplier\":0.2,\"customUnknown\":42}");
         CFG.load(); near(CFG.cinematicStartingZoom,5); near(CFG.cinematicBarsPercent,22);
         check(CFG.aspectRatio.equals("Legacy") && CFG.fovMode==FovMode.LEGACY,"legacy appearance preserved");
-        check(Files.exists(dir.resolve("cinematiczoom.json.v1.bak")),"migration backup");
+        check(Files.exists(file)&&!Files.exists(dir.resolve("cinematiczoom.json")),"old config moved into the mod's folder");
+        check(Files.exists(file.resolveSibling("backups").resolve("v1.json")),"migration backup");
         CFG.save(); check(Files.readString(file).contains("customUnknown"),"unknown settings preserved");
         Files.writeString(file,"{\"configVersion\":2,\"regularStartingZoom\":8,\"barEnterMode\":\"FUTURE\",\"wheelStep\":\"oops\"}");
         CFG.load(); near(CFG.regularStartingZoom,8); check(CFG.barEnterMode==BarAnimationMode.LINEAR,"unknown enum fallback");
@@ -86,7 +87,7 @@ public final class FeatureRegressionTest {
         CFG.load(); near(CFG.regularStartingZoom,9); check(CFG.cinematicHideHud,"malformed aliases preserve valid fields");
         Files.delete(file); CFG.load(); near(CFG.regularStartingZoom,3); check(CFG.fovMode==FovMode.ACCURATE,"missing config restores fresh defaults");
         Files.writeString(file,"{broken"); CFG.load();
-        try(var paths=Files.list(dir)) { check(paths.anyMatch(p->p.getFileName().toString().startsWith("cinematiczoom-invalid-")),"corrupt file backed up"); }
+        try(var paths=Files.list(file.resolveSibling("backups"))) { check(paths.anyMatch(p->p.getFileName().toString().startsWith("invalid-")),"corrupt file backed up"); }
         ZoomConfig.configureDirectory(Path.of(System.getProperty("cinematiczoom.testConfig")));
         System.out.println(checks+" feature assertions passed");
     }

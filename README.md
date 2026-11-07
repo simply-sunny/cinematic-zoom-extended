@@ -15,7 +15,7 @@
 
 Hold a key and the view eases in while black bars slide across the screen. Release the key and it eases back out. Two independent profiles, six easing curves, ultra-wide zoom, and snap targets like `2x` or `45fov`. It also scales mouse sensitivity, removes view bobbing, and hides the HUD, crosshair, and hands independently.
 
-> A fork of [Cinematic Zoom (Fabric)](https://github.com/mel1x/CinematicZoom) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with Mel1x's permission ([PR #8](https://github.com/mel1x/CinematicZoom/pull/8#issuecomment-6139411837)). Not affiliated with or endorsed by either author.
+> A fork of [Cinematic Zoom (Fabric)](https://github.com/mel1x/CinematicZoom) by [Mel1x](https://github.com/mel1x), based on the original [Cinematic Zoom](https://www.curseforge.com/minecraft/mc-mods/cinematic-zoom) by [KubePixel](https://www.curseforge.com/members/kubepixel/projects). Published with Mel1x's permission ([PR #8](https://github.com/mel1x/CinematicZoom/pull/8#issuecomment-6139411837)). Not affiliated with or endorsed by Mojang, Microsoft, Mel1x or KubePixel.
 
 ## Install
 
@@ -74,36 +74,36 @@ Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is the
 | Ultra-wide zoom | Off | Allows zooming out to `0.5×` when enabled. |
 | Snap targets | Empty | Set targets such as `2x` or `45fov` per profile. |
 
-Settings are saved to `config/cinematiczoom.json` in your Minecraft folder:
+Settings are saved to `config/cinematiczoom/config.json` in your Minecraft folder:
 
 | OS | Path |
 | --- | --- |
-| Windows | `%appdata%\.minecraft\config\cinematiczoom.json` |
-| macOS | `~/Library/Application Support/minecraft/config/cinematiczoom.json` |
-| Linux | `~/.minecraft/config/cinematiczoom.json` |
+| Windows | `%appdata%\.minecraft\config\cinematiczoom\config.json` |
+| macOS | `~/Library/Application Support/minecraft/config/cinematiczoom/config.json` |
+| Linux | `~/.minecraft/config/cinematiczoom/config.json` |
 
 New installations default to accurate magnification up to **500×** and independent **Linear** bar animation. The aspect list includes Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1. Add custom ratios or remove/reorder entries to control cycling. Ratios wider than the window add top/bottom bars; narrower ratios add side bars. This crops the composition with an overlay; it does not change Minecraft's viewport or projection aspect.
 
 Left/right cycling works while cinematic zoom is active. Enable global cycling to select a profile outside zoom. Selection is saved. Entry, exit, and profile changes each have their own Instant, Linear, or Smooth mode and duration. Profile changes leave magnification unchanged. Regular zoom always clears bars.
 
-Existing configurations retain legacy FOV and percentage bars and their saved zoom limits. Migration creates `cinematiczoom.json.v1.bak`. Invalid files receive a separate backup; failed backups disable writes to preserve the original. Unknown settings survive saves. Delete the config to start with the new defaults.
+Existing configurations retain legacy FOV and percentage bars and their saved zoom limits. Migration keeps a copy in `config/cinematiczoom/backups/`. Invalid files receive a separate backup; failed backups disable writes to preserve the original. Unknown settings survive saves. Delete the config to start with the new defaults.
 
 Both settings screens expose the maximum magnification, wheel settings, custom ratios, and all profile options. The Forge native editor uses comma-separated ratios in cycling order and validates entries when saving.
 
 ### Coming from another zoom mod
 
-If `config/cinematiczoom.json` is missing, Extended imports what it recognizes on first launch:
+If `config/cinematiczoom/config.json` is missing, Extended copies what it recognizes on first launch and leaves those files as they are:
 
 - **Zoomify:** `config/zoomify.json`
 - **Ok Zoomer:** `config/ok_zoomer/config.toml` or legacy `okzoomer.json`
 - **Just Zoom:** `config/justzoom/config.json`
 - **Other zoom mods:** any JSON or TOML file with `zoom` in its path, matched by key name.
 
-WI Zoom and Logical Zoom keep no config file. An existing `cinematiczoom.json` is never overwritten. Delete it and relaunch to re-import.
+WI Zoom and Logical Zoom keep no config file. An existing config is never overwritten. Delete it and relaunch to re-import.
 
 ### Migrating from Cinematic Zoom 1.3
 
-Extended replaces the original `cinematiczoom-*.jar`. Remove that jar and install the Extended one. Extended has a new mod ID but keeps the config filename, so leave `config/cinematiczoom.json` in place. These legacy keys migrate on first launch: `startingZoom`, `baseZoomMultiplier`, `barsPercent`, `smoothMs`, `hideHudDuringZoom`, `enableCinematicCamera`, `toggleMode`, `minZoomMultiplier`. To start fresh, delete the file and relaunch.
+Extended replaces the original `cinematiczoom-*.jar`. Remove that jar and install the Extended one. Extended has a new mod ID, and moves an old `config/cinematiczoom.json` into its own folder, so leave it in place. These legacy keys migrate on first launch: `startingZoom`, `baseZoomMultiplier`, `barsPercent`, `smoothMs`, `hideHudDuringZoom`, `enableCinematicCamera`, `toggleMode`, `minZoomMultiplier`. To start fresh, delete the file and relaunch.
 
 ## Develop
 
@@ -123,7 +123,7 @@ This runs the headless regression suite and builds every target. Jars land in `b
 
 To add a Minecraft target, add it to `minecraftTargets` in `build.gradle` and `targets` in `settings.gradle`, then put its version-specific code under `versions/<mc>/`. Shared code stays in `src/common/java`; the existing legacy and modern source sets handle API differences across targets.
 
-The repository and new artifact prefix are `cinematic-zoom-extended`. The mod ID stays `cinematiczoom_extended`, the Java package and asset namespace stay `mix.cinematiczoom` and `cinematiczoom`, and settings stay in `config/cinematiczoom.json`. Existing key binds and settings carry over without migration. The 1.0.0 tag and published downloads keep their original names and contents.
+The repository and new artifact prefix are `cinematic-zoom-extended`. The mod ID stays `cinematiczoom_extended`, the Java package and asset namespace stay `mix.cinematiczoom` and `cinematiczoom`, and settings stay in `config/cinematiczoom/config.json`. Existing key binds and settings carry over without migration. The 1.0.0 tag and published downloads keep their original names and contents.
 
 Release settings and listing copy live in [MODRINTH.md](MODRINTH.md) and [CURSEFORGE.md](CURSEFORGE.md).
 
@@ -139,9 +139,9 @@ Release settings and listing copy live in [MODRINTH.md](MODRINTH.md) and [CURSEF
 | Zoom key does nothing | Bind **Cinematic Zoom** under Controls. |
 | Wheel does not zoom | Enable **Mouse wheel during zoom** and hold the zoom key. |
 | Bars do not appear | Use the cinematic key and set the bar height above 0. |
-| Broken config | Delete `config/cinematiczoom.json` and relaunch. |
+| Broken config | Delete `config/cinematiczoom/config.json` and relaunch. |
 
-Logs are in `.minecraft/logs/latest.log`. Include the log and your Minecraft, mod, and loader versions when you report an issue.
+Logs are in `.minecraft/logs/latest.log`. Include the log and your Minecraft, mods, and loader versions when you report an issue.
 
 ## Limits
 

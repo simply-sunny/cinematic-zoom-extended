@@ -8,7 +8,7 @@
 
 ## Compatibility
 
-- Preserve the mod ID `cinematiczoom_extended`, package `mix.cinematiczoom`, asset namespace `cinematiczoom`, and config path `config/cinematiczoom.json`. These names keep existing installations, key binds, and settings compatible.
+- Preserve the mod ID `cinematiczoom_extended`, package `mix.cinematiczoom`, asset namespace `cinematiczoom`, and config folder `config/cinematiczoom/`. These names keep existing installations, key binds, and settings compatible.
 - Use `cinematic-zoom-extended` for the repository and new artifact filenames. Published 1.0.0 assets and the release tag retain their original names and contents.
 
 ## Documentation and releases
