@@ -1,5 +1,5 @@
 <h1>Troubleshooting</h1>
-<div class="table-wrap" id="troubleshooting"><table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Problem</th>
@@ -21,7 +21,7 @@
 </tr>
 <tr>
 <td>Crash on launch</td>
-<td>Check Java: 17, 21, or 25, depending on Minecraft.</td>
+<td>Check Java: 17, 21 or 25, depending on Minecraft.</td>
 </tr>
 <tr>
 <td>Settings screen missing</td>
@@ -29,30 +29,30 @@
 </tr>
 <tr>
 <td>Zoom key does nothing</td>
-<td>Bind <strong>Cinematic Zoom</strong> under Controls.</td>
+<td>Bind <strong>Cinematic Zoom</strong> under <strong>Controls</strong>.</td>
 </tr>
 <tr>
-<td>Wheel does not zoom</td>
+<td>Wheel doesn't zoom</td>
 <td>Enable <strong>Mouse wheel during zoom</strong> and hold the zoom key.</td>
 </tr>
 <tr>
-<td>Bars do not appear</td>
+<td>Bars don't appear</td>
 <td>Use the cinematic key and set the bar height above 0.</td>
 </tr>
 <tr>
 <td>Broken config</td>
-<td>Delete <code>config/cinematiczoom.json</code> and relaunch.</td>
+<td>Delete <code>config/cinematiczoom/config.json</code> and relaunch.</td>
 </tr>
 </tbody>
 </table></div>
-<p>Logs are in <code>.minecraft/logs/latest.log</code>. Include the log and your Minecraft, mod, and loader versions when you report an issue.</p>
+<p><a href="https://github.com/simply-sunny/cinematic-zoom-extended/issues">Report issues</a> with <code>logs/latest.log</code> and your Minecraft, mods and loader versions.</p>
 <h2 id="limits">Limits</h2>
 <ul>
-<li><strong>Original Cinematic Zoom:</strong> not compatible. Only one build can be installed.</li>
-<li><strong>Other zoom mods:</strong> may conflict with FOV handling. Don't run them together. Import their settings instead.</li>
-<li><strong>Sodium, Iris, and shaders:</strong> no known conflicts, but not specifically tested.</li>
-<li><strong>Quilt:</strong> tested with the actual loader on every Fabric version. See the <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/docs/VERIFICATION.md">verification report</a>.</li>
-<li><strong>Forge and NeoForge:</strong> each jar loads only on its exact Minecraft version.</li>
-<li><strong>OptiFine:</strong> unsupported.</li>
+<li>Only one Cinematic Zoom build can be installed, so the original can't run alongside it.</li>
+<li>Other zoom mods may conflict with FOV handling. Don't run them together. Import their settings instead.</li>
+<li>Sodium, Iris and shaders have no known conflicts, but aren't specifically tested.</li>
+<li>Quilt is tested with the actual loader on every Fabric version. See the <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/docs/VERIFICATION.md">verification report</a>.</li>
+<li>Each Forge and NeoForge jar loads only on its exact Minecraft version.</li>
+<li>OptiFine isn't supported.</li>
 </ul>
 <!-- data-wiki-preserve -->

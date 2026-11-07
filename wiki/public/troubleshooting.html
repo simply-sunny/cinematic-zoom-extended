@@ -1,5 +1,5 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><link rel="preload" href="./assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta name="description" content="A configurable zoom with animated cinema bars and two profiles."><title>Troubleshooting · Cinematic Zoom Extended</title><link rel="stylesheet" href="./assets/base.css"><link rel="stylesheet" href="./assets/style.css"><script src="./assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header shell"><a class="brand" href="./index.html">Cinematic Zoom Extended</a><nav aria-label="Project"><a href="https://github.com/simply-sunny/cinematic-zoom-extended">Source ↗</a><a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases">Releases ↗</a></nav></header><div class="wiki shell"><aside class="sidebar"><input id="search" type="search" placeholder="Search" aria-label="Search"><nav aria-label="Documentation"><a href="./index.html">Overview</a><a href="./install.html">Install</a><a href="./use.html">Use</a><a href="./configure.html">Configure</a><a href="./troubleshooting.html" aria-current="page">Troubleshooting</a><a href="./changelog.html">Changelog</a><a href="./develop.html">Develop</a></nav><span class="meta" id="search-status" role="status"></span></aside><main class="wiki-main" id="main" tabindex="-1"><article class="prose"><h1>Troubleshooting</h1>
-<div class="table-wrap" id="troubleshooting"><table>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><link rel="preload" href="./assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta name="description" content="A configurable zoom with animated cinema bars and two profiles."><link rel="icon" type="image/png" href="./assets/icon.png"><meta property="og:type" content="website"><meta property="og:title" content="Cinematic Zoom Extended"><meta property="og:description" content="A configurable zoom with animated cinema bars and two profiles."><meta property="og:image" content="https://simply-sunny.github.io/cinematic-zoom-extended/assets/icon.png"><title>Troubleshooting · Cinematic Zoom Extended</title><link rel="stylesheet" href="./assets/base.css"><link rel="stylesheet" href="./assets/style.css"><script src="./assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header shell"><a class="brand" href="./index.html">Cinematic Zoom Extended</a><nav aria-label="Project"><a href="https://github.com/simply-sunny/cinematic-zoom-extended">Source ↗</a><a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases">Releases ↗</a></nav></header><div class="wiki shell"><aside class="sidebar"><input id="search" type="search" placeholder="Search" aria-label="Search"><nav aria-label="Documentation"><a href="./index.html">Overview</a><a href="./install.html">Install</a><a href="./use.html">Use</a><a href="./configure.html">Configure</a><a href="./troubleshooting.html" aria-current="page">Troubleshooting</a><a href="./roadmap.html">Roadmap</a><a href="./changelog.html">Changelog</a><a href="./develop.html">Develop</a></nav><span class="meta" id="search-status" role="status"></span></aside><main class="wiki-main" id="main" tabindex="-1"><article class="prose"><h1>Troubleshooting</h1>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Problem</th>
@@ -21,7 +21,7 @@
 </tr>
 <tr>
 <td>Crash on launch</td>
-<td>Check Java: 17, 21, or 25, depending on Minecraft.</td>
+<td>Check Java: 17, 21 or 25, depending on Minecraft.</td>
 </tr>
 <tr>
 <td>Settings screen missing</td>
@@ -29,31 +29,31 @@
 </tr>
 <tr>
 <td>Zoom key does nothing</td>
-<td>Bind <strong>Cinematic Zoom</strong> under Controls.</td>
+<td>Bind <strong>Cinematic Zoom</strong> under <strong>Controls</strong>.</td>
 </tr>
 <tr>
-<td>Wheel does not zoom</td>
+<td>Wheel doesn't zoom</td>
 <td>Enable <strong>Mouse wheel during zoom</strong> and hold the zoom key.</td>
 </tr>
 <tr>
-<td>Bars do not appear</td>
+<td>Bars don't appear</td>
 <td>Use the cinematic key and set the bar height above 0.</td>
 </tr>
 <tr>
 <td>Broken config</td>
-<td>Delete <code>config/cinematiczoom.json</code> and relaunch.</td>
+<td>Delete <code>config/cinematiczoom/config.json</code> and relaunch.</td>
 </tr>
 </tbody>
 </table></div>
-<p>Logs are in <code>.minecraft/logs/latest.log</code>. Include the log and your Minecraft, mod, and loader versions when you report an issue.</p>
+<p><a href="https://github.com/simply-sunny/cinematic-zoom-extended/issues">Report issues</a> with <code>logs/latest.log</code> and your Minecraft, mods and loader versions.</p>
 <h2 id="limits">Limits</h2>
 <ul>
-<li><strong>Original Cinematic Zoom:</strong> not compatible. Only one build can be installed.</li>
-<li><strong>Other zoom mods:</strong> may conflict with FOV handling. Don't run them together. Import their settings instead.</li>
-<li><strong>Sodium, Iris, and shaders:</strong> no known conflicts, but not specifically tested.</li>
-<li><strong>Quilt:</strong> tested with the actual loader on every Fabric version. See the <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/docs/VERIFICATION.md">verification report</a>.</li>
-<li><strong>Forge and NeoForge:</strong> each jar loads only on its exact Minecraft version.</li>
-<li><strong>OptiFine:</strong> unsupported.</li>
+<li>Only one Cinematic Zoom build can be installed, so the original can't run alongside it.</li>
+<li>Other zoom mods may conflict with FOV handling. Don't run them together. Import their settings instead.</li>
+<li>Sodium, Iris and shaders have no known conflicts, but aren't specifically tested.</li>
+<li>Quilt is tested with the actual loader on every Fabric version. See the <a href="https://github.com/simply-sunny/cinematic-zoom-extended/blob/main/docs/VERIFICATION.md">verification report</a>.</li>
+<li>Each Forge and NeoForge jar loads only on its exact Minecraft version.</li>
+<li>OptiFine isn't supported.</li>
 </ul>
 <!-- data-wiki-preserve -->
 </article><footer class="site-footer"><span>Cinematic Zoom Extended</span><a href="https://github.com/simply-sunny/cinematic-zoom-extended/issues">Report an issue ↗</a></footer></main></div></body></html>

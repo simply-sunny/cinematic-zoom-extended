@@ -1,0 +1,372 @@
+{
+ "title": "Cinematic Zoom - Settings",
+ "tabs": [
+  {
+   "name": "Cinematic Zoom",
+   "rows": [
+    {
+     "label": "Starting zoom",
+     "tip": "Set camera magnification applied when cinematic zoom starts.",
+     "kind": "field",
+     "value": "3.0"
+    },
+    {
+     "label": "Black bars height, %",
+     "tip": "Set screen height percentage for top and bottom black bars.",
+     "kind": "field",
+     "value": "15.0"
+    },
+    {
+     "label": "Adjust bar size with arrow keys",
+     "tip": "Adjust black bar height using arrow keys while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Bar adjustment step (%)",
+     "tip": "Set bar height change percentage per tick during key adjustment.",
+     "kind": "field",
+     "value": "1.0"
+    },
+    {
+     "label": "Smooth bar size adjustment",
+     "tip": "Smoothly animate black bar height changes instead of snapping instantly.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Remember bar size adjustments",
+     "tip": "Save arrow key bar height adjustments as the new default.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Zoom in duration (ms, 0 = instant)",
+     "tip": "Set animation duration in milliseconds when zooming in.",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Zoom out duration (ms, 0 = instant)",
+     "tip": "Set animation duration in milliseconds when zooming out.",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Zoom in curve",
+     "tip": "Set easing animation curve applied when zooming in.",
+     "kind": "enum",
+     "options": [
+      "Ease Out (Exp)",
+      "Ease Out (Cubic)",
+      "Ease In (Cubic)",
+      "Ease In/Out",
+      "Linear",
+      "Sine"
+     ],
+     "value": "Ease Out (Exp)"
+    },
+    {
+     "label": "Zoom out curve",
+     "tip": "Set easing animation curve applied when zooming out.",
+     "kind": "enum",
+     "options": [
+      "Ease Out (Exp)",
+      "Ease Out (Cubic)",
+      "Ease In (Cubic)",
+      "Ease In/Out",
+      "Linear",
+      "Sine"
+     ],
+     "value": "Ease Out (Exp)"
+    },
+    {
+     "label": "Toggle zoom",
+     "tip": "Toggle zoom on and off with each key press instead of holding.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Hide HUD while zooming",
+     "tip": "Hide the hotbar, health, and status effects while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Hide crosshair while zooming",
+     "tip": "Hide the center crosshair reticle while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Hide hands while zooming",
+     "tip": "Hide first-person hands and held items while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Enable cinematic camera while zooming",
+     "tip": "Enable smooth cinematic camera rotation while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Scale mouse sensitivity",
+     "tip": "Scale mouse sensitivity down proportionally with zoom level.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Remove view bobbing while zooming",
+     "tip": "Disable screen bobbing motion while moving during zoom.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Magnetize zoom targets",
+     "tip": "Step scroll strictly between configured target values instead of smooth zooming.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Target values (zoom or FOV)",
+     "tip": "Set comma-separated target zoom levels or camera FOV values.",
+     "kind": "field",
+     "value": ""
+    }
+   ]
+  },
+  {
+   "name": "Regular Zoom",
+   "rows": [
+    {
+     "label": "Starting zoom",
+     "tip": "Set camera magnification applied when regular zoom starts.",
+     "kind": "field",
+     "value": "3.0"
+    },
+    {
+     "label": "Zoom in duration (ms, 0 = instant)",
+     "tip": "Set animation duration in milliseconds when zooming in.",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Zoom out duration (ms, 0 = instant)",
+     "tip": "Set animation duration in milliseconds when zooming out.",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Zoom in curve",
+     "tip": "Set easing animation curve applied when zooming in.",
+     "kind": "enum",
+     "options": [
+      "Ease Out (Exp)",
+      "Ease Out (Cubic)",
+      "Ease In (Cubic)",
+      "Ease In/Out",
+      "Linear",
+      "Sine"
+     ],
+     "value": "Ease Out (Exp)"
+    },
+    {
+     "label": "Zoom out curve",
+     "tip": "Set easing animation curve applied when zooming out.",
+     "kind": "enum",
+     "options": [
+      "Ease Out (Exp)",
+      "Ease Out (Cubic)",
+      "Ease In (Cubic)",
+      "Ease In/Out",
+      "Linear",
+      "Sine"
+     ],
+     "value": "Ease Out (Exp)"
+    },
+    {
+     "label": "Toggle zoom",
+     "tip": "Toggle zoom on and off with each key press instead of holding.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Hide HUD while zooming",
+     "tip": "Hide the hotbar, health, and status effects while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Hide crosshair while zooming",
+     "tip": "Hide the center crosshair reticle while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Hide hands while zooming",
+     "tip": "Hide first-person hands and held items while zoomed in.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Enable cinematic camera while zooming",
+     "tip": "Enable smooth cinematic camera rotation while zoomed in.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Scale mouse sensitivity",
+     "tip": "Scale mouse sensitivity down proportionally with zoom level.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Remove view bobbing while zooming",
+     "tip": "Disable screen bobbing motion while moving during zoom.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Magnetize zoom targets",
+     "tip": "Step scroll strictly between configured target values instead of smooth zooming.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Target values (zoom or FOV)",
+     "tip": "Set comma-separated target zoom levels or camera FOV values.",
+     "kind": "field",
+     "value": ""
+    }
+   ]
+  },
+  {
+   "name": "General & Wheel",
+   "rows": [
+    {
+     "label": "Mouse wheel during zoom",
+     "tip": "Adjust magnification with the mouse wheel while zooming.",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Discrete mouse wheel zoom",
+     "tip": "Step zoom level by uniform magnification increments per notch.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Discrete zoom step (×)",
+     "tip": "Set magnification increment added or subtracted per wheel notch.",
+     "kind": "field",
+     "value": "1.0"
+    },
+    {
+     "label": "Allow ultrawide zoom (0.5×)",
+     "tip": "Allow scrolling backwards past 1× to 0.5× for an ultrawide view.",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "FOV calculation",
+     "kind": "enum",
+     "options": [
+      "ACCURATE",
+      "LEGACY"
+     ],
+     "value": "ACCURATE"
+    },
+    {
+     "label": "Maximum magnification",
+     "kind": "field",
+     "value": "500.0"
+    },
+    {
+     "label": "Logarithmic wheel zoom",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Wheel sensitivity",
+     "kind": "field",
+     "value": "0.05"
+    }
+   ]
+  },
+  {
+   "name": "Aspect ratio and bars",
+   "rows": [
+    {
+     "label": "Selected aspect ratio (Auto, 2.39:1, 4:3, Legacy...)",
+     "kind": "field",
+     "value": "2.39:1"
+    },
+    {
+     "label": "Enabled profiles (ordered, custom W:H allowed)",
+     "kind": "list"
+    },
+    {
+     "label": "Allow cycling outside cinematic zoom",
+     "kind": "toggle",
+     "value": false
+    },
+    {
+     "label": "Animate profile changes",
+     "kind": "toggle",
+     "value": true
+    },
+    {
+     "label": "Entry animation",
+     "kind": "enum",
+     "options": [
+      "INSTANT",
+      "LINEAR",
+      "SMOOTH"
+     ],
+     "value": "LINEAR"
+    },
+    {
+     "label": "Entry duration (ms)",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Exit animation",
+     "kind": "enum",
+     "options": [
+      "INSTANT",
+      "LINEAR",
+      "SMOOTH"
+     ],
+     "value": "LINEAR"
+    },
+    {
+     "label": "Exit duration (ms)",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Profile change animation",
+     "kind": "enum",
+     "options": [
+      "INSTANT",
+      "LINEAR",
+      "SMOOTH"
+     ],
+     "value": "LINEAR"
+    },
+    {
+     "label": "Profile change duration (ms)",
+     "kind": "field",
+     "value": "240"
+    },
+    {
+     "label": "Bar opacity (0–1)",
+     "kind": "field",
+     "value": "1.0"
+    }
+   ]
+  }
+ ]
+}

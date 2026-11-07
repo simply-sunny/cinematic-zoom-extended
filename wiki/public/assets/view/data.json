@@ -61,6 +61,21 @@
    76,
    8
   ],
+  "assets/minecraft/textures/gui/sprites/widget/button.png": [
+   13661794,
+   1704,
+   8
+  ],
+  "assets/minecraft/textures/gui/sprites/widget/button_disabled.png": [
+   13663795,
+   1147,
+   8
+  ],
+  "assets/minecraft/textures/gui/sprites/widget/button_highlighted.png": [
+   13665257,
+   1708,
+   8
+  ],
   "assets/minecraft/textures/item/diamond_sword.png": [
    13890065,
    190,
@@ -99,6 +114,28 @@
   "assets/minecraft/textures/item/compass_00.png": [
    13860912,
    204,
+   8
+  ]
+ },
+ "font": {
+  "assets/minecraft/font/include/default.json": [
+   11429178,
+   6120,
+   8
+  ],
+  "assets/minecraft/textures/font/nonlatin_european.png": [
+   12813484,
+   4872,
+   8
+  ],
+  "assets/minecraft/textures/font/accented.png": [
+   12804021,
+   7699,
+   8
+  ],
+  "assets/minecraft/textures/font/ascii.png": [
+   12811809,
+   815,
    8
   ]
  }

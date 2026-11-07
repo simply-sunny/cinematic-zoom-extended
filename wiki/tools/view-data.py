@@ -15,6 +15,10 @@ OUT = HERE / 'public/assets/view/data.json'
 JAR = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.home() / f'Library/Application Support/PrismLauncher/libraries/com/mojang/minecraft/{VERSION}/minecraft-{VERSION}-client.jar'
 SPRITES = ['hud/hotbar', 'hud/hotbar_selection', 'hud/heart/container', 'hud/heart/full', 'hud/food_empty', 'hud/food_full',
            'hud/armor_full', 'hud/experience_bar_background', 'hud/experience_bar_progress', 'hud/crosshair']
+# The settings demo's buttons, and the game's font.
+WIDGETS = ['widget/button', 'widget/button_disabled', 'widget/button_highlighted']
+FONT = ['assets/minecraft/font/include/default.json', 'assets/minecraft/textures/font/nonlatin_european.png',
+        'assets/minecraft/textures/font/accented.png', 'assets/minecraft/textures/font/ascii.png']
 ITEMS = ['diamond_sword', 'iron_pickaxe', 'bow', 'spyglass', 'apple', 'bread', 'map', 'compass_00']
 
 def version():
@@ -39,8 +43,8 @@ data = JAR.read_bytes()
 if hashlib.sha1(data).hexdigest() != client['sha1']:
     sys.exit(f"{JAR} isn't the {VERSION} client jar Mojang serves")
 cd = central_directory(data)
-paths = [f'assets/minecraft/textures/gui/sprites/{s}.png' for s in SPRITES] + [f'assets/minecraft/textures/item/{i}.png' for i in ITEMS]
-missing = [p for p in paths if p not in cd]
+paths = [f'assets/minecraft/textures/gui/sprites/{s}.png' for s in SPRITES + WIDGETS] + [f'assets/minecraft/textures/item/{i}.png' for i in ITEMS]
+missing = [p for p in paths + FONT if p not in cd]
 if missing: sys.exit(f'not in the jar: {missing}')
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps({
@@ -49,5 +53,6 @@ OUT.write_text(json.dumps({
     'index': v['assetIndex']['url'],
     'panorama': [f'minecraft/textures/gui/title/background/panorama_{i}.png' for i in range(6)],
     'entries': {p: cd[p] for p in paths},
+    'font': {p: cd[p] for p in FONT},
 }, indent=1) + '\n')
 print(f'{OUT.relative_to(HERE)}: {len(paths)} files in the jar, 6 panorama faces')

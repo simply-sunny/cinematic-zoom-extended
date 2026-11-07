@@ -2,16 +2,19 @@
 // the ported ZoomController sets, the HUD drawn over it at a whole-number GUI scale, and the bars over that.
 //
 //   <div class="cze-view"></div>                         a view to try: hold C or V, scroll, ↑ ↓, look around
-//   <div class="cze-view" data-controls></div>           the same with the settings beside it
-//   <div class="cze-view" data-demo="tour"></div>        a scripted run with captions (tour, curves, snaps, profiles, ultrawide)
+//   <div class="cze-view" data-demo="tour" data-interactive></div>   the same, until a click hands it over
+//   <div class="cze-view" data-demo="tour"></div>        a scripted run with captions (tour, settings, snaps, aspects, curves, profiles, ultrawide)
 //
 // The panorama comes from Mojang's asset server and the HUD sprites from the game's client jar, both when the page
 // opens; the wiki keeps no copies (tools/view-data.py writes data.json, which says where they are).
 
+import { Cloth, Font } from './cloth.js';
 import { Zoom, defaultConfig, setUltrawide, CURVES, curve, ASPECT_PRESETS, barsForAspect, aspectGeometry } from './zoom.js';
 
 const BASE = new URL('.', import.meta.url);
 const GUI_WIDTH = 480;
+// Under this width, or in a stranger shape, a demo says so rather than show a squeezed screen.
+const MIN_WIDTH = 480, MIN_ASPECT = 4 / 3, MAX_ASPECT = 21 / 9;
 
 // ------------------------------------------------------------------ files
 
@@ -53,9 +56,28 @@ function load() {
     const pulled = Promise.all(Array.from({ length: 6 }, async () => {
       while (queue.length) await pull(queue.shift()).catch(e => console.warn('[cze-view] a sprite did not load', e));
     }));
-    return { faces: await faces, sprites, pulled };
+    return { data, faces: await faces, sprites, pulled };
   })();
   return shared;
+}
+
+let clothFiles;
+/** The game's font and the settings screen's rows, once for every view on the page. */
+function loadCloth() {
+  clothFiles ??= (async () => {
+    const { data } = await load();
+    const files = new Map(await Promise.all(Object.entries(data.font).map(async ([path, at]) => [path, await entry(data.jar, at)])));
+    const table = [...files.keys()].find(path => path.endsWith('.json'));
+    const { providers } = JSON.parse(new TextDecoder().decode(files.get(table))), sheets = new Map();
+    await Promise.all(providers.map(async ({ file }) => {
+      const path = `assets/minecraft/textures/${file.replace('minecraft:', '')}`;
+      sheets.set(file, await createImageBitmap(new Blob([files.get(path)], { type: 'image/png' })));
+    }));
+    const font = new Font();
+    font.load({ providers, sheets });
+    return { font, settings: await fetch(new URL('settings.json', BASE)).then(r => r.json()) };
+  })();
+  return clothFiles;
 }
 
 // ------------------------------------------------------------------ views
@@ -69,11 +91,13 @@ async function mount(root) {
   root.innerHTML = `<div class="cze-view__stage"><div class="cze-view__world"><div class="cze-view__cam"></div></div>
     <canvas class="cze-view__hud"></canvas><span class="cze-view__keys" aria-hidden="true"></span>
     <span class="cze-view__hint" aria-hidden="true"></span></div>
-    <div class="cze-view__bar"></div>`;
+    <div class="cze-view__bar"></div><p class="cze-view__notice"></p>`;
   const stage = root.querySelector('.cze-view__stage'), world = root.querySelector('.cze-view__world');
   const cam = root.querySelector('.cze-view__cam'), canvas = root.querySelector('canvas'), keys = root.querySelector('.cze-view__keys');
   const bar = root.querySelector('.cze-view__bar');
   const { faces, sprites } = await load();
+  const clothParts = root.dataset.demo === 'settings' ? await loadCloth() : null;
+  root.classList.toggle('is-settings', !!clothParts);
 
   // The panorama: six faces of a cube around the camera, in the order the game's CubeMap reads them.
   const FACE = ['', 'rotateY(-90deg)', 'rotateY(180deg)', 'rotateY(90deg)', 'rotateX(-90deg)', 'rotateX(90deg)'];
@@ -87,8 +111,10 @@ async function mount(root) {
     cam.append(img);
   });
 
-  let cfg, zoom, mode = 'NONE', held = null, previewFraming = false, yaw = 0, pitch = 0, look = { yaw: 0, pitch: 0 }, demo = null;
+  let cfg, zoom, mode = 'NONE', held = null, yaw = 0, pitch = 0, look = { yaw: 0, pitch: 0 }, demo = null, cloth = null, followsAspect = false;
   const build = () => {
+    cloth = clothParts && new Cloth(clothParts.settings, clothParts.font, sprites);
+    followsAspect = false;
     cfg = defaultConfig();
     zoom = new Zoom(cfg);
     mode = 'NONE';
@@ -99,14 +125,19 @@ async function mount(root) {
   build();
 
   // Size: 16:9 on the page's 8px grid, the HUD at a whole-number scale like the game's GUI scale.
-  let w = 0, h = 0, scale = 1, guiW = 0, guiH = 0;
+  let w = 0, h = 0, scale = 1, guiW = 0, guiH = 0, tooSmall = false;
   let aspectIndex = ASPECT_PRESETS.length - 1;
   let sidePercent = 0, targetSidePercent = 0;
-  let refreshAspect = () => {};
   const resize = () => {
     const dpr = window.devicePixelRatio || 1, full = document.fullscreenElement === root;
+    const cssW = root.clientWidth, aspect = cssW / root.clientHeight;
+    tooSmall = cssW < MIN_WIDTH || full && (aspect < MIN_ASPECT || aspect > MAX_ASPECT);
+    root.classList.toggle('is-too-small', tooSmall);
+    root.querySelector('.cze-view__notice').textContent = cssW < MIN_WIDTH
+      ? 'Not shown on this display. This demo needs a wider window.'
+      : 'Not shown on this display. This demo needs a window closer to 16:9.';
     w = stage.clientWidth;
-    h = full ? root.clientHeight - bar.offsetHeight : Math.max(8, Math.round(w * 9 / 16 / 8) * 8);
+    h = full ? root.clientHeight - bar.offsetHeight : Math.max(24, Math.floor(w * 9 / 16 / 24) * 24);
     stage.style.height = h + 'px';
     const devW = Math.round(w * dpr);
     scale = Math.max(1, Math.round(devW / GUI_WIDTH), Math.round(dpr));
@@ -115,7 +146,6 @@ async function mount(root) {
     guiW = Math.floor(canvas.width / scale);
     guiH = Math.floor(canvas.height / scale);
     if (aspectIndex >= 0) applyAspect(aspectIndex);
-    refreshAspect();
   };
   new ResizeObserver(resize).observe(root);
   resize();
@@ -131,7 +161,6 @@ async function mount(root) {
       zoom.targetBarsPercent = percent;
       if (!cfg.smoothBarChange) zoom.currentBarsPercent = percent;
     }
-    refreshAspect();
   }
   function stepAspect(direction) {
     const live = (w / h) / Math.max(.01, 1 - 2 * zoom.heldBarsPercent / 100);
@@ -154,7 +183,7 @@ async function mount(root) {
   if (!script) {
     stage.tabIndex = 0;
     stage.setAttribute('role', 'application');
-    stage.setAttribute('aria-label', 'Zoom view. Hold C to zoom with bars, V without. Scroll while zoomed. Up and down arrows resize the bars. Left and right arrows cycle framing presets while zoomed. Click to lock the mouse and look around; Escape lets go.');
+    stage.setAttribute('aria-label', 'Zoom view. Hold C to zoom with bars, V without. Scroll while zoomed. Up and down arrows resize the bars. Left and right arrows cycle aspect ratios while zoomed. Click to lock the mouse and look around; Escape lets go.');
     const hint = root.querySelector('.cze-view__hint');
     const locked = () => document.pointerLockElement === stage;
     let refused = false;
@@ -164,7 +193,7 @@ async function mount(root) {
       look.pitch = Math.max(-89, Math.min(89, look.pitch - dy * k));
     };
     const showHint = () => {
-      hint.textContent = locked() ? 'Esc to let go of the mouse' : refused ? 'Drag to look around' : 'Click to look around';
+      hint.textContent = locked() ? 'Esc to let go of the mouse' : refused || matchMedia('(pointer: coarse)').matches ? 'Drag to look around' : 'Click to look around';
       root.classList.toggle('is-locked', locked());
       hint.classList.add('is-shown');
       clearTimeout(hint.timer);
@@ -186,9 +215,10 @@ async function mount(root) {
         if (e.repeat) return e.preventDefault();
         const toggle = m === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle;
         held = toggle && held === m ? null : m;
+        showKeys(m === 'REGULAR' ? 'V' : 'C');
         e.preventDefault();
       } else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && cfg.arrowKeysAdjustBars) {
-        if (zoom.adjustBars(e.key === 'ArrowUp' ? cfg.barAdjustStep : -cfg.barAdjustStep)) { aspectIndex = ASPECT_PRESETS.length - 1; cfg.cinematicBarsPercent = zoom.heldBarsPercent; targetSidePercent = 0; refreshAspect(); e.preventDefault(); }
+        if (zoom.adjustBars(e.key === 'ArrowUp' ? cfg.barAdjustStep : -cfg.barAdjustStep)) { aspectIndex = ASPECT_PRESETS.length - 1; cfg.cinematicBarsPercent = zoom.heldBarsPercent; targetSidePercent = 0; showKeys(e.key === 'ArrowUp' ? '↑' : '↓'); e.preventDefault(); }
       }
     });
     stage.addEventListener('keydown', e => {
@@ -202,7 +232,7 @@ async function mount(root) {
       if (m && held === m && !(m === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle)) held = null;
     });
     stage.addEventListener('blur', () => {
-      if (held && !previewFraming && !(held === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle)) held = null;
+      if (held && !(held === 'REGULAR' ? cfg.regularToggle : cfg.cinematicToggle)) held = null;
     });
     stage.addEventListener('wheel', e => {
       const v = -Math.sign(e.deltaY) * Math.max(1, Math.round(Math.abs(e.deltaMode === 1 ? e.deltaY / 3 : e.deltaY / 100)));
@@ -243,35 +273,25 @@ async function mount(root) {
     self.note = document.createElement('span');
     self.note.className = 'cze-view__note';
     bar.append(...holds.map(([, b]) => b), self.note);
-    const framing = document.createElement('div');
-    framing.className = 'cze-view__framing';
-    framing.setAttribute('role','group');framing.setAttribute('aria-label','Aspect ratio presets');
-    const previous = button('←'), next = button('→');
-    previous.setAttribute('aria-label','Previous aspect ratio');next.setAttribute('aria-label','Next aspect ratio');
-    const sample=document.createElement('span');sample.className='cze-view__frame-sample';sample.setAttribute('aria-hidden','true');
-    const label=document.createElement('output');label.setAttribute('aria-live','polite');
-    const preview=button('Preview framing');preview.setAttribute('aria-pressed','false');
-    
-    preview.addEventListener('click',()=>{previewFraming=!previewFraming;held=previewFraming?'CINEMATIC':null;preview.setAttribute('aria-pressed',String(previewFraming));});
-    previous.addEventListener('click',()=>stepAspect(-1));next.addEventListener('click',()=>stepAspect(1));
-    refreshAspect=()=>{
-      const preset=ASPECT_PRESETS[aspectIndex];
-      const geometry=aspectGeometry(w/h,preset,cfg.cinematicBarsPercent);
-      const percent=geometry.top;
-      const ratio=(w/h)/Math.max(.01,1-2*percent/100);
-      label.textContent=preset.label+' · '+(geometry.side>0?'side bars '+geometry.side.toFixed(1)+'%':percent>0?'top / bottom '+percent.toFixed(1)+'%':'full frame');
-      sample.style.setProperty('--frame-bar',percent+'%');
-      sample.style.setProperty('--frame-side',geometry.side+'%');
-    };
-    framing.append(previous,sample,label,next,preview);root.append(framing);refreshAspect();
-
-    if ('controls' in root.dataset) root.append(controls(() => cfg, () => zoom));
+    // Came from a tour: Restart plays it again.
+    if (root.dataset.replay) {
+      const restart = button('Restart');
+      bar.append(restart);
+      restart.addEventListener('click', () => {
+        self.gone = true;
+        root.dataset.demo = root.dataset.replay;
+        root.dataset.interactive = '';
+        delete root.dataset.replay;
+        mount(root);
+      });
+    }
   } else {
     // A demo: play/pause and restart, and its caption. With reduced motion it waits to be played.
     const pause = button('Pause'), restart = button('Restart');
     self.note = document.createElement('span');
     self.note.className = 'cze-view__note';
-    bar.append(pause, self.note, restart);
+    const tryIt = 'interactive' in root.dataset && button('Try it');
+    bar.append(pause, ...(tryIt ? [tryIt] : []), self.note, restart);
     stage.setAttribute('role', 'img');
     stage.setAttribute('aria-label', 'An animation of the zoom. The caption under it says what it shows.');
     let paused = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -286,7 +306,14 @@ async function mount(root) {
     });
     const start = () => {
       build();
-      demo = new Run(script, { cfg: () => cfg, zoom: () => zoom, hold: m => (held = m), keys: k => showKeys(k) });
+      demo = new Run('interactive' in root.dataset ? function* (d) {
+        yield* script(d);
+        yield* d.say('Now press Try it.');
+        yield* d.wait(4000);
+      } : script, {
+        cfg: () => cfg, zoom: () => zoom, cloth: () => cloth, hold: m => (held = m), keys: k => showKeys(k),
+        aspect: step => { followsAspect = true; applyAspect(step); showKeys('→'); return ASPECT_PRESETS[aspectIndex].label; },
+      });
     };
     restart.addEventListener('click', () => {
       start();
@@ -296,6 +323,17 @@ async function mount(root) {
     start();
     self.paused = () => paused;
     self.restart = start;
+    // Hands over to the person: the same element comes back as a view to try.
+    if (tryIt) {
+      tryIt.addEventListener('click', () => {
+        if (self.gone) return;
+        self.gone = true;
+        root.dataset.replay = root.dataset.demo;
+        delete root.dataset.demo;
+        delete root.dataset.interactive;
+        mount(root).then(() => root.querySelector('.cze-view__stage').focus({ preventScroll: true }));
+      });
+    }
   }
 
   // Frames, only while on screen.
@@ -307,9 +345,10 @@ async function mount(root) {
   const ctx = canvas.getContext('2d');
 
   function frame(now) {
+    if (self.gone) return;
     const ms = Math.min(250, now - last);
     last = now;
-    const running = !demo || !self.paused();
+    const running = (!demo || !self.paused()) && !tooSmall;
     if (demo && running) {
       if (demo.done) {
         if (restartIn < 0) restartIn = 2000;
@@ -327,14 +366,13 @@ async function mount(root) {
         mode = held || 'NONE';
         zoom.update(mode);
       }
-      if (!script && mode === 'CINEMATIC' && aspectIndex >= 0) {
+      if ((!script || followsAspect) && mode === 'CINEMATIC' && aspectIndex >= 0) {
         const g=aspectGeometry(w/h,ASPECT_PRESETS[aspectIndex],cfg.cinematicBarsPercent);
         zoom.heldBarsPercent=g.top;zoom.targetBarsPercent=g.top;targetSidePercent=g.side;
       }
       const desiredSide=mode==='CINEMATIC'?targetSidePercent:0;
       sidePercent+=(desiredSide-sidePercent)*(1-Math.exp(-ms/60));
       zoom.frame(ms);
-      if (!script) refreshAspect();
       // Vanilla's smooth camera while the cinematic profile asks for it; the title screen's slow turn when nobody looks.
       const smooth = mode === 'CINEMATIC' ? cfg.cinematicCamera : mode === 'REGULAR' ? cfg.regularCinematicCamera : false;
       if (demo) look.yaw += ms * 0.004;
@@ -349,6 +387,19 @@ async function mount(root) {
     const fov = zoom.fov(), p = (h / 2) / Math.tan(fov * Math.PI / 360);
     world.style.perspective = p + 'px';
     cam.style.transform = `translateZ(${p}px) rotateX(${pitch}deg) rotateY(${yaw}deg)`;
+
+    // The settings screen over the blurred world.
+    if (cloth) {
+      if (running) cloth.tick(ms);
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.clearRect(0, 0, canvas.width / scale, canvas.height / scale);
+      cloth.draw(ctx, guiW, guiH);
+      self.note.textContent = demo.caption;
+      self.pressed?.();
+      if (visible || document.fullscreenElement === root) requestAnimationFrame(frame);
+      return;
+    }
 
     // Bars first, then the HUD, as the mod draws them; the HUD and crosshair go while a profile that hides them is held.
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
@@ -367,6 +418,9 @@ async function mount(root) {
       ctx.fillStyle='#000';const side=canvas.width/scale*sidePercent/100;
       ctx.fillRect(0,0,side,canvas.height/scale);ctx.fillRect(canvas.width/scale-side,0,side,canvas.height/scale);
     }
+    // The world stops at the bars, so none of it shows past their edges where the page isn't on a whole pixel.
+    const toCss = scale / (window.devicePixelRatio || 1), edgeY = barsPct > 1e-4 ? barH * toCss : 0, edgeX = sidePercent > .01 ? w * sidePercent / 100 : 0;
+    world.style.clipPath = `inset(${edgeY}px ${edgeX}px)`;
     if (!hides('HideHud')) drawHud(ctx, sprites, guiW, guiH);
     if (!hides('HideCrosshair')) blit(ctx, sprites, 'hud/crosshair', Math.floor((guiW - 15) / 2), Math.floor((guiH - 15) / 2), 15, 15);
     if (demo && demo.graph) drawGraph(ctx, demo.graph, zoom, guiW, guiH);
@@ -436,149 +490,6 @@ function drawGraph(ctx, g, zoom, w, h) {
 
 // --------------------------------------------------------------- settings
 
-/** A drop-down in the page's greys: a button showing the choice and a list under it, with the keys a select has. */
-let pickers = 0;
-function picker(options, value, set) {
-  const wrap = document.createElement('span');
-  wrap.className = 'cze-view__picker';
-  const id = `cze-picker-${++pickers}`;
-  const btn = Object.assign(document.createElement('button'), { type: 'button' });
-  btn.setAttribute('aria-haspopup', 'listbox');
-  btn.setAttribute('aria-expanded', 'false');
-  btn.setAttribute('aria-controls', id);
-  const list = Object.assign(document.createElement('ul'), { id, hidden: true, tabIndex: -1 });
-  list.setAttribute('role', 'listbox');
-  const keys = Object.keys(options);
-  const items = keys.map(k => {
-    const li = Object.assign(document.createElement('li'), { id: `${id}-${k}`, textContent: options[k] });
-    li.setAttribute('role', 'option');
-    li.addEventListener('pointerdown', e => e.preventDefault());
-    li.addEventListener('click', e => {
-      // The list sits in a label, which would pass the click on to the button and open it again.
-      e.preventDefault();
-      choose(k);
-      close();
-    });
-    li.addEventListener('pointermove', () => mark(keys.indexOf(k)));
-    list.append(li);
-    return li;
-  });
-  let active = 0;
-  const mark = i => {
-    active = (i + keys.length) % keys.length;
-    items.forEach((li, j) => li.classList.toggle('is-active', j === active));
-    list.setAttribute('aria-activedescendant', items[active].id);
-    items[active].scrollIntoView({ block: 'nearest' });
-  };
-  const choose = k => {
-    value = k;
-    btn.textContent = options[k];
-    items.forEach((li, j) => li.setAttribute('aria-selected', String(keys[j] === k)));
-    set(k);
-  };
-  const open = () => {
-    list.hidden = false;
-    btn.setAttribute('aria-expanded', 'true');
-    mark(keys.indexOf(value));
-    list.focus({ preventScroll: true });
-  };
-  const close = (refocus = true) => {
-    if (list.hidden) return;
-    list.hidden = true;
-    btn.setAttribute('aria-expanded', 'false');
-    if (refocus) btn.focus({ preventScroll: true });
-  };
-  btn.addEventListener('click', e => {
-    e.preventDefault();
-    list.hidden ? open() : close();
-  });
-  btn.addEventListener('keydown', e => {
-    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
-      e.preventDefault();
-      open();
-    }
-  });
-  list.addEventListener('keydown', e => {
-    const step = { ArrowDown: 1, ArrowUp: -1 }[e.key];
-    if (step) mark(active + step);
-    else if (e.key === 'Home') mark(0);
-    else if (e.key === 'End') mark(keys.length - 1);
-    else if (e.key === 'Enter' || e.key === ' ') {
-      choose(keys[active]);
-      close();
-    } else if (e.key === 'Escape') close();
-    else if (e.key === 'Tab') return close(false);
-    else if (e.key.length === 1) {
-      // Type-ahead: the next option starting with the letter.
-      const c = e.key.toLowerCase();
-      const i = keys.findIndex((k, j) => j > active && options[k].toLowerCase().startsWith(c));
-      const first = keys.findIndex(k => options[k].toLowerCase().startsWith(c));
-      if (i >= 0 || first >= 0) mark(i >= 0 ? i : first);
-    } else return;
-    e.preventDefault();
-  });
-  list.addEventListener('focusout', e => {
-    if (!wrap.contains(e.relatedTarget)) close(false);
-  });
-  choose(value);
-  wrap.append(btn, list);
-  return wrap;
-}
-
-/** The settings to try beside the view: the cinematic profile's curve, time, starting zoom and bars, and the wheel's. */
-function controls(cfg, zoom) {
-  const form = document.createElement('form');
-  form.className = 'cze-view__controls';
-  form.addEventListener('submit', e => e.preventDefault());
-  const row = (label, input, out) => {
-    const l = document.createElement('label');
-    l.append(Object.assign(document.createElement('span'), { textContent: label }));
-    if (out) l.append(out);
-    l.append(input);
-    form.append(l);
-  };
-  const range = (min, max, step, get, set, show) => {
-    const i = Object.assign(document.createElement('input'), { type: 'range', min, max, step, value: get() });
-    const o = document.createElement('output');
-    const sync = () => (o.textContent = show(Number(i.value)));
-    i.addEventListener('input', () => {
-      set(Number(i.value));
-      sync();
-    });
-    sync();
-    return [i, o];
-  };
-  row('Easing curve', picker(CURVES, cfg().cinematicZoomInCurve, v => {
-    const c = cfg();
-    c.cinematicZoomInCurve = c.cinematicZoomOutCurve = c.regularZoomInCurve = c.regularZoomOutCurve = v;
-  }));
-  row('Zoom duration', ...range(0, 1000, 20, () => cfg().cinematicZoomInMs, v => {
-    const c = cfg();
-    c.cinematicZoomInMs = c.cinematicZoomOutMs = c.regularZoomInMs = c.regularZoomOutMs = v;
-  }, v => `${v} ms`));
-  row('Starting zoom', ...range(1, 10, 0.5, () => cfg().cinematicStartingZoom, v => (cfg().cinematicStartingZoom = cfg().regularStartingZoom = v), v => `${v}×`));
-  row('Bar height', ...range(0, 50, 1, () => cfg().cinematicBarsPercent, v => (cfg().cinematicBarsPercent = v), v => `${v}%`));
-  const snaps = Object.assign(document.createElement('input'), { type: 'text', placeholder: '2x, 4x, 45fov', spellcheck: false });
-  snaps.addEventListener('input', () => (cfg().cinematicSnapPoints = cfg().regularSnapPoints = snaps.value));
-  row('Target values', snaps);
-  const checks = Object.assign(document.createElement('div'), { className: 'cze-view__checks' });
-  form.append(checks);
-  const check = (label, get, set) => {
-    const i = Object.assign(document.createElement('input'), { type: 'checkbox', checked: get() });
-    i.addEventListener('change', () => set(i.checked));
-    const l = document.createElement('label');
-    l.className = 'is-check';
-    l.append(i, Object.assign(document.createElement('span'), { textContent: label }));
-    checks.append(l);
-  };
-  check('Hide HUD', () => cfg().cinematicHideHud, v => (cfg().cinematicHideHud = cfg().regularHideHud = v));
-  check('Hide crosshair', () => cfg().cinematicHideCrosshair, v => (cfg().cinematicHideCrosshair = cfg().regularHideCrosshair = v));
-  check('Toggle zoom', () => cfg().cinematicToggle, v => (cfg().cinematicToggle = cfg().regularToggle = v));
-  check('Allow ultrawide zoom (0.5×)', () => cfg().allowUltrawide, v => setUltrawide(cfg(), v));
-  check('Magnetize zoom targets', () => cfg().cinematicMagnetize, v => (cfg().cinematicMagnetize = cfg().regularMagnetize = v));
-  return form;
-}
-
 // ------------------------------------------------------------------- demos
 
 /** A script running a step at a time: each helper yields until its step is done. */
@@ -623,6 +534,32 @@ class Run {
     }
   }
 
+  /** The pointer glides there, eased as a hand slows down. */
+  *move(at, ms = 500) {
+    const c = this.cloth(), p = at(c), x0 = c.mx, y0 = c.my;
+    if (!p) throw new Error('nothing to point at');
+    for (let t = 0; t < ms; ) {
+      t += yield;
+      const k = Math.min(1, t / ms), e = 1 - (1 - k) ** 3;
+      c.mx = x0 + (p.x - x0) * e;
+      c.my = y0 + (p.y - y0) * e;
+    }
+  }
+
+  *click(at, after = 700) {
+    yield* this.move(at);
+    const c = this.cloth();
+    c.click(c.mx, c.my);
+    yield* this.wait(after);
+  }
+
+  /** Scrolls a row into view and waits for the list to settle. */
+  *reveal(label) {
+    const c = this.cloth();
+    c.reveal(c.row(label));
+    yield* this.wait(450);
+  }
+
   *bars(delta, times, gap = 70) {
     for (let i = 0; i < times; i++) {
       this.zoom().adjustBars(delta);
@@ -648,7 +585,7 @@ const DEMOS = {
     yield* d.wait(600);
     yield* d.bars(-1, 10);
     yield* d.wait(400);
-    yield* d.say('← and → cycle framing presets in the web preview.');
+    yield* d.say('← and → cycle aspect ratios.');
     for (const ratio of [1.85, 2.35, 2.39]) {
       d.zoom().adjustBars(barsForAspect(16/9,ratio)-d.zoom().heldBarsPercent);
       d.keys('→ '+ratio+':1');
@@ -674,6 +611,34 @@ const DEMOS = {
     }
   },
 
+  // The settings screen: a tooltip, a toggle, a curve, and each tab.
+  *settings(d) {
+    const c = d.cloth();
+    c.mx = c.w * .7;
+    c.my = c.h * .75;
+    const button = label => s => s.button(s.row(label));
+    yield* d.say('Hover a setting to see what it does.');
+    yield* d.move(s => ({ x: 120, y: s.center(s.row('Black bars')) }), 700);
+    yield* d.wait(1500);
+    yield* d.say('Click to change one. Its name turns italic until you save.');
+    yield* d.click(button('Adjust bar size'), 1400);
+    yield* d.say('Curves cycle through their shapes.');
+    yield* d.reveal('Zoom in curve');
+    yield* d.click(button('Zoom in curve'), 800);
+    yield* d.click(button('Zoom in curve'), 1000);
+    yield* d.say('Each profile has its own tab.');
+    yield* d.click(s => s.tabCentre(1), 1200);
+    c.wheel(6);
+    yield* d.wait(1000);
+    yield* d.say('General & Wheel holds the wheel and FOV settings.');
+    yield* d.click(s => s.tabCentre(2), 1600);
+    yield* d.say('Aspect ratio and bars holds the ratios and their animation.');
+    yield* d.click(s => s.tabCentre(3), 1800);
+    yield* d.say('Save & Quit keeps your changes.');
+    yield* d.move(s => s.saveButton(), 700);
+    yield* d.wait(1800);
+  },
+
   // Snap targets with the wheel snapping to them.
   *snaps(d) {
     const cfg = d.cfg();
@@ -687,6 +652,19 @@ const DEMOS = {
       d.caption = v > 0 ? 'Each notch in goes to the next target.' : 'Each notch out goes back one.';
       yield* d.wheel(v, 1);
       yield* d.wait(1000);
+    }
+    d.press(null, 'C let go');
+    yield* d.wait(1600);
+  },
+
+  // The aspect ratios, one key press at a time: wider than the screen adds top and bottom bars, narrower adds side bars.
+  *aspects(d) {
+    yield* d.say('Hold C, then ← and → cycle the aspect ratios.');
+    d.press('CINEMATIC', 'C held');
+    yield* d.wait(1000);
+    for (let i = 0; i < 8; i++) {
+      d.caption = `${d.aspect(i + 1)}: ${i < 4 ? 'bars on the top and bottom' : i === 4 ? 'the full screen' : 'bars on the sides'}.`;
+      yield* d.wait(1200);
     }
     d.press(null, 'C let go');
     yield* d.wait(1600);
@@ -724,6 +702,7 @@ const DEMOS = {
 
 for (const root of document.querySelectorAll('.cze-view')) {
   mount(root).catch(e => {
+    root.classList.add('is-failed');
     root.textContent = "The zoom view didn't load.";
     console.error('[cze-view]', e);
   });

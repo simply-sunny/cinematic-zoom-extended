@@ -1,7 +1,11 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><link rel="preload" href="./assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta name="description" content="A configurable zoom with animated cinema bars and two profiles."><title>Changelog · Cinematic Zoom Extended</title><link rel="stylesheet" href="./assets/base.css"><link rel="stylesheet" href="./assets/style.css"><script src="./assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header shell"><a class="brand" href="./index.html">Cinematic Zoom Extended</a><nav aria-label="Project"><a href="https://github.com/simply-sunny/cinematic-zoom-extended">Source ↗</a><a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases">Releases ↗</a></nav></header><div class="wiki shell"><aside class="sidebar"><input id="search" type="search" placeholder="Search" aria-label="Search"><nav aria-label="Documentation"><a href="./index.html">Overview</a><a href="./install.html">Install</a><a href="./use.html">Use</a><a href="./configure.html">Configure</a><a href="./troubleshooting.html">Troubleshooting</a><a href="./changelog.html" aria-current="page">Changelog</a><a href="./develop.html">Develop</a></nav><span class="meta" id="search-status" role="status"></span></aside><main class="wiki-main" id="main" tabindex="-1"><article class="prose"><h1>Changelog</h1><p>All notable changes to Cinematic Zoom Extended are documented here. This project follows <a href="https://semver.org/">Semantic Versioning</a>.</p>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><link rel="preload" href="./assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin><meta name="description" content="A configurable zoom with animated cinema bars and two profiles."><link rel="icon" type="image/png" href="./assets/icon.png"><meta property="og:type" content="website"><meta property="og:title" content="Cinematic Zoom Extended"><meta property="og:description" content="A configurable zoom with animated cinema bars and two profiles."><meta property="og:image" content="https://simply-sunny.github.io/cinematic-zoom-extended/assets/icon.png"><title>Changelog · Cinematic Zoom Extended</title><link rel="stylesheet" href="./assets/base.css"><link rel="stylesheet" href="./assets/style.css"><script src="./assets/site.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header shell"><a class="brand" href="./index.html">Cinematic Zoom Extended</a><nav aria-label="Project"><a href="https://github.com/simply-sunny/cinematic-zoom-extended">Source ↗</a><a href="https://github.com/simply-sunny/cinematic-zoom-extended/releases">Releases ↗</a></nav></header><div class="wiki shell"><aside class="sidebar"><input id="search" type="search" placeholder="Search" aria-label="Search"><nav aria-label="Documentation"><a href="./index.html">Overview</a><a href="./install.html">Install</a><a href="./use.html">Use</a><a href="./configure.html">Configure</a><a href="./troubleshooting.html">Troubleshooting</a><a href="./roadmap.html">Roadmap</a><a href="./changelog.html" aria-current="page">Changelog</a><a href="./develop.html">Develop</a></nav><span class="meta" id="search-status" role="status"></span></aside><main class="wiki-main" id="main" tabindex="-1"><article class="prose"><h1>Changelog</h1>
 <h2 id="unreleased">[Unreleased]</h2>
+<h3>Changed</h3>
+<ul>
+<li>Everything the mod saves is now in <code>config/cinematiczoom/</code>: <code>config.json</code> and <code>backups/</code>. Files from older versions move there on launch.</li>
+</ul>
 <h2 id="110-2026-11-04">[1.1.0] - 2026-11-04</h2>
-<h3 id="added">Added</h3>
+<h3>Added</h3>
 <ul>
 <li>Forge and NeoForge: native builds for 1.20.1, 1.21.1, 1.21.5, 1.21.7, 1.21.11, 26.1, 26.2, and 26.3, plus NeoForge 1.21.2. Forge published no 1.21.2 loader. Each jar loads only on its exact Minecraft version.</li>
 <li>Aspect ratio profiles: Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1, plus custom ratios. Ratios wider than the window add top and bottom bars. Narrower ratios add side bars.</li>
@@ -10,7 +14,7 @@
 <li>Accurate magnification up to 500× for new installations.</li>
 <li>Forge settings: a built-in settings screen on 1.21.1 and newer, with no Cloth Config or Mod Menu needed.</li>
 </ul>
-<h3 id="changed">Changed</h3>
+<h3>Changed</h3>
 <ul>
 <li>Zoom without bars: bind it to <code>V</code> by default. Players who already set this key keep their choice.</li>
 <li>Jar names: Fabric jars now include the loader, such as <code>cinematic-zoom-extended-1.21.2-1.21.4-fabric-1.1.0.jar</code>.</li>
@@ -18,16 +22,13 @@
 <li>Existing settings: saved configs keep their FOV behavior, percentage bars, and zoom limits. Migration writes <code>cinematiczoom.json.v1.bak</code> first.</li>
 <li>Repository: use <code>cinematic-zoom-extended</code> for GitHub, the Gradle project, and new build filenames. Existing release downloads, mod identity, key binds, and saved settings keep their names and contents.</li>
 <li>CurseForge publishing: read the version and artifact prefix from <code>gradle.properties</code>, and upload every loader.</li>
-</ul>
-<h3 id="documentation">Documentation</h3>
-<ul>
 <li>Update source, issue, release, and badge links to the renamed repository.</li>
 <li>Wiki: interactive and animated zoom views, run on the mod's zoom code over the game's title screen panorama. Add left and right aspect presets and letterbox and pillarbox visuals.</li>
 <li>Add the CurseForge release sheet, configuration defaults, and repository instructions using the shared templates standard.</li>
 </ul>
 <h2 id="100-2026-10-20">[1.0.0] - 2026-10-20</h2>
 <p>First release, based on Cinematic Zoom 1.3 by Mel1x.</p>
-<h3 id="added_1">Added</h3>
+<h3>Added</h3>
 <ul>
 <li>Cinematic (bars) and Regular (no bars) zoom profiles with separate keys, zoom, timing, curves, toggle mode, snap targets, and HUD settings.</li>
 <li>Per-frame smoothing with six easing curves.</li>
@@ -38,7 +39,7 @@
 <li>Config migration from Cinematic Zoom 1.3.</li>
 <li>40 headless regression checks.</li>
 </ul>
-<h3 id="changed_1">Changed</h3>
+<h3>Changed</h3>
 <ul>
 <li>New mod ID <code>cinematiczoom_extended</code> and name <strong>Cinematic Zoom Extended</strong>; original <code>cinematiczoom</code> declared incompatible.</li>
 <li>Cloth Config and Mod Menu are now required.</li>
@@ -46,7 +47,7 @@
 <li>Version now comes from <code>gradle.properties</code>; JARs use <code>cinematiczoom-extended-&lt;minecraft&gt;-&lt;version&gt;.jar</code>.</li>
 <li>Updated metadata, links, translations, and credits.</li>
 </ul>
-<h3 id="fixed">Fixed</h3>
+<h3>Fixed</h3>
 <ul>
 <li>Profile switching preserves the current zoom.</li>
 <li>HUD, crosshair, and hands hide independently.</li>
