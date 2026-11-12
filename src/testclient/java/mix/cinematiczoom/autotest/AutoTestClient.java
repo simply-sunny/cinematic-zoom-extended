@@ -49,7 +49,14 @@ public final class AutoTestClient {
     private Phase phase = Phase.WAIT_WORLD;
     private int ticks;
     private int featureIndex;
-    private static final String[] FEATURES = {"aspect-4-3", "aspect-1-1", "regular-500x", "exit", "settings", "linear-midpoint", "smooth-midpoint"};
+    private static final String[] FEATURES = {"aspect-4-3", "aspect-1-1", "regular-500x", "exit", "settings", "linear-midpoint", "smooth-midpoint", "spyglass", "replay"};
+    private static final int SPYGLASS = 7;
+    private static final int REPLAY = 8;
+    /** While set, the test mixin replaces the game's FOV the way Flashback's replay camera does. */
+    public static volatile boolean replayFov;
+    public static final float REPLAY_FOV = 37f;
+    // Flashback is Fabric-only, so only Fabric test runs load the replay stand-in mixin.
+    private static final boolean REPLAY_TEST = Boolean.getBoolean("cinematiczoom.test.replay");
     private boolean rotated;
     private volatile boolean normalShotDone;
     private volatile boolean zoomShotDone;
@@ -424,7 +431,9 @@ public final class AutoTestClient {
         setZoomKeyDown(true);
         if (++ticks >= ZOOM_WAIT_TICKS) {
             if (!Boolean.TRUE.equals(callStatic("mix.cinematiczoom.ZoomManager", "isZoomActive"))) {
-                fail("cinematic zoom did not activate"); return;
+                Object open = currentScreen(client);
+                fail("cinematic zoom did not activate: screen=" + (open == null ? null : open.getClass().getSimpleName())
+                        + " windowActive=" + call(client, "isWindowActive", "isWindowFocused")); return;
             }
             takeScreenshot(client, "zoomed");
             phase = Phase.WAIT_ZOOMED;
@@ -451,6 +460,16 @@ public final class AutoTestClient {
         focus(client);
         mix.cinematiczoom.ZoomConfig cfg = mix.cinematiczoom.ZoomConfig.INSTANCE;
         setZoomKeyDown(false);
+        if (featureIndex == REPLAY && !REPLAY_TEST) featuresDone = true;
+        if (featuresDone) {
+            if (++ticks >= 40) {
+                if (musicVolume(client) == 0) { fail("music setting was not put back after the zoom"); return; }
+                writeStatus("ok\nfeatures=" + FEATURES.length + "\n");
+                phase = Phase.DONE;
+                ticks = 0;
+            }
+            return;
+        }
         setKeyDown("ZOOM_NO_BARS_KEYBIND", false);
         if (++ticks == 1) {
             if (featureIndex >= 5) {
@@ -465,9 +484,19 @@ public final class AutoTestClient {
             if (featureIndex >= 5) cfg.aspectRatio = "2.39:1";
             cfg.regularStartingZoom = 500;
             cfg.minZoomMultiplier = mix.cinematiczoom.ZoomMath.MIN_MULTIPLIER;
+            if (featureIndex == REPLAY) {
+                cfg.barEnterMs = 0;
+                replayFov = true;
+            }
+            if (featureIndex == SPYGLASS) {
+                cfg.barEnterMs = 0;
+                cfg.spyglassZoom = mix.cinematiczoom.SpyglassZoom.CINEMATIC;
+                runCommand(client, "item replace entity @p weapon.mainhand with spyglass");
+            }
         }
         // Release both modes before entering a new one, preserving starting-zoom semantics.
-        if (ticks > 10 && (featureIndex < 2 || featureIndex >= 5)) setZoomKeyDown(true);
+        if (ticks > 10 && (featureIndex < 2 || (featureIndex >= 5 && featureIndex != SPYGLASS))) setZoomKeyDown(true);
+        if (featureIndex == SPYGLASS) setUseKeyDown(client, ticks > 10 && ticks <= 100);
         if (ticks > 10 && featureIndex == 2) setKeyDown("ZOOM_NO_BARS_KEYBIND", true);
         if (featureIndex < 2) setKeyDown("NEXT_ASPECT_KEYBIND", ticks >= 20 && ticks < 30);
         if (featureIndex == 4 && ticks == 20) {
@@ -498,13 +527,31 @@ public final class AutoTestClient {
                 if (Math.abs(multiplier - .002) > .000001) throw new IllegalStateException("500x was not reached: " + multiplier);
             }
             if (featureIndex == 4 && currentScreen(client) == null) throw new IllegalStateException("configuration screen did not open");
+            if (featureIndex == SPYGLASS) {
+                Object player = get(client, "player");
+                if (!Boolean.TRUE.equals(call(player, "isUsingItem"))) throw new IllegalStateException("spyglass was not in use");
+                if (!Boolean.TRUE.equals(callStatic("mix.cinematiczoom.ZoomManager", "isZoomActive"))) throw new IllegalStateException("spyglass did not start the zoom");
+                if (Boolean.TRUE.equals(call(player, "isScoping", "isUsingSpyglass"))) throw new IllegalStateException("vanilla spyglass scope was not replaced");
+            }
+            if (featureIndex == REPLAY) {
+                double base = ((Number) callStatic("mix.cinematiczoom.ZoomManager", "getBaseFov")).doubleValue();
+                double multiplier = ((Number) callStatic("mix.cinematiczoom.ZoomManager", "getCurrentFovMul")).doubleValue();
+                if (Math.abs(base - REPLAY_FOV) > .001) throw new IllegalStateException("zoom did not see the replay FOV: " + base);
+                if (multiplier > .5) throw new IllegalStateException("zoom did not apply over the replay FOV: " + multiplier);
+                if (musicVolume(client) != 0) throw new IllegalStateException("music setting was not 0 while zoomed");
+            }
             takeScreenshot(client, FEATURES[featureIndex]);
         }
         File capture = new File(new File(runDirectory,"screenshots"), TARGET + "-" + FEATURES[featureIndex] + ".png");
         if (ticks > 100 && capture.isFile()) {
+            replayFov = false;
+            if (featureIndex == SPYGLASS) {
+                setUseKeyDown(client, false);
+                cfg.spyglassZoom = mix.cinematiczoom.SpyglassZoom.OFF;
+            }
             if (++featureIndex == FEATURES.length) {
-                writeStatus("ok\nfeatures=" + FEATURES.length + "\n");
-                phase=Phase.DONE;
+                // Let the last zoom end, then check the Music setting came back.
+                featuresDone = true;
             }
             ticks=0;
         }
@@ -611,28 +658,41 @@ public final class AutoTestClient {
             Field pause = findField(options.getClass(), "pauseOnLostFocus");
             if (pause != null && pause.getType() == boolean.class) pause.setBoolean(options, false);
         }
-        Field active = findField(client.getClass(), "windowActive");
+        Field active = findField(client.getClass(), "windowActive", "windowFocused");
         if (active != null && active.getType() == boolean.class) active.setBoolean(client, true);
         Object screen = currentScreen(client);
         if (screen != null && screen.getClass().getSimpleName().equals("PauseScreen")) closeScreen(screen);
+        // Mark the window focused without asking the OS, so test windows stay behind other apps.
         Object window = call(client, "getWindow");
         if (window == null) {
             return;
-        }
-        Object handle = call(window, "handle", "getHandle", "getWindow");
-        if (handle instanceof Number number) {
-            try {
-                Class<?> glfw = Class.forName("org.lwjgl.glfw.GLFW");
-                Method focus = glfw.getMethod("glfwFocusWindow", long.class);
-                focus.invoke(null, number.longValue());
-            } catch (Throwable ignored) {
-                // 26.x uses SDL instead of GLFW
-            }
         }
         Field focused = findField(window.getClass(), "focused");
         if (focused != null && focused.getType() == boolean.class) {
             focused.setBoolean(window, true);
         }
+    }
+
+    private boolean featuresDone;
+
+    private static double musicVolume(Object client) throws Exception {
+        Method get = Class.forName("mix.cinematiczoom.ZoomAudio").getDeclaredMethod("musicVolume", client.getClass());
+        get.setAccessible(true);
+        return ((Number) get.invoke(null, client)).doubleValue();
+    }
+
+    private static void runCommand(Object client, String command) throws Exception {
+        Object server = call(client, "getSingleplayerServer", "getServer");
+        Object commands = call(server, "getCommandManager", "getCommands");
+        Object source = call(server, "getCommandSource", "createCommandSourceStack");
+        onServerThread(server, () -> executeCommand(commands, source, command));
+    }
+
+    private static void setUseKeyDown(Object client, boolean down) throws Exception {
+        Object key = get(get(client, "options"), "keyUse", "useKey");
+        Method setter = findMethod(key.getClass(), "setPressed", boolean.class);
+        if (setter == null) setter = findMethod(key.getClass(), "setDown", boolean.class);
+        setter.invoke(key, down);
     }
 
     private static void setZoomKeyDown(boolean down) throws Exception {

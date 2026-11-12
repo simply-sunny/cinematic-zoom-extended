@@ -61,5 +61,14 @@
   "cinematiczoom.option.toggle_mode": "Toggle zoom",
   "cinematiczoom.option.toggle_mode.tooltip": "Toggle zoom on and off with each key press instead of holding.",
   "key.cinematiczoom.previous_aspect": "Previous Aspect Ratio",
-  "key.cinematiczoom.next_aspect": "Next Aspect Ratio"
+  "key.cinematiczoom.next_aspect": "Next Aspect Ratio",
+  "cinematiczoom.option.spyglass_zoom": "Spyglass zoom",
+  "cinematiczoom.option.spyglass_zoom.tooltip": "Use a spyglass to zoom with this mod instead of its scope. While on, the zoom keys do nothing and the zoom lasts as long as you hold the spyglass up.",
+  "cinematiczoom.option.spyglass_zoom.off": "Off",
+  "cinematiczoom.option.spyglass_zoom.cinematic": "Cinematic zoom",
+  "cinematiczoom.option.spyglass_zoom.regular": "Regular zoom",
+  "cinematiczoom.option.mute_music": "Mute music while zooming",
+  "cinematiczoom.option.mute_music.tooltip": "Turn the Music volume setting to 0 while zoomed and put it back when the zoom ends. Other sounds are unaffected.",
+  "cinematiczoom.option.wheel_ticks": "Tick when scrolling",
+  "cinematiczoom.option.wheel_ticks.tooltip": "Play a soft tick for each mouse wheel step while zooming, higher going in and lower going out."
 }

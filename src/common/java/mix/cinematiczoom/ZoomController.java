@@ -153,6 +153,8 @@ public final class ZoomController {
         current = target = start = 1; duration = 0; started = clock.getAsLong();
         bars.reset(); geometry = BarGeometry.NONE; baseFov = 70; snapKey = "";
     }
+    /** The magnification the zoom is heading for. */
+    public double heldMagnification() { return held; }
     public double currentMultiplier() { return 1/current; }
     public double magnification() { return current; }
     public void setBaseFov(double fov) { if (Double.isFinite(fov) && fov>0 && fov<180) baseFov=fov; }

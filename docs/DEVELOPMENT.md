@@ -45,6 +45,8 @@ QUILT=1 OPEN_RESULTS=0 scripts/test-clients.sh compat
 
 `compat` runs each intermediate version a Fabric jar covers, such as 1.21.3 on the 1.21.2–1.21.4 jar. It compiles the mod against that version and replaces the demo worlds, so run the main suite with `CLEAN=1` afterward.
 
-These create isolated demo worlds. They exercise cinematic input, edge-triggered ratio switching, regular 500× zoom, exit, settings opening, and intermediate linear/smooth bars. A successful process exit alone is insufficient: each client must write `ok` and the expected feature count. Captures and logs live under `build/testclient`. Test instrumentation is generated only with `-PtestClient` and must never appear in release jars.
+`test-clients.sh` compiles every target once, then runs 3 clients at a time. Set `JOBS` to change that. Windows stay behind other apps: the test marks the game focused without asking the OS.
+
+These create isolated demo worlds and start each run from default settings. They exercise cinematic input, edge-triggered ratio switching, regular 500× zoom, exit, settings opening, intermediate linear/smooth bars, spyglass zoom, and the Music setting returning after a zoom. Fabric runs also zoom over a stand-in for Flashback's replay camera, which replaces the game's FOV the way Flashback does. A successful process exit alone is insufficient: each client must write `ok`. Captures and logs live under `build/testclient`. Test instrumentation is generated only with `-PtestClient` and must never appear in release jars.
 
 There's no CI. Before a release, check everything locally: `./gradlew test`, `./gradlew buildAll` for the Fabric jars, `./gradlew -p platform/forge build -Pmc=<version>` and the same for `platform/neoforge` for each Forge and NeoForge target (`platform/forge-1.20.1` for 1.20.1, adding `-PlegacyNeo` for NeoForge), and the desktop test clients above.

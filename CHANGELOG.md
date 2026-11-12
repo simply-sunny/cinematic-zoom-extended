@@ -4,6 +4,18 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-12
+
+### Added
+
+- Spyglass zoom: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (#9)
+- Mute music while zooming: the Music volume setting goes to 0 while zoomed and back when the zoom ends. On by default.
+- Scroll ticks: a soft tick for each mouse wheel step while zooming, higher going in and lower going out. On by default.
+
+### Fixed
+
+- Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. (#10)
+
 ## [1.2.0] - 2026-11-06
 
 ### Changed

@@ -10,6 +10,7 @@ import mix.cinematiczoom.ZoomConfig;
 import mix.cinematiczoom.ZoomCurve;
 import mix.cinematiczoom.BarAnimationMode;
 import mix.cinematiczoom.FovMode;
+import mix.cinematiczoom.SpyglassZoom;
 
 public final class ModMenuIntegration implements ModMenuApi {
     @Override
@@ -272,6 +273,28 @@ public final class ModMenuIntegration implements ModMenuApi {
 
             // 3. General & Wheel Category
             ConfigCategory generalCat = builder.getOrCreateCategory(Component.translatable("cinematiczoom.config.category.general"));
+
+            generalCat.addEntry(
+                eb.startEnumSelector(Component.translatable("cinematiczoom.option.spyglass_zoom"), SpyglassZoom.class, cfg.spyglassZoom)
+                  .setEnumNameProvider(v -> Component.translatable("cinematiczoom.option.spyglass_zoom." + v.name().toLowerCase(java.util.Locale.ROOT)))
+                  .setTooltip(Component.translatable("cinematiczoom.option.spyglass_zoom.tooltip"))
+                  .setSaveConsumer(v -> cfg.spyglassZoom = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.mute_music"), cfg.muteMusicWhileZooming)
+                  .setTooltip(Component.translatable("cinematiczoom.option.mute_music.tooltip"))
+                  .setSaveConsumer(v -> cfg.muteMusicWhileZooming = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
+                  .setTooltip(Component.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
+                  .setSaveConsumer(v -> cfg.wheelTicks = v)
+                  .build()
+            );
 
             generalCat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.mouse_wheel_enabled"), cfg.mouseWheelEnabled)

@@ -7,7 +7,7 @@ public final class Minecraft {
     public Window getWindow() { return new Window(); }
     public static final class Window { public int getWidth() { return 1920; } public int getHeight() { return 1080; } }
     public Object level = new Object();
-    public Object player = new Object();
+    public net.minecraft.client.player.LocalPlayer player = new net.minecraft.client.player.LocalPlayer();
     public final Options options = new Options();
     public final Gui gui = new Gui();
     public Object screen;

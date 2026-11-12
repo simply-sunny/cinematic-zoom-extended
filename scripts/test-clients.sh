@@ -67,9 +67,20 @@ run_target() {
 	if [ "$CLEAN" = "1" ]; then
 		rm -rf "$run/saves"
 	fi
-	rm -f "$run/config/cinematiczoom.json"
+	# Start from defaults: a run that stops mid-test can leave settings such as spyglass zoom on.
+	rm -rf "$run/config/cinematiczoom.json" "$run/config/cinematiczoom"
 	rm -rf "$run/screenshots" "$run/autotest"
 	mkdir -p "$run/autotest"
+	# Without a version line the game treats options.txt as ancient, fails to read it and shows
+	# the accessibility onboarding. Stamp it with this Minecraft version's data version.
+	if ! grep -q '^version:' "$run/options.txt" 2>/dev/null; then
+		local mc="${compat:-$target}" data_version
+		data_version="$(unzip -p "$HOME/.gradle/caches/fabric-loom/$mc/minecraft-client.jar" version.json 2>/dev/null \
+			| python3 -c 'import json,sys; print(json.load(sys.stdin)["world_version"])' 2>/dev/null || true)"
+		if [ -n "$data_version" ]; then
+			{ echo "version:$data_version"; cat "$run/options.txt" 2>/dev/null; } >"$run/options.txt.new" && mv "$run/options.txt.new" "$run/options.txt"
+		fi
+	fi
 	ensure_option "$run/options.txt" onboardAccessibility false
 	ensure_option "$run/options.txt" tutorialStep none
 	ensure_option "$run/options.txt" pauseOnLostFocus false
@@ -109,7 +120,7 @@ run_target() {
 	fi
 
 	local kind
-	for kind in normal zoomed aspect-4-3 aspect-1-1 regular-500x exit settings linear-midpoint smooth-midpoint; do
+	for kind in normal zoomed aspect-4-3 aspect-1-1 regular-500x exit settings linear-midpoint smooth-midpoint spyglass replay; do
 		local source="$run/screenshots/$target-$kind.png"
 		if [ ! -f "$source" ]; then
 			echo "[$target] missing screenshot $source" >&2
@@ -159,7 +170,7 @@ HTML
 		for target in ${SUCCEEDED[@]+"${SUCCEEDED[@]}"}; do
 			echo "<section><h2>$target</h2><div class=\"grid\">"
 			local kind
-			for kind in normal zoomed aspect-4-3 aspect-1-1 regular-500x exit settings linear-midpoint smooth-midpoint; do
+			for kind in normal zoomed aspect-4-3 aspect-1-1 regular-500x exit settings linear-midpoint smooth-midpoint spyglass replay; do
 				echo "<figure><img src=\"screenshots/$target-$kind.png\" alt=\"$target $kind\"><figcaption>$kind</figcaption></figure>"
 			done
 			echo "</div></section>"
@@ -179,10 +190,34 @@ HTML
 	fi
 }
 
+# Targets run JOBS at a time (default 3). Each has its own run folder, log and Gradle project.
+JOBS="${JOBS:-3}"
+RESULTS="$OUT/results"
+rm -rf "$RESULTS"
+mkdir -p "$RESULTS"
+run_and_record() {
+	if run_target "$1"; then echo ok >"$RESULTS/$1"; else echo failed >"$RESULTS/$1"; fi
+}
+# Compile every target once up front, so parallel runs don't race to build the same shared code.
+(cd "$ROOT" && ./gradlew -PtestClient --console=plain -q $(for t in "${TARGETS[@]}"; do printf ':%s:classes ' "${t%@*}"; done)) >"$LOGS/compile.log" 2>&1 || {
+	echo "compile failed (see $LOGS/compile.log)" >&2
+	exit 1
+}
+running=0
+for target in "${TARGETS[@]}"; do
+	run_and_record "$target" &
+	running=$((running + 1))
+	if [ "$running" -ge "$JOBS" ]; then
+		wait
+		running=0
+	fi
+done
+wait
+
 SUCCEEDED=()
 FAILED=()
 for target in "${TARGETS[@]}"; do
-	if run_target "$target"; then
+	if [ "$(cat "$RESULTS/$target" 2>/dev/null)" = "ok" ]; then
 		SUCCEEDED+=("$target")
 	else
 		FAILED+=("$target")

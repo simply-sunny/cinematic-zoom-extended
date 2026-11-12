@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 public final class ZoomManager {
@@ -34,9 +35,12 @@ public final class ZoomManager {
         boolean isCinematicDown = canInteract && isZoomKeyPressed(client, cinematicKey);
         boolean isRegularDown = canInteract && isZoomKeyPressed(client, regularKey);
 
-        ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown);
+        boolean isScoping = canInteract && client.player.isUsingItem() && client.player.getActiveItem().isOf(Items.SPYGLASS);
+
+        ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown, isScoping);
 
         ZOOM.update(desiredMode);
+        updateMusic(client, ZOOM.isActive());
         canRender = canInteract;
         boolean previous = isZoomKeyPressed(client, previousAspect);
         boolean next = isZoomKeyPressed(client, nextAspect);
@@ -100,12 +104,18 @@ public final class ZoomManager {
         return false;
     }
 
+    private static void updateMusic(MinecraftClient client, boolean zoomActive) {
+        double volume = ZoomSounds.musicVolume(zoomActive, ZoomAudio.musicVolume(client));
+        if (!Double.isNaN(volume)) ZoomAudio.setMusicVolume(client, volume);
+    }
+
     public static void reset(MinecraftClient client) {
         INPUT.reset();
         wasPrevious = wasNext = canRender = false;
         applyOverrides(client, ZoomMode.NONE);
         currentAppliedMode = ZoomMode.NONE;
         ZOOM.reset();
+        updateMusic(client, false);
     }
 
     public static void frameUpdate() {
@@ -133,7 +143,11 @@ public final class ZoomManager {
     }
 
     public static boolean onWheel(double vertical) {
-        return ZOOM.onWheel(vertical);
+        double before = ZOOM.heldMagnification();
+        boolean consumed = ZOOM.onWheel(vertical);
+        float pitch = ZoomSounds.wheelTick(before, ZOOM.heldMagnification(), System.nanoTime());
+        if (pitch > 0) ZoomAudio.playTick(pitch);
+        return consumed;
     }
 
     public static void setBaseFov(double fov) {
