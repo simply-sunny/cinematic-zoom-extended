@@ -2,11 +2,10 @@ package mix.cinematiczoom;
 import java.util.*;
 public final class AspectRatios {
     public static final String LEGACY = "Legacy";
-    public static final List<String> DEFAULTS = List.of("Auto","2.39:1","2.35:1","2:1","1.85:1","16:9","16:10","4:3","1:1");
+    public static final List<String> DEFAULTS = List.of("2.39:1","2.35:1","2:1","1.85:1","16:9","16:10","4:3","1:1");
     private AspectRatios() {}
     public static double parse(String text) {
         if (text == null) return Double.NaN;
-        if (text.equalsIgnoreCase("Auto")) return 0;
         try {
             String[] parts=text.trim().split(":",-1);
             double a=Double.parseDouble(parts[0]);
@@ -21,7 +20,7 @@ public final class AspectRatios {
             if(entry!=null && (LEGACY.equals(entry) || Double.isFinite(parse(entry)))) valid.add(entry.trim());
             if(valid.size()==64) break;
         }
-        if(valid.isEmpty()) valid.add("Auto");
+        if(valid.isEmpty()) valid.add(DEFAULTS.get(0));
         return new ArrayList<>(valid);
     }
     public static String cycle(List<String> entries,String selected,int direction) {
@@ -37,7 +36,7 @@ public final class AspectRatios {
             return new BarGeometry(0,0,inset,inset);
         }
         double ratio=parse(profile), actual=(double)width/height;
-        if(!Double.isFinite(ratio) || ratio==0) return BarGeometry.NONE;
+        if(!Double.isFinite(ratio)) return BarGeometry.NONE;
         if(ratio>actual) { double b=(1-actual/ratio)/2; return new BarGeometry(0,0,b,b); }
         double b=(1-ratio/actual)/2; return new BarGeometry(b,b,0,0);
     }

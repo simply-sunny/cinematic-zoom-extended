@@ -94,7 +94,7 @@ Settings are saved to `config/cinematiczoom/config.json` in your Minecraft folde
 | macOS | `~/Library/Application Support/minecraft/config/cinematiczoom/config.json` |
 | Linux | `~/.minecraft/config/cinematiczoom/config.json` |
 
-New installations default to accurate magnification up to **500×** and independent **Smooth** bar animation. The aspect list includes Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1. Add custom ratios or remove/reorder entries to control cycling. Ratios wider than the window add top/bottom bars; narrower ratios add side bars. This crops the composition with an overlay; it does not change Minecraft's viewport or projection aspect.
+New installations default to accurate magnification up to **500×** and independent **Smooth** bar animation. The aspect list includes 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1. Add custom ratios or remove/reorder entries to control cycling. Ratios wider than the window add top/bottom bars; narrower ratios add side bars. This crops the composition with an overlay; it does not change Minecraft's viewport or projection aspect.
 
 Left/right cycling works while cinematic zoom is active. Enable global cycling to select a profile outside zoom. Selection is saved. Entry, exit, and profile changes each have their own Instant, Linear, or Smooth mode and duration. Profile changes leave magnification unchanged. Regular zoom always clears bars.
 

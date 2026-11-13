@@ -362,7 +362,7 @@ public final class ZoomSettingsScreen {
             );
 
             ConfigCategory aspect = builder.getOrCreateCategory(Component.literal("Aspect ratio and bars"));
-            aspect.addEntry(eb.startStrField(Component.literal("Selected aspect ratio (Auto, 2.39:1, 4:3, Legacy...)"), cfg.aspectRatio).setSaveConsumer(v -> cfg.aspectRatio = v).build());
+            aspect.addEntry(eb.startStrField(Component.literal("Selected aspect ratio (2.39:1, 4:3, Legacy...)"), cfg.aspectRatio).setSaveConsumer(v -> cfg.aspectRatio = v).build());
             aspect.addEntry(eb.startStrList(Component.literal("Enabled profiles (ordered, custom W:H allowed)"), cfg.aspectProfiles).setSaveConsumer(v -> cfg.aspectProfiles = v).build());
             aspect.addEntry(eb.startBooleanToggle(Component.literal("Allow cycling outside cinematic zoom"), cfg.globalProfileCycling).setSaveConsumer(v -> cfg.globalProfileCycling = v).build());
             aspect.addEntry(eb.startBooleanToggle(Component.literal("Animate profile changes"), cfg.animateProfileCycle).setSaveConsumer(v -> cfg.animateProfileCycle = v).build());

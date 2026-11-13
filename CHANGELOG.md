@@ -20,7 +20,8 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ### Changed
 
-- Bar animations default to Smooth instead of Linear for entry, exit and profile changes. Existing settings are kept.
+- Bar animations default to Smooth instead of Linear for entry, exit and profile changes. Settings saved as Linear by 1.2 are switched to Smooth, since that was the old default. Other choices are kept, and Linear can be picked again.
+- The Auto aspect ratio is gone. It showed no bars, which the name didn't say. Saved lists drop it, and a zoom that used it switches to the first ratio left, usually 2.39:1.
 
 ### Fixed
 
