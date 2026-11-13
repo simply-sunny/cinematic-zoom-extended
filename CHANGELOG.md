@@ -8,7 +8,7 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ### Added
 
-- Spyglass zoom: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (mel1x/CinematicZoom#9)
+- Spyglass mode: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (mel1x/CinematicZoom#9)
 - Scroll ticks: a soft tick for each mouse wheel step while zooming, higher going in and lower going out. On by default. (#2)
 - Zoom sounds: the spyglass sounds play when any zoom starts and ends, not only a spyglass zoom. They don't show in subtitles. On by default.
 - Sound settings: wheel ticks, zoom sounds and the screenshot sound have their own Sound page, and the screenshot sound can be turned off apart from the shutter.

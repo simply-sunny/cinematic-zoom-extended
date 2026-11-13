@@ -58,7 +58,7 @@ All keys are rebindable under **Options → Controls → Key Binds → Cinematic
 - Take a screenshot and black bars snap shut and open, like a camera shutter. The saved screenshot doesn't include them.
 - With **Ultra-wide zoom** enabled, scroll back past 1× to reach 0.5×.
 - Zoom and overlays are disabled while a GUI screen is open.
-- With **Spyglass zoom** on, use a spyglass to zoom instead. The zoom lasts as long as you hold it up, and the zoom keys do nothing.
+- Set **Spyglass mode** to Regular or Cinematic to use a spyglass to zoom instead. The zoom lasts as long as you hold it up, and the zoom keys do nothing.
 - Zoom works in [Flashback](https://github.com/Moulberry/Flashback) replays.
 
 ## Configure
@@ -80,7 +80,7 @@ Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is the
 | Show zoom percentage | On | Shows the magnification above the hotbar when a zoom starts or you scroll. |
 | Screenshot shutter | On | Black bars snap shut and open on each screenshot. |
 | Full frame rate HUD while zooming | On | Switches off HUD frame-rate limiters such as Gnetum while a zoom is on screen, so the bars stay smooth. |
-| Spyglass zoom | Off | Cinematic or Regular makes a spyglass zoom with that profile instead of its scope. |
+| Spyglass mode | Off | Cinematic or Regular makes a spyglass zoom with that profile instead of its scope. |
 | Zoom stacking | On | A spyglass multiplies with a zoom already on. Off, the spyglass takes over while it's up. |
 | Mouse wheel during zoom | On | Changes magnification while zooming. |
 | Ultra-wide zoom | Off | Allows zooming out to `0.5×` when enabled. |
