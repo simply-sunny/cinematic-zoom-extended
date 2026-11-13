@@ -101,7 +101,7 @@ public final class FeatureRegressionTest {
         check(Files.exists(file.resolveSibling("backups").resolve("v1.json")),"migration backup");
         CFG.save(); check(Files.readString(file).contains("customUnknown"),"unknown settings preserved");
         Files.writeString(file,"{\"configVersion\":2,\"regularStartingZoom\":8,\"barEnterMode\":\"FUTURE\",\"wheelStep\":\"oops\"}");
-        CFG.load(); near(CFG.regularStartingZoom,8); check(CFG.barEnterMode==BarAnimationMode.LINEAR,"unknown enum fallback");
+        CFG.load(); near(CFG.regularStartingZoom,8); check(CFG.barEnterMode==BarAnimationMode.SMOOTH,"unknown enum fallback");
         Files.writeString(file,"{\"configVersion\":2,\"regularStartingZoom\":9,\"allowUltrawide\":{},\"maxZoomMultiplier\":\"oops\",\"smoothMs\":[],\"cinematicHideHud\":true}");
         CFG.load(); near(CFG.regularStartingZoom,9); check(CFG.cinematicHideHud,"malformed aliases preserve valid fields");
         Files.delete(file); CFG.load(); near(CFG.regularStartingZoom,3); check(CFG.fovMode==FovMode.ACCURATE,"missing config restores fresh defaults");

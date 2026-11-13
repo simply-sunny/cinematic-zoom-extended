@@ -20,6 +20,9 @@ parser.add_argument('versions', nargs='*')
 args = parser.parse_args()
 out = ROOT / 'build/testclient' / args.loader
 out.mkdir(parents=True, exist_ok=True)
+# Keeps the game windows from taking focus or the mouse while you work.
+AGENT = ROOT / 'build/testclient/background-window-agent.jar'
+subprocess.run([str(ROOT/'gradlew'), '-p', str(ROOT), '-q', 'backgroundWindowAgent'], check=True)
 results = []
 for version in args.versions or VERSIONS:
     if version not in VERSIONS:
@@ -43,7 +46,7 @@ for version in args.versions or VERSIONS:
         fixture_options = ROOT / 'versions' / version / 'run/options.txt'
         if fixture_options.exists():
             lines.extend(line for line in fixture_options.read_text().splitlines() if line.startswith('version:'))
-    overrides = {'onboardAccessibility':'false', 'tutorialStep':'none', 'pauseOnLostFocus':'false',
+    overrides = {'onboardAccessibility':'false', 'tutorialStep':'none', 'pauseOnLostFocus':'false', 'soundCategory_music':'0.0',
                  'key_key.cinematiczoom.zoom':'key.keyboard.c',
                  'key_key.cinematiczoom.previous_aspect':'key.keyboard.left', 'key_key.cinematiczoom.next_aspect':'key.keyboard.right'}
     # The no-bars key stays unset so the run uses and saves the mod's default.
@@ -56,6 +59,7 @@ for version in args.versions or VERSIONS:
     status.unlink(missing_ok=True)
     command = [str(ROOT/'gradlew'), '-p', str(project), 'runClient', '-PtestClient', '-Pmc='+version, '--console=plain']
     if legacy and args.loader == 'neoforge': command.append('-PlegacyNeo')
+    command.append('-PbackgroundWindowAgent='+str(AGENT))
     if os.getenv('JAVA_INSTALLATIONS'): command.append('-Porg.gradle.java.installations.paths='+os.environ['JAVA_INSTALLATIONS'])
     log = out/(version+'.log')
     print(args.loader, version, 'starting', flush=True)

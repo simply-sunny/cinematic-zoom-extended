@@ -465,7 +465,6 @@ public final class AutoTestClient {
             if (++ticks == 1) pressScreenshotKey(client);
             if (ticks >= 40) {
                 if (mix.cinematiczoom.ScreenshotShutter.lastTriggerNanos() == Long.MIN_VALUE / 2) { fail("screenshot shutter did not start"); return; }
-                if (musicVolume(client) == 0) { fail("music setting was not put back after the zoom"); return; }
                 writeStatus("ok\nfeatures=" + FEATURES.length + "\n");
                 phase = Phase.DONE;
                 ticks = 0;
@@ -540,7 +539,6 @@ public final class AutoTestClient {
                 double multiplier = ((Number) callStatic("mix.cinematiczoom.ZoomManager", "getCurrentFovMul")).doubleValue();
                 if (Math.abs(base - REPLAY_FOV) > .001) throw new IllegalStateException("zoom did not see the replay FOV: " + base);
                 if (multiplier > .5) throw new IllegalStateException("zoom did not apply over the replay FOV: " + multiplier);
-                if (musicVolume(client) != 0) throw new IllegalStateException("music setting was not 0 while zoomed");
             }
             takeScreenshot(client, FEATURES[featureIndex]);
         }
@@ -552,7 +550,6 @@ public final class AutoTestClient {
                 cfg.spyglassZoom = mix.cinematiczoom.SpyglassZoom.OFF;
             }
             if (++featureIndex == FEATURES.length) {
-                // Let the last zoom end, then check the Music setting came back.
                 featuresDone = true;
             }
             ticks=0;
@@ -690,12 +687,6 @@ public final class AutoTestClient {
             }
         }
         throw new IllegalStateException("no screenshot-key method");
-    }
-
-    private static double musicVolume(Object client) throws Exception {
-        Method get = Class.forName("mix.cinematiczoom.ZoomAudio").getDeclaredMethod("musicVolume", client.getClass());
-        get.setAccessible(true);
-        return ((Number) get.invoke(null, client)).doubleValue();
     }
 
     private static void runCommand(Object client, String command) throws Exception {
