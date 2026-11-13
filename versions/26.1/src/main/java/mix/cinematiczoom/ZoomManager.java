@@ -99,6 +99,9 @@ public final class ZoomManager {
 
     public static void frameUpdate() {
         ZOOM.updateFrame();
+        if (ScreenshotShutter.reopenClickDue(System.nanoTime()) && ZoomConfig.INSTANCE.screenshotSound) {
+            ZoomAudio.click(ScreenshotShutter.REOPEN_PITCH, ScreenshotShutter.REOPEN_VOLUME);
+        }
     }
 
     public static double getCurrentFovMul() {
@@ -170,7 +173,7 @@ public final class ZoomManager {
 
     /** Called when the game saves a screenshot. */
     public static void onScreenshot() {
-        if (ScreenshotShutter.trigger(System.nanoTime()) && ZoomConfig.INSTANCE.screenshotSound) ZoomAudio.click(ScreenshotShutter.SOUND_PITCH, ScreenshotShutter.SOUND_VOLUME);
+        if (ScreenshotShutter.trigger(System.nanoTime()) && ZoomConfig.INSTANCE.screenshotSound) ZoomAudio.click(ScreenshotShutter.SHUT_PITCH, ScreenshotShutter.SHUT_VOLUME);
     }
 
     public static void renderBars(GuiGraphicsExtractor context) {

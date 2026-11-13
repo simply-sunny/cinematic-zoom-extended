@@ -71,7 +71,7 @@
   "cinematiczoom.option.wheel_ticks": "Tick when scrolling",
   "cinematiczoom.option.wheel_ticks.tooltip": "Play a soft tick for each mouse wheel step while zooming, higher going in and lower going out.",
   "cinematiczoom.option.screenshot_sound": "Screenshot sound",
-  "cinematiczoom.option.screenshot_sound.tooltip": "Play a click with the screenshot shutter.",
+  "cinematiczoom.option.screenshot_sound.tooltip": "Play a click as the shutter bars shut and a softer one as they open.",
   "cinematiczoom.option.zoom_stacking": "Zoom stacking",
   "cinematiczoom.option.zoom_stacking.tooltip": "Looking through a spyglass while zooming multiplies the two. Off, the spyglass takes over while it's up and the zoom comes back when you lower it. Has no effect while Spyglass zoom is on.",
   "cinematiczoom.option.vignette": "Keep vignette",

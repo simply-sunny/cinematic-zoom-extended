@@ -298,17 +298,36 @@ public final class ZoomRegressionTest {
             ZoomManager.renderBars(graphics);
             require(graphics.texts.isEmpty(), "zoom percentage drew with the setting off");
         });
-        run("screenshot shutter clicks once and draws its bars", () -> {
+        run("screenshot shutter clicks shut, then open, and draws its bars", () -> {
             ZoomAudio.clear();
             ScreenshotShutter.reset();
             tick();
             ZoomManager.onScreenshot();
             ZoomManager.onScreenshot();
-            require(ZoomAudio.clicks.size() == 1, "shutter clicked " + ZoomAudio.clicks.size() + " times");
+            ZoomManager.frameUpdate();
+            require(ZoomAudio.clicks.equals(java.util.List.of(ScreenshotShutter.SHUT_PITCH)),
+                    "expected one shut click before the bars open, got " + ZoomAudio.clicks);
             Thread.sleep(100);
             var graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
             ZoomManager.renderBars(graphics);
             require(graphics.fills.size() == 2 && graphics.fills.get(0)[3] > 0, "shutter bars were not drawn");
+            Thread.sleep(60);
+            ZoomManager.frameUpdate();
+            ZoomManager.frameUpdate();
+            require(ZoomAudio.clicks.equals(java.util.List.of(ScreenshotShutter.SHUT_PITCH, ScreenshotShutter.REOPEN_PITCH)),
+                    "expected a shut click then one reopen click, got " + ZoomAudio.clicks);
+            ScreenshotShutter.reset();
+        });
+        run("screenshot sound off keeps the shutter silent", () -> {
+            ZoomAudio.clear();
+            ScreenshotShutter.reset();
+            CFG.screenshotSound = false;
+            tick();
+            ZoomManager.onScreenshot();
+            Thread.sleep(160);
+            ZoomManager.frameUpdate();
+            require(ZoomAudio.clicks.isEmpty(), "shutter clicked with the sound off: " + ZoomAudio.clicks);
+            require(ScreenshotShutter.coverage(System.nanoTime()) > 0, "the shutter itself stopped with the sound off");
             ScreenshotShutter.reset();
         });
         run("spyglass zoom setting is saved", () -> {

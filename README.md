@@ -76,7 +76,7 @@ Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is the
 | Toggle zoom | Off | Hold the key by default. |
 | Tick when scrolling | On | A soft tick for each wheel step, higher going in and lower going out. |
 | Zoom sounds | On | The spyglass sounds when a zoom starts and ends. |
-| Screenshot sound | On | A click with the screenshot shutter. |
+| Screenshot sound | On | A click as the bars shut and a softer one as they open. |
 | Show zoom percentage | On | Shows the magnification above the hotbar when a zoom starts or you scroll. |
 | Screenshot shutter | On | Black bars snap shut and open on each screenshot. |
 | Full frame rate HUD while zooming | On | Switches off HUD frame-rate limiters such as Gnetum while a zoom is on screen, so the bars stay smooth. |

@@ -15,7 +15,7 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 - Zoom stacking: a setting in General. On, looking through a spyglass during a zoom multiplies the two. Off, the spyglass takes over while it's up and the zoom comes back when you lower it. On by default.
 - Keep vignette: a per-profile setting that keeps the darkened screen corners during a zoom, fitted inside the bars and following them as they move, instead of hiding them with the HUD. On for cinematic, off for regular. Fabric 26.2 and later.
 - Zoom percentage: the magnification, such as 300%, shows above the hotbar when a zoom starts or you scroll, then fades. On by default. (#1)
-- Screenshot shutter: black bars snap shut and open with a click when you take a screenshot. The saved screenshot doesn't include them. Works alongside screenshot mods such as Screencapper on 26.2 and later. On by default. (#3)
+- Screenshot shutter: black bars snap shut and open when you take a screenshot, with a click as they shut and a softer one as they open. The saved screenshot doesn't include them. Works alongside screenshot mods such as Screencapper on 26.2 and later. On by default. (#3)
 - Full frame rate HUD while zooming: mods that draw the HUD at a lower frame rate, such as Gnetum, are switched off while a zoom is on screen, so the bars move as smoothly as the game. On by default.
 
 ### Changed
