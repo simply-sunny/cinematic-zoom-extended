@@ -47,4 +47,4 @@ QUILT=1 OPEN_RESULTS=0 scripts/test-clients.sh compat
 
 These create isolated demo worlds. They exercise cinematic input, edge-triggered ratio switching, regular 500× zoom, exit, settings opening, and intermediate linear/smooth bars. A successful process exit alone is insufficient: each client must write `ok` and the expected feature count. Captures and logs live under `build/testclient`. Test instrumentation is generated only with `-PtestClient` and must never appear in release jars.
 
-CI compiles the 26 available primary loader/version combinations and runs core regressions. Desktop screenshot verification is a separate local release gate; CI build success does not substitute for it.
+There's no CI. Before a release, check everything locally: `./gradlew test`, `./gradlew buildAll` for the Fabric jars, `./gradlew -p platform/forge build -Pmc=<version>` and the same for `platform/neoforge` for each Forge and NeoForge target (`platform/forge-1.20.1` for 1.20.1, adding `-PlegacyNeo` for NeoForge), and the desktop test clients above.
