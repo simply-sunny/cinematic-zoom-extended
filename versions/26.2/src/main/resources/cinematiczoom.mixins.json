@@ -13,6 +13,7 @@
     "OptionsMixin",
     "MinecraftMixin",
 		  "GuiMixin",
+		"ScreenshotKeyMixin",
     "HudMixin",
     "ItemInHandRendererMixin",
     "GameRendererMixin"
