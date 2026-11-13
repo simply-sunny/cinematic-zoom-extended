@@ -290,6 +290,13 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             generalCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.zoom_sounds"), cfg.zoomSounds)
+                  .setTooltip(Text.translatable("cinematiczoom.option.zoom_sounds.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomSounds = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
                 eb.startBooleanToggle(Text.translatable("cinematiczoom.option.show_zoom_percentage"), cfg.showZoomPercentage)
                   .setTooltip(Text.translatable("cinematiczoom.option.show_zoom_percentage.tooltip"))
                   .setSaveConsumer(v -> cfg.showZoomPercentage = v)

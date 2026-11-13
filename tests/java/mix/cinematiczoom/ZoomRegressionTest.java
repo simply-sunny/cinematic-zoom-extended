@@ -202,6 +202,32 @@ public final class ZoomRegressionTest {
             ZoomManager.onWheel(-1);
             require(ZoomAudio.ticks.isEmpty(), "ticked with ticks off");
         });
+        run("zoom sounds play once in and once out, and not for the spyglass", () -> {
+            ZoomAudio.clear();
+            cinematic.down = true;
+            tick();
+            settle();
+            require(ZoomAudio.zoomIns == 1 && ZoomAudio.zoomOuts == 0, "zoom-in sound did not play once");
+            cinematic.down = false;
+            tick();
+            settle();
+            require(ZoomAudio.zoomIns == 1 && ZoomAudio.zoomOuts == 1, "zoom-out sound did not play once");
+            CFG.spyglassZoom = SpyglassZoom.CINEMATIC;
+            client.player.useItem = new ItemStack(Items.SPYGLASS);
+            tick();
+            settle();
+            client.player.useItem = ItemStack.EMPTY;
+            tick();
+            settle();
+            require(ZoomAudio.zoomIns == 1 && ZoomAudio.zoomOuts == 1, "doubled the spyglass's own sounds");
+            CFG.zoomSounds = false;
+            regular.down = true;
+            tick();
+            regular.down = false;
+            tick();
+            settle();
+            require(ZoomAudio.zoomIns == 1 && ZoomAudio.zoomOuts == 1, "played zoom sounds with the setting off");
+        });
         run("zoom percentage draws above the hotbar", () -> {
             regular.down = true;
             tick();

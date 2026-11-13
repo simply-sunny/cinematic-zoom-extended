@@ -55,6 +55,7 @@ public final class ZoomConfig {
     public FovMode fovMode = FovMode.ACCURATE;
     public SpyglassZoom spyglassZoom = SpyglassZoom.OFF;
     public boolean wheelTicks = true;
+    public boolean zoomSounds = true;
     public boolean showZoomPercentage = true;
     public boolean screenshotShutter = true;
     public boolean overrideHudFrameLimiters = true;

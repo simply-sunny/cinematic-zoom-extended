@@ -58,6 +58,9 @@ public final class ZoomManager {
         }
 
         if (desiredMode != currentAppliedMode) {
+            int sound = ZoomSounds.zoomTransition(currentAppliedMode, desiredMode, isScoping && SpyglassZoom.enabled());
+            if (sound > 0) ZoomAudio.zoomIn();
+            else if (sound < 0) ZoomAudio.zoomOut();
             applyOverrides(client, desiredMode);
             currentAppliedMode = desiredMode;
         }

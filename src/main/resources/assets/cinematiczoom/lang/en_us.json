@@ -69,6 +69,8 @@
   "cinematiczoom.option.spyglass_zoom.regular": "Regular zoom",
   "cinematiczoom.option.wheel_ticks": "Tick when scrolling",
   "cinematiczoom.option.wheel_ticks.tooltip": "Play a soft tick for each mouse wheel step while zooming, higher going in and lower going out.",
+  "cinematiczoom.option.zoom_sounds": "Zoom sounds",
+  "cinematiczoom.option.zoom_sounds.tooltip": "Play the spyglass sounds when a zoom starts and ends. A spyglass zoom already plays them.",
   "cinematiczoom.option.show_zoom_percentage": "Show zoom percentage",
   "cinematiczoom.option.show_zoom_percentage.tooltip": "Show the magnification, such as 300%, above the hotbar when a zoom starts or you scroll. It fades after a moment.",
   "cinematiczoom.option.screenshot_shutter": "Screenshot shutter",
