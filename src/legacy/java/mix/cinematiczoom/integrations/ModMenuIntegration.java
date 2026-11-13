@@ -297,6 +297,20 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             generalCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.show_zoom_percentage"), cfg.showZoomPercentage)
+                  .setTooltip(Text.translatable("cinematiczoom.option.show_zoom_percentage.tooltip"))
+                  .setSaveConsumer(v -> cfg.showZoomPercentage = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.screenshot_shutter"), cfg.screenshotShutter)
+                  .setTooltip(Text.translatable("cinematiczoom.option.screenshot_shutter.tooltip"))
+                  .setSaveConsumer(v -> cfg.screenshotShutter = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
                 eb.startBooleanToggle(Text.translatable("cinematiczoom.option.mouse_wheel_enabled"), cfg.mouseWheelEnabled)
                   .setTooltip(Text.translatable("cinematiczoom.option.mouse_wheel_enabled.tooltip"))
                   .setSaveConsumer(v -> cfg.mouseWheelEnabled = v)

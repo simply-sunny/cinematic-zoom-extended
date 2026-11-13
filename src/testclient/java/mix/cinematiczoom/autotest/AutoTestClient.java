@@ -462,7 +462,9 @@ public final class AutoTestClient {
         setZoomKeyDown(false);
         if (featureIndex == REPLAY && !REPLAY_TEST) featuresDone = true;
         if (featuresDone) {
-            if (++ticks >= 40) {
+            if (++ticks == 1) pressScreenshotKey(client);
+            if (ticks >= 40) {
+                if (mix.cinematiczoom.ScreenshotShutter.lastTriggerNanos() == Long.MIN_VALUE / 2) { fail("screenshot shutter did not start"); return; }
                 if (musicVolume(client) == 0) { fail("music setting was not put back after the zoom"); return; }
                 writeStatus("ok\nfeatures=" + FEATURES.length + "\n");
                 phase = Phase.DONE;
@@ -674,6 +676,21 @@ public final class AutoTestClient {
     }
 
     private boolean featuresDone;
+
+    /** Saves a screenshot the way the screenshot key does, through the overload the shutter hooks. */
+    private static void pressScreenshotKey(Object client) throws Exception {
+        Object target = renderTarget(client);
+        for (Method method : screenshotClass().getMethods()) {
+            Class<?>[] p = method.getParameterTypes();
+            if (Modifier.isStatic(method.getModifiers()) && (method.getName().equals("grab") || method.getName().equals("saveScreenshot"))
+                    && p.length == 3 && p[0] == File.class && p[1].isInstance(target) && Consumer.class.isAssignableFrom(p[2])) {
+                Consumer<Object> consumer = message -> log("key screenshot callback: " + message);
+                method.invoke(null, new File(System.getProperty("user.dir")), target, consumer);
+                return;
+            }
+        }
+        throw new IllegalStateException("no screenshot-key method");
+    }
 
     private static double musicVolume(Object client) throws Exception {
         Method get = Class.forName("mix.cinematiczoom.ZoomAudio").getDeclaredMethod("musicVolume", client.getClass());

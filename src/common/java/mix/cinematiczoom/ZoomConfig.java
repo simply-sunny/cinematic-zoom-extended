@@ -56,6 +56,8 @@ public final class ZoomConfig {
     public SpyglassZoom spyglassZoom = SpyglassZoom.OFF;
     public boolean muteMusicWhileZooming = true;
     public boolean wheelTicks = true;
+    public boolean showZoomPercentage = true;
+    public boolean screenshotShutter = true;
     public boolean logarithmicScroll = true;
     private transient JsonObject originalJson = new JsonObject();
     private transient boolean saveAllowed = true;

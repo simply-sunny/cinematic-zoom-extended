@@ -146,7 +146,7 @@ public final class ZoomManager {
         double before = ZOOM.heldMagnification();
         boolean consumed = ZOOM.onWheel(vertical);
         float pitch = ZoomSounds.wheelTick(before, ZOOM.heldMagnification(), System.nanoTime());
-        if (pitch > 0) ZoomAudio.playTick(pitch);
+        if (pitch > 0) ZoomAudio.click(pitch, ZoomSounds.TICK_VOLUME);
         return consumed;
     }
 
@@ -180,6 +180,11 @@ public final class ZoomManager {
         return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHands : cfg.cinematicHideHands;
     }
 
+    /** Called when the game saves a screenshot. */
+    public static void onScreenshot() {
+        if (ScreenshotShutter.trigger(System.nanoTime())) ZoomAudio.click(ScreenshotShutter.SOUND_PITCH, ScreenshotShutter.SOUND_VOLUME);
+    }
+
     public static void renderBars(DrawContext context) {
         if (!canRender) return;
         int width = context.getScaledWindowWidth();
@@ -187,5 +192,13 @@ public final class ZoomManager {
         var window = MinecraftClient.getInstance().getWindow();
         int color = Math.round(ZoomConfig.INSTANCE.barOpacity * 255) << 24;
         ZOOM.barGeometry(window.getFramebufferWidth(), window.getFramebufferHeight()).draw(width, height, color, context::fill);
+        int shutter = (int) Math.round(height * ScreenshotShutter.coverage(System.nanoTime()));
+        if (shutter > 0) {
+            context.fill(0, 0, width, shutter, 0xFF000000);
+            context.fill(0, height - shutter, width, height, 0xFF000000);
+        }
+        int alpha = ZOOM.readoutAlpha();
+        // Text drawn nearly transparent comes out opaque on older versions, so skip the faint end.
+        if (alpha > 8) context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, ZOOM.readoutText(), width / 2, height - 68, (alpha << 24) | 0xFFFFFF);
     }
 }

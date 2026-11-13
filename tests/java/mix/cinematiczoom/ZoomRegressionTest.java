@@ -212,6 +212,30 @@ public final class ZoomRegressionTest {
             ZoomManager.onWheel(-1);
             require(ZoomAudio.ticks.isEmpty(), "ticked with ticks off");
         });
+        run("zoom percentage draws above the hotbar", () -> {
+            regular.down = true;
+            tick();
+            var graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            ZoomManager.renderBars(graphics);
+            require(graphics.texts.equals(java.util.List.of("300%")), "expected 300%, drew " + graphics.texts);
+            CFG.showZoomPercentage = false;
+            graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            ZoomManager.renderBars(graphics);
+            require(graphics.texts.isEmpty(), "zoom percentage drew with the setting off");
+        });
+        run("screenshot shutter clicks once and draws its bars", () -> {
+            ZoomAudio.clear();
+            ScreenshotShutter.reset();
+            tick();
+            ZoomManager.onScreenshot();
+            ZoomManager.onScreenshot();
+            require(ZoomAudio.clicks.size() == 1, "shutter clicked " + ZoomAudio.clicks.size() + " times");
+            Thread.sleep(100);
+            var graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            ZoomManager.renderBars(graphics);
+            require(graphics.fills.size() == 2 && graphics.fills.get(0)[3] > 0, "shutter bars were not drawn");
+            ScreenshotShutter.reset();
+        });
         run("spyglass zoom setting is saved", () -> {
             freshConfigDir();
             CFG.spyglassZoom = SpyglassZoom.REGULAR;

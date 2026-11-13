@@ -294,6 +294,20 @@ public final class ZoomSettingsScreen {
             );
 
             generalCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.show_zoom_percentage"), cfg.showZoomPercentage)
+                  .setTooltip(Component.translatable("cinematiczoom.option.show_zoom_percentage.tooltip"))
+                  .setSaveConsumer(v -> cfg.showZoomPercentage = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.screenshot_shutter"), cfg.screenshotShutter)
+                  .setTooltip(Component.translatable("cinematiczoom.option.screenshot_shutter.tooltip"))
+                  .setSaveConsumer(v -> cfg.screenshotShutter = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.mouse_wheel_enabled"), cfg.mouseWheelEnabled)
                   .setTooltip(Component.translatable("cinematiczoom.option.mouse_wheel_enabled.tooltip"))
                   .setSaveConsumer(v -> cfg.mouseWheelEnabled = v)

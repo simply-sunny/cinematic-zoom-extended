@@ -17,7 +17,7 @@ final class ZoomAudio {
         client.options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(volume);
     }
 
-    static void playTick(float pitch) {
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.ui(SoundEvents.UI_BUTTON_CLICK.value(), pitch, ZoomSounds.TICK_VOLUME));
+    static void click(float pitch, float volume) {
+        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.ui(SoundEvents.UI_BUTTON_CLICK.value(), pitch, volume));
     }
 }

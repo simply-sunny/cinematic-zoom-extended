@@ -11,6 +11,7 @@ public final class Minecraft {
     public final Options options = new Options();
     public final Gui gui = new Gui();
     public Object screen;
+    public final Object font = new Object();
     public boolean focused = true;
 
     public boolean isWindowActive() {

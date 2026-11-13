@@ -54,7 +54,8 @@ New builds use `cinematic-zoom-extended-<jar>-<loader>-<version>.jar`. The publi
 All keys are rebindable under **Options → Controls → Key Binds → Cinematic Zoom**.
 
 - Hold the zoom key to zoom in. Release it to return. Enable **Toggle zoom** to press once to turn it on and once to turn it off.
-- Use the mouse wheel while zooming to change magnification. Each step ticks, higher going in and lower going out.
+- Use the mouse wheel while zooming to change magnification. Each step ticks, higher going in and lower going out, and the magnification shows above the hotbar.
+- Take a screenshot and black bars snap shut and open, like a camera shutter. The saved screenshot doesn't include them.
 - Music goes quiet while you zoom and comes back after. Turn off **Mute music while zooming** to keep it.
 - With **Ultra-wide zoom** enabled, scroll back past 1× to reach 0.5×.
 - Zoom and overlays are disabled while a GUI screen is open.
@@ -75,6 +76,8 @@ Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is the
 | Toggle zoom | Off | Hold the key by default. |
 | Mute music while zooming | On | Sets the Music volume to 0 while zoomed and puts it back after. |
 | Tick when scrolling | On | A soft tick for each wheel step, higher going in and lower going out. |
+| Show zoom percentage | On | Shows the magnification above the hotbar when a zoom starts or you scroll. |
+| Screenshot shutter | On | Black bars snap shut and open with a click on each screenshot. |
 | Spyglass zoom | Off | Cinematic or Regular makes a spyglass zoom with that profile instead of its scope. |
 | Mouse wheel during zoom | On | Changes magnification while zooming. |
 | Ultra-wide zoom | Off | Allows zooming out to `0.5×` when enabled. |

@@ -8,13 +8,15 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ### Added
 
-- Spyglass zoom: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (#9)
+- Spyglass zoom: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (mel1x/CinematicZoom#9)
 - Mute music while zooming: the Music volume setting goes to 0 while zoomed and back when the zoom ends. On by default.
-- Scroll ticks: a soft tick for each mouse wheel step while zooming, higher going in and lower going out. On by default.
+- Scroll ticks: a soft tick for each mouse wheel step while zooming, higher going in and lower going out. On by default. (#2)
+- Zoom percentage: the magnification, such as 300%, shows above the hotbar when a zoom starts or you scroll, then fades. On by default. (#1)
+- Screenshot shutter: black bars snap shut and open with a click when you take a screenshot. The saved screenshot doesn't include them. On by default. (#3)
 
 ### Fixed
 
-- Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. (#10)
+- Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. (mel1x/CinematicZoom#10)
 
 ## [1.2.0] - 2026-11-06
 

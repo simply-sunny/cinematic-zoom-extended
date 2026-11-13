@@ -20,13 +20,17 @@ final class ZoomAudio {
         musicChanges++;
     }
 
-    static void playTick(float pitch) {
-        ticks.add(pitch);
+    static final java.util.List<Float> clicks = new java.util.ArrayList<>();
+
+    static void click(float pitch, float volume) {
+        if (volume == ZoomSounds.TICK_VOLUME) ticks.add(pitch);
+        else clicks.add(pitch);
     }
 
     static void clear() {
         musicVolume = 0.8;
         musicChanges = 0;
         ticks.clear();
+        clicks.clear();
     }
 }

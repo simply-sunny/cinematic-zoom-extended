@@ -4,6 +4,7 @@
 	"package": "mix.cinematiczoom.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"ScreenshotMixin",
 		"PlayerMixin",
 		"CameraMixin",
 		"MouseMixin",
