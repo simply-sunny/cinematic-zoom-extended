@@ -25,7 +25,7 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ### Fixed
 
-- Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. (mel1x/CinematicZoom#10)
+- Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. Scrolling to zoom in the replay editor no longer also changes the camera's fly speed. (mel1x/CinematicZoom#10)
 - Shared keys: during a cinematic zoom, the bar and aspect keys go to the zoom only, so another mod on the same keys, such as Gamma Utils on the arrows, doesn't also react. Outside a cinematic zoom those mods get the keys as usual. Fabric 26.1 to 26.3.
 - Hidden HUD: when a zoom hides the HUD, it now hides all of it the way F1 does, including chat, the scoreboard and HUDs from mods that follow F1, such as VanillaHUD and EvergreenHUD. The zoom's own hand setting still controls the hand. Flashback's replay editor stays open, so the zoom stays inside its game view. 26.2 and later.
 

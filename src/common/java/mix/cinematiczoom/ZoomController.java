@@ -127,9 +127,14 @@ public final class ZoomController {
         return true;
     }
 
+    /** Whether the mouse wheel changes the zoom right now, so nothing else should react to it. */
+    public boolean wheelZooms() {
+        return activeMode.isActive() && ZoomConfig.INSTANCE.mouseWheelEnabled;
+    }
+
     public boolean onWheel(double vertical) {
         ZoomConfig cfg = ZoomConfig.INSTANCE;
-        if (!activeMode.isActive() || !cfg.mouseWheelEnabled || !Double.isFinite(vertical) || vertical == 0) return false;
+        if (!wheelZooms() || !Double.isFinite(vertical) || vertical == 0) return false;
         double previousHeld = held;
         String raw = activeMode == ZoomMode.REGULAR ? cfg.regularSnapPoints : cfg.cinematicSnapPoints;
         String key = raw + "/" + baseFov + "/" + cfg.minZoomMultiplier + "/" + cfg.maxZoomMultiplier + "/" + cfg.fovMode;
