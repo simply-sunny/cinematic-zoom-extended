@@ -365,7 +365,7 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             ConfigCategory aspect = builder.getOrCreateCategory(Text.literal("Aspect ratio and bars"));
-            aspect.addEntry(eb.startStrField(Text.literal("Selected aspect ratio (Auto, 2.39:1, 4:3, Legacy...)"), cfg.aspectRatio).setSaveConsumer(v -> cfg.aspectRatio = v).build());
+            aspect.addEntry(eb.startStrField(Text.literal("Selected aspect ratio (2.39:1, 4:3, Legacy...)"), cfg.aspectRatio).setSaveConsumer(v -> cfg.aspectRatio = v).build());
             aspect.addEntry(eb.startStrList(Text.literal("Enabled profiles (ordered, custom W:H allowed)"), cfg.aspectProfiles).setSaveConsumer(v -> cfg.aspectProfiles = v).build());
             aspect.addEntry(eb.startBooleanToggle(Text.literal("Allow cycling outside cinematic zoom"), cfg.globalProfileCycling).setSaveConsumer(v -> cfg.globalProfileCycling = v).build());
             aspect.addEntry(eb.startBooleanToggle(Text.literal("Animate profile changes"), cfg.animateProfileCycle).setSaveConsumer(v -> cfg.animateProfileCycle = v).build());

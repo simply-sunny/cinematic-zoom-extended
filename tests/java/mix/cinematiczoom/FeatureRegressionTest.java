@@ -26,7 +26,7 @@ public final class FeatureRegressionTest {
         check(!AspectRatios.geometry(1920,1080,"NaN",15).visible(),"invalid ratio");
         check(AspectRatios.cycle(List.of("2:1","4:3"),"2:1",-1).equals("4:3"),"left wraps");
         check(AspectRatios.cycle(List.of("2:1","4:3"),"4:3",1).equals("2:1"),"right wraps");
-        check(AspectRatios.cycle(List.of(),"gone",1).equals("Auto"),"empty fallback");
+        check(AspectRatios.cycle(List.of(),"gone",1).equals("2.39:1"),"empty fallback");
         check(AspectRatios.cycle(List.of("1:1"),"1:1",1).equals("1:1"),"single profile");
         check(AspectRatios.cycle(List.of("4:3"),"gone",-1).equals("4:3"),"deleted selection");
         near(AspectRatios.parse("2.76:1"),2.76);
@@ -104,6 +104,8 @@ public final class FeatureRegressionTest {
         CFG.load(); near(CFG.regularStartingZoom,8); check(CFG.barEnterMode==BarAnimationMode.SMOOTH,"unknown enum fallback");
         Files.writeString(file,"{\"configVersion\":2,\"regularStartingZoom\":9,\"allowUltrawide\":{},\"maxZoomMultiplier\":\"oops\",\"smoothMs\":[],\"cinematicHideHud\":true}");
         CFG.load(); near(CFG.regularStartingZoom,9); check(CFG.cinematicHideHud,"malformed aliases preserve valid fields");
+        Files.writeString(file,"{\"configVersion\":2,\"aspectRatio\":\"Auto\",\"aspectProfiles\":[\"Auto\",\"2.39:1\",\"4:3\"]}");
+        CFG.load(); check(CFG.aspectRatio.equals("2.39:1") && !CFG.aspectProfiles.contains("Auto"),"old Auto profile removed");
         Files.delete(file); CFG.load(); near(CFG.regularStartingZoom,3); check(CFG.fovMode==FovMode.ACCURATE,"missing config restores fresh defaults");
         Files.writeString(file,"{broken"); CFG.load();
         try(var paths=Files.list(file.resolveSibling("backups"))) { check(paths.anyMatch(p->p.getFileName().toString().startsWith("invalid-")),"corrupt file backed up"); }
