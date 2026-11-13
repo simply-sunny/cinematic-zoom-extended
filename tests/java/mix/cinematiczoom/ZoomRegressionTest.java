@@ -147,44 +147,19 @@ public final class ZoomRegressionTest {
             settle();
             require(!ZoomManager.isZoomActive(), "spyglass zoom stayed active behind a screen");
         });
-        run("music setting goes to 0 while zoomed and comes back after", () -> {
-            ZoomAudio.clear();
+        run("HUD frame limiters stand down only while a zoom is on screen", () -> {
+            require(!HudRateOverride.active(), "override without a zoom");
             cinematic.down = true;
             tick();
-            near(ZoomAudio.musicVolume, 0);
-            tick();
-            require(ZoomAudio.musicChanges == 1, "music setting was rewritten every tick");
+            require(HudRateOverride.active(), "no override while zoomed");
+            CFG.overrideHudFrameLimiters = false;
+            require(!HudRateOverride.active(), "override with the setting off");
+            CFG.overrideHudFrameLimiters = true;
             cinematic.down = false;
             tick();
             settle();
             tick();
-            near(ZoomAudio.musicVolume, 0.8);
-            require(!ZoomSounds.isMusicMuted(), "still muted after the zoom");
-        });
-        run("music setting stays put with muting off", () -> {
-            ZoomAudio.clear();
-            CFG.muteMusicWhileZooming = false;
-            cinematic.down = true;
-            tick();
-            require(ZoomAudio.musicChanges == 0, "music setting changed with muting off");
-        });
-        run("disconnecting puts the music setting back", () -> {
-            ZoomAudio.clear();
-            cinematic.down = true;
-            tick();
-            ZoomManager.reset(client);
-            near(ZoomAudio.musicVolume, 0.8);
-        });
-        run("a music volume set during the zoom is kept", () -> {
-            ZoomAudio.clear();
-            cinematic.down = true;
-            tick();
-            ZoomAudio.musicVolume = 0.5;
-            cinematic.down = false;
-            tick();
-            settle();
-            tick();
-            near(ZoomAudio.musicVolume, 0.5);
+            require(!HudRateOverride.active(), "override kept after the zoom ended");
         });
         run("wheel ticks going in and out", () -> {
             ZoomAudio.clear();
@@ -515,6 +490,9 @@ public final class ZoomRegressionTest {
                 sawIntermediate |= current > 20.0f && current < 30.0f;
             }
             require(sawIntermediate, "bars should animate smoothly between frames");
+            // Smooth easing creeps into its end, so let the whole animation run out first.
+            Thread.sleep(CFG.barSwitchMs + 50L);
+            ZoomManager.frameUpdate();
             near(ZoomManager.getCurrentBarsPercent(), 30);
         });
         run("arrow keys do nothing when zoom is inactive or in regular zoom", () -> {

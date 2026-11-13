@@ -56,7 +56,6 @@ All keys are rebindable under **Options → Controls → Key Binds → Cinematic
 - Hold the zoom key to zoom in. Release it to return. Enable **Toggle zoom** to press once to turn it on and once to turn it off.
 - Use the mouse wheel while zooming to change magnification. Each step ticks, higher going in and lower going out, and the magnification shows above the hotbar.
 - Take a screenshot and black bars snap shut and open, like a camera shutter. The saved screenshot doesn't include them.
-- Music goes quiet while you zoom and comes back after. Turn off **Mute music while zooming** to keep it.
 - With **Ultra-wide zoom** enabled, scroll back past 1× to reach 0.5×.
 - Zoom and overlays are disabled while a GUI screen is open.
 - With **Spyglass zoom** on, use a spyglass to zoom instead. The zoom lasts as long as you hold it up, and the zoom keys do nothing.
@@ -74,10 +73,10 @@ Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is the
 | Easing curve | Exponential | Separate curves for zoom in and out. |
 | Hide HUD, crosshair, hands | On | Each option is independent in each profile. |
 | Toggle zoom | Off | Hold the key by default. |
-| Mute music while zooming | On | Sets the Music volume to 0 while zoomed and puts it back after. |
 | Tick when scrolling | On | A soft tick for each wheel step, higher going in and lower going out. |
 | Show zoom percentage | On | Shows the magnification above the hotbar when a zoom starts or you scroll. |
 | Screenshot shutter | On | Black bars snap shut and open with a click on each screenshot. |
+| Full frame rate HUD while zooming | On | Switches off HUD frame-rate limiters such as Gnetum while a zoom is on screen, so the bars stay smooth. |
 | Spyglass zoom | Off | Cinematic or Regular makes a spyglass zoom with that profile instead of its scope. |
 | Mouse wheel during zoom | On | Changes magnification while zooming. |
 | Ultra-wide zoom | Off | Allows zooming out to `0.5×` when enabled. |
@@ -91,7 +90,7 @@ Settings are saved to `config/cinematiczoom/config.json` in your Minecraft folde
 | macOS | `~/Library/Application Support/minecraft/config/cinematiczoom/config.json` |
 | Linux | `~/.minecraft/config/cinematiczoom/config.json` |
 
-New installations default to accurate magnification up to **500×** and independent **Linear** bar animation. The aspect list includes Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1. Add custom ratios or remove/reorder entries to control cycling. Ratios wider than the window add top/bottom bars; narrower ratios add side bars. This crops the composition with an overlay; it does not change Minecraft's viewport or projection aspect.
+New installations default to accurate magnification up to **500×** and independent **Smooth** bar animation. The aspect list includes Auto, 2.39:1, 2.35:1, 2:1, 1.85:1, 16:9, 16:10, 4:3, and 1:1. Add custom ratios or remove/reorder entries to control cycling. Ratios wider than the window add top/bottom bars; narrower ratios add side bars. This crops the composition with an overlay; it does not change Minecraft's viewport or projection aspect.
 
 Left/right cycling works while cinematic zoom is active. Enable global cycling to select a profile outside zoom. Selection is saved. Entry, exit, and profile changes each have their own Instant, Linear, or Smooth mode and duration. Profile changes leave magnification unchanged. Regular zoom always clears bars.
 

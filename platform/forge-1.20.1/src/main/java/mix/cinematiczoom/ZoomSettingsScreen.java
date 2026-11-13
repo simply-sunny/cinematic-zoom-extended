@@ -280,13 +280,6 @@ public final class ZoomSettingsScreen {
             );
 
             generalCat.addEntry(
-                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.mute_music"), cfg.muteMusicWhileZooming)
-                  .setTooltip(Component.translatable("cinematiczoom.option.mute_music.tooltip"))
-                  .setSaveConsumer(v -> cfg.muteMusicWhileZooming = v)
-                  .build()
-            );
-
-            generalCat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
                   .setTooltip(Component.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
                   .setSaveConsumer(v -> cfg.wheelTicks = v)
@@ -304,6 +297,13 @@ public final class ZoomSettingsScreen {
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.screenshot_shutter"), cfg.screenshotShutter)
                   .setTooltip(Component.translatable("cinematiczoom.option.screenshot_shutter.tooltip"))
                   .setSaveConsumer(v -> cfg.screenshotShutter = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.override_hud_limiters"), cfg.overrideHudFrameLimiters)
+                  .setTooltip(Component.translatable("cinematiczoom.option.override_hud_limiters.tooltip"))
+                  .setSaveConsumer(v -> cfg.overrideHudFrameLimiters = v)
                   .build()
             );
 

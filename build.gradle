@@ -216,6 +216,8 @@ subprojects {
 			systemProperty 'cinematiczoom.test.target', project.name
 			systemProperty 'cinematiczoom.test.bootstrap', project.hasProperty('bootstrap') ? 'true' : 'false'
 			systemProperty 'cinematiczoom.test.replay', 'true'
+			dependsOn ':backgroundWindowAgent'
+			jvmArgs "-javaagent:${rootProject.layout.buildDirectory.file('testclient/background-window-agent.jar').get().asFile}"
 		}
 	}
 
@@ -271,6 +273,28 @@ def regressionTest = regressionProject.tasks.register('regressionTest', JavaExec
 	mainClass = 'mix.cinematiczoom.ZoomRegressionTest'
 	workingDir = rootProject.layout.buildDirectory.get().asFile
 	systemProperty 'cinematiczoom.testConfig', rootProject.layout.buildDirectory.dir('test-config').get().asFile.absolutePath
+}
+
+// Test runs only: keeps game windows from taking focus or the mouse (see BackgroundWindowAgent).
+def compileBackgroundWindowAgent = regressionProject.tasks.register('compileBackgroundWindowAgent', JavaCompile) {
+	source rootProject.file('src/testagent/java')
+	classpath = regressionProject.configurations.compileClasspath
+	destinationDirectory = rootProject.layout.buildDirectory.dir('classes/testagent')
+	options.release = 17
+}
+
+tasks.register('backgroundWindowAgent', Jar) {
+	from(compileBackgroundWindowAgent.flatMap { it.destinationDirectory }) { include '**/BackgroundWindowAgent*.class' }
+	// The patcher and its ASM go under patcher/, loaded apart from the game (see BackgroundWindowAgent).
+	into('patcher') {
+		from(compileBackgroundWindowAgent.flatMap { it.destinationDirectory }) { include '**/GlfwPatcher*.class' }
+		from({ regressionProject.configurations.compileClasspath.filter { it.name ==~ /asm-\d[\d.]*\.jar/ }.collect { zipTree(it) } }) {
+			exclude 'module-info.class', 'META-INF/**'
+		}
+	}
+	archiveFileName = 'background-window-agent.jar'
+	destinationDirectory = layout.buildDirectory.dir('testclient')
+	manifest { attributes 'Premain-Class': 'mix.cinematiczoom.testagent.BackgroundWindowAgent' }
 }
 
 tasks.register('test') {

@@ -40,7 +40,6 @@ public final class ZoomManager {
         ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown, isScoping);
 
         ZOOM.update(desiredMode);
-        updateMusic(client, ZOOM.isActive());
         canRender = canInteract;
         boolean previous = isZoomKeyPressed(client, previousAspect);
         boolean next = isZoomKeyPressed(client, nextAspect);
@@ -104,18 +103,12 @@ public final class ZoomManager {
         return false;
     }
 
-    private static void updateMusic(MinecraftClient client, boolean zoomActive) {
-        double volume = ZoomSounds.musicVolume(zoomActive, ZoomAudio.musicVolume(client));
-        if (!Double.isNaN(volume)) ZoomAudio.setMusicVolume(client, volume);
-    }
-
     public static void reset(MinecraftClient client) {
         INPUT.reset();
         wasPrevious = wasNext = canRender = false;
         applyOverrides(client, ZoomMode.NONE);
         currentAppliedMode = ZoomMode.NONE;
         ZOOM.reset();
-        updateMusic(client, false);
     }
 
     public static void frameUpdate() {

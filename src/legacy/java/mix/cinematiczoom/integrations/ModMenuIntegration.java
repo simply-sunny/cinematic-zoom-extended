@@ -283,13 +283,6 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             generalCat.addEntry(
-                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.mute_music"), cfg.muteMusicWhileZooming)
-                  .setTooltip(Text.translatable("cinematiczoom.option.mute_music.tooltip"))
-                  .setSaveConsumer(v -> cfg.muteMusicWhileZooming = v)
-                  .build()
-            );
-
-            generalCat.addEntry(
                 eb.startBooleanToggle(Text.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
                   .setTooltip(Text.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
                   .setSaveConsumer(v -> cfg.wheelTicks = v)
@@ -307,6 +300,13 @@ public final class ModMenuIntegration implements ModMenuApi {
                 eb.startBooleanToggle(Text.translatable("cinematiczoom.option.screenshot_shutter"), cfg.screenshotShutter)
                   .setTooltip(Text.translatable("cinematiczoom.option.screenshot_shutter.tooltip"))
                   .setSaveConsumer(v -> cfg.screenshotShutter = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.override_hud_limiters"), cfg.overrideHudFrameLimiters)
+                  .setTooltip(Text.translatable("cinematiczoom.option.override_hud_limiters.tooltip"))
+                  .setSaveConsumer(v -> cfg.overrideHudFrameLimiters = v)
                   .build()
             );
 

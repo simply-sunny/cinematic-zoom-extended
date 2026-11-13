@@ -84,6 +84,8 @@ run_target() {
 	ensure_option "$run/options.txt" onboardAccessibility false
 	ensure_option "$run/options.txt" tutorialStep none
 	ensure_option "$run/options.txt" pauseOnLostFocus false
+	# Several clients run at once; keep their music from playing over each other.
+	ensure_option "$run/options.txt" soundCategory_music 0.0
 	# Leave the no-bars key unset so the run uses and saves the mod's default.
 	sed -i.bak '/^key_key.cinematiczoom.zoom_no_bars:/d' "$run/options.txt" && rm -f "$run/options.txt.bak"
 	ensure_option "$run/options.txt" key_key.cinematiczoom.previous_aspect key.keyboard.left
@@ -199,7 +201,7 @@ run_and_record() {
 	if run_target "$1"; then echo ok >"$RESULTS/$1"; else echo failed >"$RESULTS/$1"; fi
 }
 # Compile every target once up front, so parallel runs don't race to build the same shared code.
-(cd "$ROOT" && ./gradlew -PtestClient --console=plain -q $(for t in "${TARGETS[@]}"; do printf ':%s:classes ' "${t%@*}"; done)) >"$LOGS/compile.log" 2>&1 || {
+(cd "$ROOT" && ./gradlew -PtestClient --console=plain -q backgroundWindowAgent $(for t in "${TARGETS[@]}"; do printf ':%s:classes ' "${t%@*}"; done)) >"$LOGS/compile.log" 2>&1 || {
 	echo "compile failed (see $LOGS/compile.log)" >&2
 	exit 1
 }

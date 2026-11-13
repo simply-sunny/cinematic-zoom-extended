@@ -9,10 +9,14 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 ### Added
 
 - Spyglass zoom: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (mel1x/CinematicZoom#9)
-- Mute music while zooming: the Music volume setting goes to 0 while zoomed and back when the zoom ends. On by default.
 - Scroll ticks: a soft tick for each mouse wheel step while zooming, higher going in and lower going out. On by default. (#2)
 - Zoom percentage: the magnification, such as 300%, shows above the hotbar when a zoom starts or you scroll, then fades. On by default. (#1)
 - Screenshot shutter: black bars snap shut and open with a click when you take a screenshot. The saved screenshot doesn't include them. On by default. (#3)
+- Full frame rate HUD while zooming: mods that draw the HUD at a lower frame rate, such as Gnetum, are switched off while a zoom is on screen, so the bars move as smoothly as the game. On by default.
+
+### Changed
+
+- Bar animations default to Smooth instead of Linear for entry, exit and profile changes. Existing settings are kept.
 
 ### Fixed
 
