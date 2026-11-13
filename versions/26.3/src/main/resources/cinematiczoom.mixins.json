@@ -5,6 +5,7 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"GnetumConfigMixin",
+		"KeyMappingMixin",
 		"ScreenshotMixin",
 		"PlayerMixin",
 		"CameraMixin",
@@ -12,6 +13,7 @@
 		"OptionsMixin",
 		"MinecraftMixin",
 		"GuiMixin",
+		"ScreenshotKeyMixin",
 		"HudMixin",
 		"FirstPersonHandsAndItemsRendererMixin",
 		"GameRendererMixin"
