@@ -273,6 +273,28 @@ public final class ModMenuIntegration implements ModMenuApi {
 
             // 3. General & Wheel Category
             ConfigCategory generalCat = builder.getOrCreateCategory(Text.translatable("cinematiczoom.config.category.general"));
+            ConfigCategory soundCat = builder.getOrCreateCategory(Text.translatable("cinematiczoom.config.category.sound"));
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
+                  .setTooltip(Text.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
+                  .setSaveConsumer(v -> cfg.wheelTicks = v)
+                  .build()
+            );
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.zoom_sounds"), cfg.zoomSounds)
+                  .setTooltip(Text.translatable("cinematiczoom.option.zoom_sounds.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomSounds = v)
+                  .build()
+            );
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.screenshot_sound"), cfg.screenshotSound)
+                  .setTooltip(Text.translatable("cinematiczoom.option.screenshot_sound.tooltip"))
+                  .setSaveConsumer(v -> cfg.screenshotSound = v)
+                  .build()
+            );
 
             generalCat.addEntry(
                 eb.startEnumSelector(Text.translatable("cinematiczoom.option.spyglass_zoom"), SpyglassZoom.class, cfg.spyglassZoom)
@@ -283,16 +305,9 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             generalCat.addEntry(
-                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
-                  .setTooltip(Text.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
-                  .setSaveConsumer(v -> cfg.wheelTicks = v)
-                  .build()
-            );
-
-            generalCat.addEntry(
-                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.zoom_sounds"), cfg.zoomSounds)
-                  .setTooltip(Text.translatable("cinematiczoom.option.zoom_sounds.tooltip"))
-                  .setSaveConsumer(v -> cfg.zoomSounds = v)
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.zoom_stacking"), cfg.zoomStacking)
+                  .setTooltip(Text.translatable("cinematiczoom.option.zoom_stacking.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomStacking = v)
                   .build()
             );
 

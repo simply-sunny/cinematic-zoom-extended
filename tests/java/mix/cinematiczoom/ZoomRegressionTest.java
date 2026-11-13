@@ -228,6 +228,65 @@ public final class ZoomRegressionTest {
             settle();
             require(ZoomAudio.zoomIns == 1 && ZoomAudio.zoomOuts == 1, "played zoom sounds with the setting off");
         });
+        run("zoom stacking off lets the spyglass take over, only in first person", () -> {
+            ZoomAudio.clear();
+            cinematic.down = true;
+            client.player.useItem = new ItemStack(Items.SPYGLASS);
+            tick();
+            settle();
+            require(ZoomManager.isZoomActive(), "zoom stopped under the spyglass with stacking on");
+            CFG.zoomStacking = false;
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "zoom stacked on the spyglass with stacking off");
+            client.options.cameraType = Minecraft.CameraType.THIRD_PERSON_BACK;
+            tick();
+            settle();
+            require(ZoomManager.isZoomActive(), "a third-person spyglass, which doesn't zoom, stopped the zoom");
+            client.options.cameraType = Minecraft.CameraType.FIRST_PERSON;
+            tick();
+            settle();
+            client.player.useItem = ItemStack.EMPTY;
+            tick();
+            settle();
+            require(ZoomManager.isZoomActive(), "zoom didn't come back when the spyglass came down");
+            require(ZoomAudio.zoomIns == 1 && ZoomAudio.zoomOuts == 0, "the spyglass taking over played zoom sounds");
+        });
+        run("vignette stays for cinematic zoom and not for regular by default", () -> {
+            require(!ZoomManager.keepsVignette(), "kept the vignette with no zoom");
+            cinematic.down = true;
+            tick();
+            settle();
+            require(ZoomManager.keepsVignette(), "cinematic zoom dropped the vignette");
+            CFG.cinematicVignette = false;
+            require(!ZoomManager.keepsVignette(), "kept the vignette with the setting off");
+            cinematic.down = false;
+            regular.down = true;
+            tick();
+            settle();
+            require(!ZoomManager.keepsVignette(), "regular zoom kept the vignette by default");
+        });
+        run("the kept vignette is drawn inside the bars", () -> {
+            cinematic.down = true;
+            tick();
+            settle();
+            var graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            var pose = graphics.pose();
+            float[] seen = new float[4];
+            ZoomManager.drawInsideBars(graphics, () -> {
+                seen[0] = pose.y;
+                seen[1] = pose.scaleY;
+                seen[2] = pose.x;
+                seen[3] = pose.scaleX;
+            });
+            double bars = ZoomManager.getCurrentBarsPercent();
+            require(bars > 0, "no bars to fit inside");
+            near(seen[0], bars, 0.001);
+            near(seen[1], 1 - 2 * bars / 100, 0.0001);
+            near(seen[2], 0, 0.0001);
+            near(seen[3], 1, 0.0001);
+            require(pose.depth == 0, "left the pose pushed");
+        });
         run("zoom percentage draws above the hotbar", () -> {
             regular.down = true;
             tick();
@@ -906,6 +965,10 @@ public final class ZoomRegressionTest {
     private static void settle() {
         ZoomManager.frameUpdate();
         ZoomManager.frameUpdate();
+    }
+
+    private static void near(double actual, double expected, double tolerance) {
+        require(Math.abs(actual - expected) < tolerance, "expected " + expected + ", got " + actual);
     }
 
     private static void near(double actual, double expected) {

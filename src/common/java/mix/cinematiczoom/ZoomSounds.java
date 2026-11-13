@@ -24,17 +24,18 @@ public final class ZoomSounds {
     /**
      * 1 to play the zoom-in sound, -1 for zoom-out, 0 for none. Only starting or ending a zoom
      * plays one; switching between cinematic and regular doesn't. A zoom the spyglass started
-     * already has the spyglass's own sounds, in and out.
+     * already has the spyglass's own sounds, in and out, and so does a zoom the scope pauses or
+     * gives back (quiet).
      */
-    public static int zoomTransition(ZoomMode before, ZoomMode after, boolean spyglassScoping) {
+    public static int zoomTransition(ZoomMode before, ZoomMode after, boolean spyglassScoping, boolean quiet) {
         if (!before.isActive() && after.isActive()) {
             zoomFromSpyglass = spyglassScoping;
-            return ZoomConfig.INSTANCE.zoomSounds && !spyglassScoping ? 1 : 0;
+            return ZoomConfig.INSTANCE.zoomSounds && !spyglassScoping && !quiet ? 1 : 0;
         }
         if (before.isActive() && !after.isActive()) {
             boolean spyglass = zoomFromSpyglass;
             zoomFromSpyglass = false;
-            return ZoomConfig.INSTANCE.zoomSounds && !spyglass ? -1 : 0;
+            return ZoomConfig.INSTANCE.zoomSounds && !spyglass && !quiet ? -1 : 0;
         }
         return 0;
     }

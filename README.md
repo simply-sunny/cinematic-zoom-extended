@@ -72,13 +72,16 @@ Open **Mod Menu → Cinematic Zoom Extended → Settings**. Every setting is the
 | Zoom duration | `240 ms` in and out | Separate values for each profile. |
 | Easing curve | Exponential | Separate curves for zoom in and out. |
 | Hide HUD, crosshair, hands | On | Each option is independent in each profile. |
+| Keep vignette | Cinematic on, Regular off | Keeps the darkened corners during the zoom, fitted inside the bars. Fabric 26.2 and later. |
 | Toggle zoom | Off | Hold the key by default. |
 | Tick when scrolling | On | A soft tick for each wheel step, higher going in and lower going out. |
 | Zoom sounds | On | The spyglass sounds when a zoom starts and ends. |
+| Screenshot sound | On | A click with the screenshot shutter. |
 | Show zoom percentage | On | Shows the magnification above the hotbar when a zoom starts or you scroll. |
-| Screenshot shutter | On | Black bars snap shut and open with a click on each screenshot. |
+| Screenshot shutter | On | Black bars snap shut and open on each screenshot. |
 | Full frame rate HUD while zooming | On | Switches off HUD frame-rate limiters such as Gnetum while a zoom is on screen, so the bars stay smooth. |
 | Spyglass zoom | Off | Cinematic or Regular makes a spyglass zoom with that profile instead of its scope. |
+| Zoom stacking | On | A spyglass multiplies with a zoom already on. Off, the spyglass takes over while it's up. |
 | Mouse wheel during zoom | On | Changes magnification while zooming. |
 | Ultra-wide zoom | Off | Allows zooming out to `0.5×` when enabled. |
 | Snap targets | Empty | Set targets such as `2x` or `45fov` per profile. |
