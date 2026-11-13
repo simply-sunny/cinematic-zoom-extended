@@ -20,6 +20,19 @@ public final class Minecraft {
 
     public static final class Options {
         public boolean smoothCamera;
+        public CameraType cameraType = CameraType.FIRST_PERSON;
+
+        public CameraType getCameraType() {
+            return cameraType;
+        }
+    }
+
+    public enum CameraType {
+        FIRST_PERSON, THIRD_PERSON_BACK;
+
+        public boolean isFirstPerson() {
+            return this == FIRST_PERSON;
+        }
     }
 
     public static final class Gui {

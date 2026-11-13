@@ -270,6 +270,28 @@ public final class ZoomSettingsScreen {
 
             // 3. General & Wheel Category
             ConfigCategory generalCat = builder.getOrCreateCategory(Component.translatable("cinematiczoom.config.category.general"));
+            ConfigCategory soundCat = builder.getOrCreateCategory(Component.translatable("cinematiczoom.config.category.sound"));
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
+                  .setTooltip(Component.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
+                  .setSaveConsumer(v -> cfg.wheelTicks = v)
+                  .build()
+            );
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.zoom_sounds"), cfg.zoomSounds)
+                  .setTooltip(Component.translatable("cinematiczoom.option.zoom_sounds.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomSounds = v)
+                  .build()
+            );
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.screenshot_sound"), cfg.screenshotSound)
+                  .setTooltip(Component.translatable("cinematiczoom.option.screenshot_sound.tooltip"))
+                  .setSaveConsumer(v -> cfg.screenshotSound = v)
+                  .build()
+            );
 
             generalCat.addEntry(
                 eb.startEnumSelector(Component.translatable("cinematiczoom.option.spyglass_zoom"), SpyglassZoom.class, cfg.spyglassZoom)
@@ -280,9 +302,9 @@ public final class ZoomSettingsScreen {
             );
 
             generalCat.addEntry(
-                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
-                  .setTooltip(Component.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
-                  .setSaveConsumer(v -> cfg.wheelTicks = v)
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.zoom_stacking"), cfg.zoomStacking)
+                  .setTooltip(Component.translatable("cinematiczoom.option.zoom_stacking.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomStacking = v)
                   .build()
             );
 

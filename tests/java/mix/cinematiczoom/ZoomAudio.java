@@ -16,7 +16,18 @@ final class ZoomAudio {
         else clicks.add(pitch);
     }
 
+    static int zoomIns, zoomOuts;
+
+    static void zoomIn() {
+        zoomIns++;
+    }
+
+    static void zoomOut() {
+        zoomOuts++;
+    }
+
     static void clear() {
+        zoomIns = zoomOuts = 0;
         ticks.clear();
         clicks.clear();
     }

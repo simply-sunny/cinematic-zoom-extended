@@ -176,6 +176,8 @@ public final class ZoomController {
     public double heldMagnification() { return held; }
     public double currentMultiplier() { return 1/current; }
     public double magnification() { return current; }
+    /** The profile of the zoom on screen, or of the last one while it eases out. */
+    public ZoomMode lastActiveMode() { return lastActiveMode; }
     public void setBaseFov(double fov) { if (Double.isFinite(fov) && fov>0 && fov<180) baseFov=fov; }
     public double getBaseFov() { return baseFov; }
     public float currentBarsPercent() { return (float)(geometry.top()*100); }

@@ -7,6 +7,7 @@ import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.network.chat.Component;
 import mix.cinematiczoom.ZoomConfig;
+import mix.cinematiczoom.ZoomManager;
 import mix.cinematiczoom.ZoomCurve;
 import mix.cinematiczoom.BarAnimationMode;
 import mix.cinematiczoom.FovMode;
@@ -118,6 +119,13 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            if (ZoomManager.fitsVignette()) cinematicCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.vignette"), cfg.cinematicVignette)
+                  .setTooltip(Component.translatable("cinematiczoom.option.vignette.tooltip"))
+                  .setSaveConsumer(v -> cfg.cinematicVignette = v)
+                  .build()
+            );
+
             cinematicCat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_crosshair"), cfg.cinematicHideCrosshair)
                   .setTooltip(Component.translatable("cinematiczoom.option.hide_crosshair.tooltip"))
@@ -222,6 +230,13 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            if (ZoomManager.fitsVignette()) regularCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.vignette"), cfg.regularVignette)
+                  .setTooltip(Component.translatable("cinematiczoom.option.vignette.tooltip"))
+                  .setSaveConsumer(v -> cfg.regularVignette = v)
+                  .build()
+            );
+
             regularCat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_crosshair"), cfg.regularHideCrosshair)
                   .setTooltip(Component.translatable("cinematiczoom.option.hide_crosshair.tooltip"))
@@ -273,6 +288,28 @@ public final class ModMenuIntegration implements ModMenuApi {
 
             // 3. General & Wheel Category
             ConfigCategory generalCat = builder.getOrCreateCategory(Component.translatable("cinematiczoom.config.category.general"));
+            ConfigCategory soundCat = builder.getOrCreateCategory(Component.translatable("cinematiczoom.config.category.sound"));
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
+                  .setTooltip(Component.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
+                  .setSaveConsumer(v -> cfg.wheelTicks = v)
+                  .build()
+            );
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.zoom_sounds"), cfg.zoomSounds)
+                  .setTooltip(Component.translatable("cinematiczoom.option.zoom_sounds.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomSounds = v)
+                  .build()
+            );
+
+            soundCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.screenshot_sound"), cfg.screenshotSound)
+                  .setTooltip(Component.translatable("cinematiczoom.option.screenshot_sound.tooltip"))
+                  .setSaveConsumer(v -> cfg.screenshotSound = v)
+                  .build()
+            );
 
             generalCat.addEntry(
                 eb.startEnumSelector(Component.translatable("cinematiczoom.option.spyglass_zoom"), SpyglassZoom.class, cfg.spyglassZoom)
@@ -283,9 +320,9 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             generalCat.addEntry(
-                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.wheel_ticks"), cfg.wheelTicks)
-                  .setTooltip(Component.translatable("cinematiczoom.option.wheel_ticks.tooltip"))
-                  .setSaveConsumer(v -> cfg.wheelTicks = v)
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.zoom_stacking"), cfg.zoomStacking)
+                  .setTooltip(Component.translatable("cinematiczoom.option.zoom_stacking.tooltip"))
+                  .setSaveConsumer(v -> cfg.zoomStacking = v)
                   .build()
             );
 

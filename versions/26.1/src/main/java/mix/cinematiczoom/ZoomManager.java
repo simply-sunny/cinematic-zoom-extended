@@ -13,6 +13,7 @@ public final class ZoomManager {
     private static boolean canRender;
     private static final ZoomInputState INPUT = new ZoomInputState();
     private static ZoomMode currentAppliedMode = ZoomMode.NONE;
+    private static boolean scopeTookOver;
 
     private ZoomManager() {
     }
@@ -35,6 +36,10 @@ public final class ZoomManager {
         boolean isScoping = canInteract && client.player.isUsingItem() && client.player.getUseItem().is(Items.SPYGLASS);
 
         ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown, isScoping);
+        boolean scopeTakesOver = SpyglassZoom.vanillaScopeTakesOver(isScoping && client.options.getCameraType().isFirstPerson());
+        if (scopeTakesOver) desiredMode = ZoomMode.NONE;
+        boolean scopeChanged = scopeTakesOver != scopeTookOver;
+        scopeTookOver = scopeTakesOver;
 
         ZOOM.update(desiredMode);
         canRender = canInteract;
@@ -55,6 +60,9 @@ public final class ZoomManager {
         }
 
         if (desiredMode != currentAppliedMode) {
+            int sound = ZoomSounds.zoomTransition(currentAppliedMode, desiredMode, isScoping && SpyglassZoom.enabled(), scopeChanged);
+            if (sound > 0) ZoomAudio.zoomIn();
+            else if (sound < 0) ZoomAudio.zoomOut();
             applyOverrides(client, desiredMode);
             currentAppliedMode = desiredMode;
         }
@@ -81,6 +89,7 @@ public final class ZoomManager {
     }
 
     public static void reset(Minecraft client) {
+        scopeTookOver = false;
         INPUT.reset();
         wasPrevious = wasNext = canRender = false;
         applyOverrides(client, ZoomMode.NONE);
@@ -90,6 +99,9 @@ public final class ZoomManager {
 
     public static void frameUpdate() {
         ZOOM.updateFrame();
+        if (ScreenshotShutter.reopenClickDue(System.nanoTime()) && ZoomConfig.INSTANCE.screenshotSound) {
+            ZoomAudio.click(ScreenshotShutter.REOPEN_PITCH, ScreenshotShutter.REOPEN_VOLUME);
+        }
     }
 
     public static double getCurrentFovMul() {
@@ -146,6 +158,11 @@ public final class ZoomManager {
         return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHands : cfg.cinematicHideHands;
     }
 
+    /** 26.1 hides the HUD piece by piece and leaves the vignette alone, so there's nothing to fit. */
+    public static boolean fitsVignette() {
+        return false;
+    }
+
     public static boolean onWheel(double vertical) {
         double before = ZOOM.heldMagnification();
         boolean consumed = ZOOM.onWheel(vertical);
@@ -156,7 +173,7 @@ public final class ZoomManager {
 
     /** Called when the game saves a screenshot. */
     public static void onScreenshot() {
-        if (ScreenshotShutter.trigger(System.nanoTime())) ZoomAudio.click(ScreenshotShutter.SOUND_PITCH, ScreenshotShutter.SOUND_VOLUME);
+        if (ScreenshotShutter.trigger(System.nanoTime()) && ZoomConfig.INSTANCE.screenshotSound) ZoomAudio.click(ScreenshotShutter.SHUT_PITCH, ScreenshotShutter.SHUT_VOLUME);
     }
 
     public static void renderBars(GuiGraphicsExtractor context) {

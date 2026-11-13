@@ -1,13 +1,18 @@
 package mix.cinematiczoom;
 
-/** Black bars that snap shut and open again after a screenshot, like a camera shutter. */
+/**
+ * Black bars that snap shut and open again after a screenshot, like a camera shutter. Its sound is
+ * two button clicks: a bright one as the bars shut and a softer, lower one as they start to open.
+ */
 public final class ScreenshotShutter {
     static final long CLOSE_NANOS = 90_000_000L, HOLD_NANOS = 40_000_000L, OPEN_NANOS = 170_000_000L;
     static final long TOTAL_NANOS = CLOSE_NANOS + HOLD_NANOS + OPEN_NANOS;
-    public static final float SOUND_PITCH = 0.7f;
-    public static final float SOUND_VOLUME = 0.6f;
+    public static final float SHUT_PITCH = 1.15f, SHUT_VOLUME = 0.6f;
+    public static final float REOPEN_PITCH = 0.75f, REOPEN_VOLUME = 0.45f;
+    static final long REOPEN_CLICK_NANOS = CLOSE_NANOS + HOLD_NANOS;
 
     private static long triggeredAt = Long.MIN_VALUE / 2;
+    private static boolean reopenClickPending;
 
     private ScreenshotShutter() {
     }
@@ -16,6 +21,14 @@ public final class ScreenshotShutter {
     public static boolean trigger(long nowNanos) {
         if (!ZoomConfig.INSTANCE.screenshotShutter || nowNanos - triggeredAt < TOTAL_NANOS) return false;
         triggeredAt = nowNanos;
+        reopenClickPending = true;
+        return true;
+    }
+
+    /** True once per shutter, on the first frame after the bars start to open. */
+    public static boolean reopenClickDue(long nowNanos) {
+        if (!reopenClickPending || nowNanos - triggeredAt < REOPEN_CLICK_NANOS) return false;
+        reopenClickPending = false;
         return true;
     }
 
@@ -39,5 +52,6 @@ public final class ScreenshotShutter {
 
     static void reset() {
         triggeredAt = Long.MIN_VALUE / 2;
+        reopenClickPending = false;
     }
 }

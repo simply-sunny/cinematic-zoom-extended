@@ -2,10 +2,14 @@
 <h2 id="130-2026-11-12">[1.3.0] - 2026-11-12</h2>
 <h3>Added</h3>
 <ul>
-<li>Spyglass zoom: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (mel1x/CinematicZoom#9)</li>
+<li>Spyglass mode: a setting in General that makes a spyglass zoom with the cinematic or regular profile instead of showing its scope. The zoom lasts as long as you hold the spyglass up, and the zoom keys do nothing while it's on. Off by default. (mel1x/CinematicZoom#9)</li>
 <li>Scroll ticks: a soft tick for each mouse wheel step while zooming, higher going in and lower going out. On by default. (#2)</li>
+<li>Zoom sounds: the spyglass sounds play when any zoom starts and ends, not only a spyglass zoom. They don't show in subtitles. On by default.</li>
+<li>Sound settings: wheel ticks, zoom sounds and the screenshot sound have their own Sound page, and the screenshot sound can be turned off apart from the shutter.</li>
+<li>Zoom stacking: a setting in General. On, looking through a spyglass during a zoom multiplies the two. Off, the spyglass takes over while it's up and the zoom comes back when you lower it. On by default.</li>
+<li>Keep vignette: a per-profile setting that keeps the darkened screen corners during a zoom, fitted inside the bars and following them as they move, instead of hiding them with the HUD. On for cinematic, off for regular. Fabric 26.2 and later.</li>
 <li>Zoom percentage: the magnification, such as 300%, shows above the hotbar when a zoom starts or you scroll, then fades. On by default. (#1)</li>
-<li>Screenshot shutter: black bars snap shut and open with a click when you take a screenshot. The saved screenshot doesn't include them. Works alongside screenshot mods such as Screencapper on 26.2 and later. On by default. (#3)</li>
+<li>Screenshot shutter: black bars snap shut and open when you take a screenshot, with a click as they shut and a softer one as they open. The saved screenshot doesn't include them. Works alongside screenshot mods such as Screencapper on 26.2 and later. On by default. (#3)</li>
 <li>Full frame rate HUD while zooming: mods that draw the HUD at a lower frame rate, such as Gnetum, are switched off while a zoom is on screen, so the bars move as smoothly as the game. On by default.</li>
 </ul>
 <h3>Changed</h3>
@@ -16,7 +20,7 @@
 <ul>
 <li>Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. (mel1x/CinematicZoom#10)</li>
 <li>Shared keys: during a cinematic zoom, the bar and aspect keys go to the zoom only, so another mod on the same keys, such as Gamma Utils on the arrows, doesn't also react. Outside a cinematic zoom those mods get the keys as usual. Fabric 26.1 to 26.3.</li>
-<li>Hidden HUD: when a zoom hides the HUD, it now hides all of it the way F1 does, including chat, the scoreboard and HUDs from mods that follow F1, such as VanillaHUD and EvergreenHUD. The zoom's own hand setting still controls the hand. 26.2 and later.</li>
+<li>Hidden HUD: when a zoom hides the HUD, it now hides all of it the way F1 does, including chat, the scoreboard and HUDs from mods that follow F1, such as VanillaHUD and EvergreenHUD. The zoom's own hand setting still controls the hand. Flashback's replay editor stays open, so the zoom stays inside its game view. 26.2 and later.</li>
 </ul>
 <h2 id="120-2026-11-06">[1.2.0] - 2026-11-06</h2>
 <h3>Changed</h3>

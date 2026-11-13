@@ -1,0 +1,44 @@
+{
+  "zoom_in": {
+    "sounds": [
+      {
+        "name": "item/spyglass/use",
+        "pitch": 1.15,
+        "volume": 0.5
+      },
+      {
+        "name": "item/spyglass/use",
+        "pitch": 1.33,
+        "volume": 0.5
+      },
+      {
+        "name": "item/spyglass/use",
+        "pitch": 1.4,
+        "volume": 0.5
+      },
+      {
+        "name": "item/spyglass/use",
+        "pitch": 1.55,
+        "volume": 0.5
+      }
+    ]
+  },
+  "zoom_out": {
+    "sounds": [
+      {
+        "name": "item/spyglass/stop",
+        "volume": 0.5
+      },
+      {
+        "name": "item/spyglass/stop",
+        "pitch": 0.8,
+        "volume": 0.5
+      },
+      {
+        "name": "item/spyglass/stop",
+        "pitch": 0.9,
+        "volume": 0.5
+      }
+    ]
+  }
+}
