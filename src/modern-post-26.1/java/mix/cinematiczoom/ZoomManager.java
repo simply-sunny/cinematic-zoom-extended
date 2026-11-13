@@ -189,6 +189,13 @@ public final class ZoomManager {
         }
     }
 
+    public static boolean wheelZooms() {
+
+        return ZOOM.wheelZooms();
+
+    }
+
+
     public static boolean onWheel(double vertical) {
         double before = ZOOM.heldMagnification();
         boolean consumed = ZOOM.onWheel(vertical);

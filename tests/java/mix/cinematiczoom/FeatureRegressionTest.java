@@ -63,6 +63,9 @@ public final class FeatureRegressionTest {
         zoom.onWheel(10000); near(zoom.magnification(),500);
         check(!zoom.barGeometry(1920,1080).visible(),"regular mode never has bars");
         check(!zoom.onWheel(Double.NaN) && !zoom.onWheel(Double.POSITIVE_INFINITY),"nonfinite wheel rejected");
+        check(zoom.wheelZooms(),"the wheel zooms during a zoom");
+        CFG.mouseWheelEnabled=false; check(!zoom.wheelZooms() && !zoom.onWheel(1),"scroll zoom off leaves the wheel free"); CFG.mouseWheelEnabled=true;
+        zoom.reset(); check(!zoom.wheelZooms(),"the wheel is free with no zoom");
         defaults(); CFG.cinematicZoomInMs=1000; CFG.barEnterMs=200;
         zoom.reset(); zoom.update(ZoomMode.CINEMATIC); clock.addAndGet(200_000_000); zoom.updateFrame();
         near(zoom.barGeometry(1920,1080).top(),cinema.top()); check(zoom.magnification()<3,"bars finish independently");

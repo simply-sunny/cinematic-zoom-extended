@@ -5,6 +5,7 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"GnetumConfigMixin",
+		"FlashbackFlySpeedMixin",
 		"ScreenshotRecorderMixin",
 		"PlayerEntityMixin",
  		  "GameRendererMixin",
