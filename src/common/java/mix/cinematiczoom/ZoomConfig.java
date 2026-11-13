@@ -42,7 +42,7 @@ public final class ZoomConfig {
         }
     }
 
-    public int configVersion = 2;
+    public int configVersion = 3;
     public String aspectRatio = "2.39:1";
     public java.util.List<String> aspectProfiles = new java.util.ArrayList<>(AspectRatios.DEFAULTS);
     public boolean globalProfileCycling = false;
@@ -245,7 +245,13 @@ public final class ZoomConfig {
                     loaded.barSwitchMode = loaded.smoothBarChange ? BarAnimationMode.SMOOTH : BarAnimationMode.INSTANT;
                     // Preserve explicit limits: a saved default cannot be distinguished from a custom choice.
                 }
-                loaded.configVersion = 2;
+                if (!json.has("configVersion") || loaded.configVersion < 3) {
+                    // 1.2 saved Linear as its default, so a saved Linear is almost always that default, not a choice.
+                    if (loaded.barEnterMode == BarAnimationMode.LINEAR) loaded.barEnterMode = BarAnimationMode.SMOOTH;
+                    if (loaded.barExitMode == BarAnimationMode.LINEAR) loaded.barExitMode = BarAnimationMode.SMOOTH;
+                    if (loaded.barSwitchMode == BarAnimationMode.LINEAR) loaded.barSwitchMode = BarAnimationMode.SMOOTH;
+                }
+                loaded.configVersion = 3;
                 copyFrom(loaded);
             }
         } catch (Exception exception) {

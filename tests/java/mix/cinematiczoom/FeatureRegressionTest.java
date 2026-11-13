@@ -106,6 +106,10 @@ public final class FeatureRegressionTest {
         CFG.load(); near(CFG.regularStartingZoom,9); check(CFG.cinematicHideHud,"malformed aliases preserve valid fields");
         Files.writeString(file,"{\"configVersion\":2,\"aspectRatio\":\"Auto\",\"aspectProfiles\":[\"Auto\",\"2.39:1\",\"4:3\"]}");
         CFG.load(); check(CFG.aspectRatio.equals("2.39:1") && !CFG.aspectProfiles.contains("Auto"),"old Auto profile removed");
+        Files.writeString(file,"{\"configVersion\":2,\"barEnterMode\":\"LINEAR\",\"barExitMode\":\"LINEAR\",\"barSwitchMode\":\"INSTANT\"}");
+        CFG.load(); check(CFG.barEnterMode==BarAnimationMode.SMOOTH && CFG.barExitMode==BarAnimationMode.SMOOTH && CFG.barSwitchMode==BarAnimationMode.INSTANT,"1.2 Linear bars become Smooth, other choices kept");
+        Files.writeString(file,"{\"configVersion\":3,\"barEnterMode\":\"LINEAR\"}");
+        CFG.load(); check(CFG.barEnterMode==BarAnimationMode.LINEAR,"Linear chosen after 1.3 is kept");
         Files.delete(file); CFG.load(); near(CFG.regularStartingZoom,3); check(CFG.fovMode==FovMode.ACCURATE,"missing config restores fresh defaults");
         Files.writeString(file,"{broken"); CFG.load();
         try(var paths=Files.list(file.resolveSibling("backups"))) { check(paths.anyMatch(p->p.getFileName().toString().startsWith("invalid-")),"corrupt file backed up"); }
