@@ -5,6 +5,7 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"GnetumConfigMixin",
+		"KeyMappingMixin",
 		"ScreenshotMixin",
 		"PlayerMixin",
  		  "CameraMixin",

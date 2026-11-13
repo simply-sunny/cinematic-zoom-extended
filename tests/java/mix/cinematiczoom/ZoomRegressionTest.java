@@ -161,6 +161,21 @@ public final class ZoomRegressionTest {
             tick();
             require(!HudRateOverride.active(), "override kept after the zoom ended");
         });
+        run("cinematic zoom keeps its arrow keys from other mods, only while zoomed", () -> {
+            java.util.List<String> shared = java.util.List.of("key.gammautils.increase", "key.cinematiczoom.increase_bars");
+            java.util.List<String> other = java.util.List.of("key.gammautils.increase");
+            require(!ZoomKeys.claimedByZoom(false, shared), "claimed outside a cinematic zoom");
+            require(ZoomKeys.claimedByZoom(true, shared), "not claimed during a cinematic zoom");
+            require(!ZoomKeys.claimedByZoom(true, other), "claimed a key the zoom doesn't use");
+            require(!ZoomKeys.claimedByZoom(true, java.util.List.of("key.cinematiczoom.zoom")), "claimed the zoom key itself");
+            cinematic.down = true;
+            tick();
+            require(ZoomManager.isCinematicActive(), "cinematic zoom not reported");
+            cinematic.down = false;
+            regular.down = true;
+            tick();
+            require(!ZoomManager.isCinematicActive(), "regular zoom reported as cinematic");
+        });
         run("wheel ticks going in and out", () -> {
             ZoomAudio.clear();
             regular.down = true;

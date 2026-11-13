@@ -96,6 +96,10 @@ public final class ZoomManager {
         return ZOOM.currentMultiplier();
     }
 
+    public static boolean isCinematicActive() {
+        return currentAppliedMode == ZoomMode.CINEMATIC;
+    }
+
     public static boolean isZoomActive() {
         return ZOOM.isActive();
     }

@@ -21,6 +21,7 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 ### Fixed
 
 - Flashback: zoom works in replays. Flashback's replay camera set its own FOV and skipped the zoom. (mel1x/CinematicZoom#10)
+- Shared keys: during a cinematic zoom, the bar and aspect keys go to the zoom only, so another mod on the same keys, such as Gamma Utils on the arrows, doesn't also react. Outside a cinematic zoom those mods get the keys as usual. Fabric 26.1 to 26.3.
 
 ## [1.2.0] - 2026-11-06
 
