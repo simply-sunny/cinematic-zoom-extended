@@ -3,7 +3,7 @@ loaderVersion="[47,)"
 license="MIT"
 [[mods]]
 modId="cinematiczoom_extended"
-version="1.2.0"
+version="1.3.0"
 displayName="Cinematic Zoom Extended"
 authors="simply-sunny, Mel1x, KubePixel"
 description='''Cinematic aspect profiles and independently configurable zoom.'''

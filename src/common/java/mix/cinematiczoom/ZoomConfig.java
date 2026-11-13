@@ -53,6 +53,11 @@ public final class ZoomConfig {
     public int barEnterMs = 240, barExitMs = 240, barSwitchMs = 240;
     public float barOpacity = 1f;
     public FovMode fovMode = FovMode.ACCURATE;
+    public SpyglassZoom spyglassZoom = SpyglassZoom.OFF;
+    public boolean muteMusicWhileZooming = true;
+    public boolean wheelTicks = true;
+    public boolean showZoomPercentage = true;
+    public boolean screenshotShutter = true;
     public boolean logarithmicScroll = true;
     private transient JsonObject originalJson = new JsonObject();
     private transient boolean saveAllowed = true;
@@ -280,6 +285,7 @@ public final class ZoomConfig {
         if (barExitMode == null) barExitMode = BarAnimationMode.LINEAR;
         if (barSwitchMode == null) barSwitchMode = BarAnimationMode.LINEAR;
         if (fovMode == null) fovMode = FovMode.ACCURATE;
+        if (spyglassZoom == null) spyglassZoom = SpyglassZoom.OFF;
         barEnterMs = Math.max(0, Math.min(60000, barEnterMs));
         barExitMs = Math.max(0, Math.min(60000, barExitMs));
         barSwitchMs = Math.max(0, Math.min(60000, barSwitchMs));

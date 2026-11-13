@@ -35,7 +35,8 @@ if (project.hasProperty('testClient')) {
         loader.runs.client {
             systemProperty 'cinematiczoom.test.target', testTarget
             systemProperty 'cinematiczoom.test.bootstrap', project.hasProperty('bootstrap') ? 'true' : 'false'
-            programArguments = testArgs
+            // Append: the mixin extension passes --mixin.config here, and replacing the list drops it.
+            programArguments.addAll(testArgs)
         }
     } else {
         minecraft.runs.named('client') {

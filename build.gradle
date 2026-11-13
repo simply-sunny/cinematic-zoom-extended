@@ -191,6 +191,9 @@ subprojects {
 
 	if (project.hasProperty('testClient')) {
 		sourceSets.main.java.srcDir rootProject.file('src/testclient/java')
+		// A stand-in for Flashback's replay FOV override, in this target's mappings.
+		sourceSets.main.java.srcDir rootProject.file(!target.legacy ? 'src/testclient/modern/java'
+				: target.floatFov ? 'src/testclient/legacy-float-fov/java' : 'src/testclient/legacy-double-fov/java')
 
 		processResources {
 			doLast {
@@ -200,6 +203,11 @@ subprojects {
 				if (!clients.contains('mix.cinematiczoom.autotest.FabricTestClient')) {
 					clients.add('mix.cinematiczoom.autotest.FabricTestClient')
 				}
+				new File(destinationDir, 'cinematiczoom.autotest.mixins.json').text = groovy.json.JsonOutput.toJson([
+					required: true, minVersion: '0.8', package: 'mix.cinematiczoom.autotest.mixin',
+					compatibilityLevel: 'JAVA_17', client: ['ReplayFovMixin'], injectors: [defaultRequire: 1]
+				])
+				if (!meta.mixins.contains('cinematiczoom.autotest.mixins.json')) meta.mixins.add('cinematiczoom.autotest.mixins.json')
 				metaFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(meta))
 			}
 		}
@@ -207,6 +215,7 @@ subprojects {
 		tasks.named('runClient') {
 			systemProperty 'cinematiczoom.test.target', project.name
 			systemProperty 'cinematiczoom.test.bootstrap', project.hasProperty('bootstrap') ? 'true' : 'false'
+			systemProperty 'cinematiczoom.test.replay', 'true'
 		}
 	}
 

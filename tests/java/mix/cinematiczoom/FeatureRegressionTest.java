@@ -70,6 +70,25 @@ public final class FeatureRegressionTest {
         CFG.aspectRatio="4:3"; zoom.barGeometry(1920,1080); near(zoom.magnification(),mag);
         clock.addAndGet(240_000_000); near(zoom.barGeometry(1920,1080).left(),.125);
         zoom.update(ZoomMode.REGULAR); check(!zoom.barGeometry(1920,1080).visible(),"cinematic switch clears bars");
+        // Zoom percentage readout: shown on start and on a wheel change, then faded out.
+        defaults(); CFG.regularStartingZoom=3; zoom.reset(); zoom.update(ZoomMode.REGULAR);
+        check(zoom.readoutText().equals("300%") && zoom.readoutAlpha()==255,"readout shows on zoom start");
+        clock.addAndGet(1_750_000_000); check(zoom.readoutAlpha()>0 && zoom.readoutAlpha()<255,"readout fades");
+        clock.addAndGet(500_000_000); check(zoom.readoutAlpha()==0,"readout hides");
+        CFG.discreteScroll=true; zoom.onWheel(1); check(zoom.readoutText().equals("400%") && zoom.readoutAlpha()==255,"readout shows on scroll");
+        clock.addAndGet(3_000_000_000L); CFG.regularStartingZoom=500; zoom.reset(); zoom.update(ZoomMode.REGULAR); clock.addAndGet(3_000_000_000L);
+        zoom.onWheel(1); check(zoom.readoutAlpha()==0,"a scroll at the limit leaves the readout hidden");
+        CFG.showZoomPercentage=false; zoom.onWheel(-1); check(zoom.readoutAlpha()==0,"readout off hides it");
+        zoom.update(ZoomMode.NONE); CFG.showZoomPercentage=true; check(zoom.readoutAlpha()==0,"readout hides when the zoom ends");
+        // Screenshot shutter: snaps shut, holds, opens, and ignores a second trigger mid-way.
+        defaults(); ScreenshotShutter.reset(); long t=5_000_000_000L;
+        check(ScreenshotShutter.trigger(t),"shutter starts"); near(ScreenshotShutter.coverage(t),0);
+        near(ScreenshotShutter.coverage(t+ScreenshotShutter.CLOSE_NANOS),.5);
+        check(ScreenshotShutter.coverage(t+ScreenshotShutter.CLOSE_NANOS+ScreenshotShutter.HOLD_NANOS+50_000_000)<.5,"shutter opens");
+        near(ScreenshotShutter.coverage(t+ScreenshotShutter.TOTAL_NANOS),0);
+        check(!ScreenshotShutter.trigger(t+50_000_000),"a second screenshot mid-shutter doesn't restart it");
+        CFG.screenshotShutter=false; ScreenshotShutter.reset(); check(!ScreenshotShutter.trigger(t),"shutter off");
+        ScreenshotShutter.reset();
         defaults(); CFG.cinematicStartingZoom=Float.NaN; CFG.minZoomMultiplier=Float.POSITIVE_INFINITY; CFG.barOpacity=Float.NaN; CFG.clamp();
         check(Float.isFinite(CFG.cinematicStartingZoom) && Float.isFinite(CFG.minZoomMultiplier) && Float.isFinite(CFG.barOpacity),"finite config sanitation");
         Path dir=Files.createTempDirectory("cinematiczoom-migration-");

@@ -2,6 +2,8 @@ package mix.cinematiczoom;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,6 +95,156 @@ public final class ZoomRegressionTest {
             tick();
             settle();
             require(!ZoomManager.isZoomActive(), "hold zoom stayed active behind a screen");
+        });
+        run("spyglass zoom is off by default", () -> {
+            client.player.useItem = new ItemStack(Items.SPYGLASS);
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "spyglass zoomed with the option off");
+            cinematic.down = true;
+            tick();
+            require(ZoomManager.isZoomActive(), "zoom key stopped working with the option off");
+        });
+        run("spyglass drives the chosen profile and replaces the keys", () -> {
+            CFG.spyglassZoom = SpyglassZoom.REGULAR;
+            CFG.regularHideHud = false;
+            cinematic.down = true;
+            tick();
+            require(!ZoomManager.isZoomActive(), "zoom key still works in spyglass mode");
+            cinematic.down = false;
+            client.player.useItem = new ItemStack(Items.SPYGLASS);
+            tick();
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 1.0 / 3);
+            require(!ZoomManager.shouldHideHud(), "spyglass did not use the regular profile");
+            CFG.spyglassZoom = SpyglassZoom.CINEMATIC;
+            tick();
+            require(ZoomManager.shouldHideHud(), "spyglass did not switch to the cinematic profile");
+            client.player.useItem = new ItemStack(Items.BOW);
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "drawing a bow zoomed like a spyglass");
+            client.player.useItem = ItemStack.EMPTY;
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "zoom outlived the spyglass");
+        });
+        run("spyglass zoom ignores toggle mode", () -> {
+            CFG.spyglassZoom = SpyglassZoom.CINEMATIC;
+            CFG.cinematicToggle = true;
+            client.player.useItem = new ItemStack(Items.SPYGLASS);
+            tick();
+            client.player.useItem = ItemStack.EMPTY;
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "spyglass zoom latched like a toggle");
+        });
+        run("spyglass zoom stops when a screen opens", () -> {
+            CFG.spyglassZoom = SpyglassZoom.CINEMATIC;
+            client.player.useItem = new ItemStack(Items.SPYGLASS);
+            client.gui.screen = client.screen = new Object();
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "spyglass zoom stayed active behind a screen");
+        });
+        run("music setting goes to 0 while zoomed and comes back after", () -> {
+            ZoomAudio.clear();
+            cinematic.down = true;
+            tick();
+            near(ZoomAudio.musicVolume, 0);
+            tick();
+            require(ZoomAudio.musicChanges == 1, "music setting was rewritten every tick");
+            cinematic.down = false;
+            tick();
+            settle();
+            tick();
+            near(ZoomAudio.musicVolume, 0.8);
+            require(!ZoomSounds.isMusicMuted(), "still muted after the zoom");
+        });
+        run("music setting stays put with muting off", () -> {
+            ZoomAudio.clear();
+            CFG.muteMusicWhileZooming = false;
+            cinematic.down = true;
+            tick();
+            require(ZoomAudio.musicChanges == 0, "music setting changed with muting off");
+        });
+        run("disconnecting puts the music setting back", () -> {
+            ZoomAudio.clear();
+            cinematic.down = true;
+            tick();
+            ZoomManager.reset(client);
+            near(ZoomAudio.musicVolume, 0.8);
+        });
+        run("a music volume set during the zoom is kept", () -> {
+            ZoomAudio.clear();
+            cinematic.down = true;
+            tick();
+            ZoomAudio.musicVolume = 0.5;
+            cinematic.down = false;
+            tick();
+            settle();
+            tick();
+            near(ZoomAudio.musicVolume, 0.5);
+        });
+        run("wheel ticks going in and out", () -> {
+            ZoomAudio.clear();
+            regular.down = true;
+            tick();
+            settle();
+            ZoomManager.onWheel(1);
+            Thread.sleep(40);
+            ZoomManager.onWheel(-1);
+            require(ZoomAudio.ticks.equals(java.util.List.of(ZoomSounds.TICK_IN_PITCH, ZoomSounds.TICK_OUT_PITCH)),
+                    "expected an in tick then an out tick, got " + ZoomAudio.ticks);
+            ZoomManager.onWheel(-1);
+            require(ZoomAudio.ticks.size() == 2, "a burst of scroll events ticked more than once");
+        });
+        run("wheel ticks stop at the zoom limit and when off", () -> {
+            ZoomAudio.clear();
+            CFG.regularStartingZoom = 30;
+            regular.down = true;
+            tick();
+            settle();
+            ZoomManager.onWheel(1);
+            require(ZoomAudio.ticks.isEmpty(), "ticked at the zoom limit");
+            CFG.wheelTicks = false;
+            Thread.sleep(40);
+            ZoomManager.onWheel(-1);
+            require(ZoomAudio.ticks.isEmpty(), "ticked with ticks off");
+        });
+        run("zoom percentage draws above the hotbar", () -> {
+            regular.down = true;
+            tick();
+            var graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            ZoomManager.renderBars(graphics);
+            require(graphics.texts.equals(java.util.List.of("300%")), "expected 300%, drew " + graphics.texts);
+            CFG.showZoomPercentage = false;
+            graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            ZoomManager.renderBars(graphics);
+            require(graphics.texts.isEmpty(), "zoom percentage drew with the setting off");
+        });
+        run("screenshot shutter clicks once and draws its bars", () -> {
+            ZoomAudio.clear();
+            ScreenshotShutter.reset();
+            tick();
+            ZoomManager.onScreenshot();
+            ZoomManager.onScreenshot();
+            require(ZoomAudio.clicks.size() == 1, "shutter clicked " + ZoomAudio.clicks.size() + " times");
+            Thread.sleep(100);
+            var graphics = new net.minecraft.client.gui.GuiGraphicsExtractor();
+            ZoomManager.renderBars(graphics);
+            require(graphics.fills.size() == 2 && graphics.fills.get(0)[3] > 0, "shutter bars were not drawn");
+            ScreenshotShutter.reset();
+        });
+        run("spyglass zoom setting is saved", () -> {
+            freshConfigDir();
+            CFG.spyglassZoom = SpyglassZoom.REGULAR;
+            CFG.save();
+            CFG.spyglassZoom = SpyglassZoom.OFF;
+            CFG.load();
+            require(CFG.spyglassZoom == SpyglassZoom.REGULAR, "spyglass setting was not saved");
+            load("{\"spyglassZoom\":\"BOGUS\"}");
+            require(CFG.spyglassZoom == SpyglassZoom.OFF, "bad spyglass value was not reset");
         });
         run("discrete wheel steps forward and back", () -> {
             CFG.discreteScroll = true;

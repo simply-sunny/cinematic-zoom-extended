@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 public final class ZoomManager {
@@ -34,9 +35,12 @@ public final class ZoomManager {
         boolean isCinematicDown = canInteract && isZoomKeyPressed(client, cinematicKey);
         boolean isRegularDown = canInteract && isZoomKeyPressed(client, regularKey);
 
-        ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown);
+        boolean isScoping = canInteract && client.player.isUsingItem() && client.player.getActiveItem().isOf(Items.SPYGLASS);
+
+        ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown, isScoping);
 
         ZOOM.update(desiredMode);
+        updateMusic(client, ZOOM.isActive());
         canRender = canInteract;
         boolean previous = isZoomKeyPressed(client, previousAspect);
         boolean next = isZoomKeyPressed(client, nextAspect);
@@ -100,12 +104,18 @@ public final class ZoomManager {
         return false;
     }
 
+    private static void updateMusic(MinecraftClient client, boolean zoomActive) {
+        double volume = ZoomSounds.musicVolume(zoomActive, ZoomAudio.musicVolume(client));
+        if (!Double.isNaN(volume)) ZoomAudio.setMusicVolume(client, volume);
+    }
+
     public static void reset(MinecraftClient client) {
         INPUT.reset();
         wasPrevious = wasNext = canRender = false;
         applyOverrides(client, ZoomMode.NONE);
         currentAppliedMode = ZoomMode.NONE;
         ZOOM.reset();
+        updateMusic(client, false);
     }
 
     public static void frameUpdate() {
@@ -133,7 +143,11 @@ public final class ZoomManager {
     }
 
     public static boolean onWheel(double vertical) {
-        return ZOOM.onWheel(vertical);
+        double before = ZOOM.heldMagnification();
+        boolean consumed = ZOOM.onWheel(vertical);
+        float pitch = ZoomSounds.wheelTick(before, ZOOM.heldMagnification(), System.nanoTime());
+        if (pitch > 0) ZoomAudio.click(pitch, ZoomSounds.TICK_VOLUME);
+        return consumed;
     }
 
     public static void setBaseFov(double fov) {
@@ -166,6 +180,11 @@ public final class ZoomManager {
         return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHands : cfg.cinematicHideHands;
     }
 
+    /** Called when the game saves a screenshot. */
+    public static void onScreenshot() {
+        if (ScreenshotShutter.trigger(System.nanoTime())) ZoomAudio.click(ScreenshotShutter.SOUND_PITCH, ScreenshotShutter.SOUND_VOLUME);
+    }
+
     public static void renderBars(DrawContext context) {
         if (!canRender) return;
         int width = context.getScaledWindowWidth();
@@ -173,5 +192,13 @@ public final class ZoomManager {
         var window = MinecraftClient.getInstance().getWindow();
         int color = Math.round(ZoomConfig.INSTANCE.barOpacity * 255) << 24;
         ZOOM.barGeometry(window.getFramebufferWidth(), window.getFramebufferHeight()).draw(width, height, color, context::fill);
+        int shutter = (int) Math.round(height * ScreenshotShutter.coverage(System.nanoTime()));
+        if (shutter > 0) {
+            context.fill(0, 0, width, shutter, 0xFF000000);
+            context.fill(0, height - shutter, width, height, 0xFF000000);
+        }
+        int alpha = ZOOM.readoutAlpha();
+        // Text drawn nearly transparent comes out opaque on older versions, so skip the faint end.
+        if (alpha > 8) context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, ZOOM.readoutText(), width / 2, height - 68, (alpha << 24) | 0xFFFFFF);
     }
 }

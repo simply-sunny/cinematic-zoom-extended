@@ -1,26 +1,27 @@
 package mix.cinematiczoom.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import mix.cinematiczoom.ZoomConfig;
 import mix.cinematiczoom.ZoomManager;
+import mix.cinematiczoom.ZoomMath;
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Camera.class)
 public class CameraMixin {
 
-    @Inject(method = "calculateFov(F)F", at = @At("RETURN"), cancellable = true)
-    private void cinematiczoom$applyZoom(float partialTicks, CallbackInfoReturnable<Float> cir) {
+    // Hooks the call in update() rather than calculateFov's return, so the zoom still applies
+    // when another mod replaces calculateFov, such as Flashback setting the replay camera's FOV.
+    @ModifyExpressionValue(method = "update",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;calculateFov(F)F"))
+    private float cinematiczoom$applyZoom(float fov) {
         ZoomManager.frameUpdate();
 
-        float fov = cir.getReturnValue();
         ZoomManager.setBaseFov(fov);
         double mul = ZoomManager.getCurrentFovMul();
-        if (mul != 1.0) {
-            float zoomed = (float) mix.cinematiczoom.ZoomMath.fov(fov, mul, mix.cinematiczoom.ZoomConfig.INSTANCE.fovMode);
-            if (zoomed > 175.0f) zoomed = 175.0f;
-            cir.setReturnValue(zoomed);
-        }
+        if (mul == 1.0) return fov;
+        float zoomed = (float) ZoomMath.fov(fov, mul, ZoomConfig.INSTANCE.fovMode);
+        return Math.min(zoomed, 175.0f);
     }
 }

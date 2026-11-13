@@ -22,6 +22,9 @@ public final class ZoomController {
     private int geometryWidth, geometryHeight;
     private float geometryLegacyPercent;
     private BarGeometry cachedGeometry = BarGeometry.NONE;
+    // The magnification readout shows when a zoom starts or the wheel changes it, then fades.
+    private static final long READOUT_SHOW_NANOS = 1_500_000_000L, READOUT_FADE_NANOS = 500_000_000L;
+    private long readoutShownAt = Long.MIN_VALUE / 2;
 
     public ZoomController() { this(System::nanoTime); }
     public ZoomController(LongSupplier clock) { this.clock = clock; this.bars = new BarAnimator(clock); }
@@ -34,6 +37,7 @@ public final class ZoomController {
             ZoomConfig cfg = ZoomConfig.INSTANCE;
             held = bounded(mode == ZoomMode.REGULAR ? cfg.regularStartingZoom : cfg.cinematicStartingZoom);
             heldBarsPercent = cfg.cinematicBarsPercent;
+            readoutShownAt = clock.getAsLong();
         }
         activeMode = mode;
         if (mode.isActive()) lastActiveMode = mode;
@@ -126,6 +130,7 @@ public final class ZoomController {
     public boolean onWheel(double vertical) {
         ZoomConfig cfg = ZoomConfig.INSTANCE;
         if (!activeMode.isActive() || !cfg.mouseWheelEnabled || !Double.isFinite(vertical) || vertical == 0) return false;
+        double previousHeld = held;
         String raw = activeMode == ZoomMode.REGULAR ? cfg.regularSnapPoints : cfg.cinematicSnapPoints;
         String key = raw + "/" + baseFov + "/" + cfg.minZoomMultiplier + "/" + cfg.maxZoomMultiplier + "/" + cfg.fovMode;
         if (!key.equals(snapKey)) {
@@ -144,15 +149,31 @@ public final class ZoomController {
             held = 1 / ZoomMath.finiteClamp(1/held-vertical*cfg.wheelStep,cfg.minZoomMultiplier,cfg.maxZoomMultiplier,1);
         }
         held = bounded(held);
+        if (held != previousHeld) readoutShownAt = clock.getAsLong();
         transition(held);
         return true;
     }
 
+    /** The magnification as a percentage, such as 300% at 3x. */
+    public String readoutText() { return Math.round(held * 100) + "%"; }
+
+    /** Opacity of the readout from 0 to 255: shown for 1.5 s after a change, then faded over 0.5 s. */
+    public int readoutAlpha() {
+        if (!ZoomConfig.INSTANCE.showZoomPercentage || !activeMode.isActive()) return 0;
+        long elapsed = clock.getAsLong() - readoutShownAt;
+        if (elapsed < READOUT_SHOW_NANOS) return 255;
+        if (elapsed >= READOUT_SHOW_NANOS + READOUT_FADE_NANOS) return 0;
+        return (int) Math.round(255 * (1 - (double) (elapsed - READOUT_SHOW_NANOS) / READOUT_FADE_NANOS));
+    }
+
     public void reset() {
+        readoutShownAt = Long.MIN_VALUE / 2;
         activeMode = ZoomMode.NONE; lastActiveMode = ZoomMode.CINEMATIC;
         current = target = start = 1; duration = 0; started = clock.getAsLong();
         bars.reset(); geometry = BarGeometry.NONE; baseFov = 70; snapKey = "";
     }
+    /** The magnification the zoom is heading for. */
+    public double heldMagnification() { return held; }
     public double currentMultiplier() { return 1/current; }
     public double magnification() { return current; }
     public void setBaseFov(double fov) { if (Double.isFinite(fov) && fov>0 && fov<180) baseFov=fov; }

@@ -6,10 +6,15 @@ final class ZoomInputState {
     private boolean wasCinematicDown;
     private boolean wasRegularDown;
 
-    ZoomMode update(boolean inWorld, boolean cinematicDown, boolean regularDown) {
+    ZoomMode update(boolean inWorld, boolean cinematicDown, boolean regularDown, boolean scoping) {
         if (!inWorld) {
             reset();
             return ZoomMode.NONE;
+        }
+        if (SpyglassZoom.enabled()) {
+            // The spyglass replaces the zoom keys: zoom lasts exactly as long as the scope is up.
+            reset();
+            return scoping ? ZoomConfig.INSTANCE.spyglassZoom.mode() : ZoomMode.NONE;
         }
 
         ZoomConfig cfg = ZoomConfig.INSTANCE;

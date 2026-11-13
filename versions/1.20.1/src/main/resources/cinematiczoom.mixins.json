@@ -4,6 +4,8 @@
 	"package": "mix.cinematiczoom.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
+		"ScreenshotRecorderMixin",
+		"PlayerEntityMixin",
 		"GameRendererMixin",
 		"MouseMixin",
 		"InGameHudMixin",
