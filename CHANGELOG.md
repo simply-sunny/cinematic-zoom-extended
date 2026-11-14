@@ -4,7 +4,7 @@ All notable changes to Cinematic Zoom Extended are documented here. This project
 
 ## [Unreleased]
 
-## [1.3.0] - 2026-11-12
+## [1.3.0] - 2026-11-13
 
 ### Added
 
