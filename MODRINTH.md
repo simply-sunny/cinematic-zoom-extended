@@ -41,6 +41,37 @@ Versions 1.1.0 and newer use channel `release` and one version per jar. Fabric j
 | `26.2` | `26.2` |
 | `26.3` | `26.3` |
 
+The uploaded 1.3.0 files and their version IDs:
+
+| JAR | Version ID |
+| --- | --- |
+| `cinematic-zoom-extended-1.20.1-fabric-1.3.0.jar` | `Rmm8aDSh` |
+| `cinematic-zoom-extended-1.20.1-forge-1.3.0.jar` | `J81jKIFm` |
+| `cinematic-zoom-extended-1.20.1-neoforge-1.3.0.jar` | `4j491AKC` |
+| `cinematic-zoom-extended-1.21.1-fabric-1.3.0.jar` | `VigO58yC` |
+| `cinematic-zoom-extended-1.21.1-forge-1.3.0.jar` | `UtCMgvIs` |
+| `cinematic-zoom-extended-1.21.1-neoforge-1.3.0.jar` | `1aeotVhy` |
+| `cinematic-zoom-extended-1.21.11-forge-1.3.0.jar` | `EbVNJw0S` |
+| `cinematic-zoom-extended-1.21.11-neoforge-1.3.0.jar` | `jEGvPg96` |
+| `cinematic-zoom-extended-1.21.2-1.21.4-fabric-1.3.0.jar` | `zJyMtnr2` |
+| `cinematic-zoom-extended-1.21.2-neoforge-1.3.0.jar` | `33cU0qK0` |
+| `cinematic-zoom-extended-1.21.5-1.21.6-fabric-1.3.0.jar` | `JBRK5zOh` |
+| `cinematic-zoom-extended-1.21.5-forge-1.3.0.jar` | `sq4Z4wlY` |
+| `cinematic-zoom-extended-1.21.5-neoforge-1.3.0.jar` | `mVIPh1Pf` |
+| `cinematic-zoom-extended-1.21.7-1.21.8-fabric-1.3.0.jar` | `SJwI9jxe` |
+| `cinematic-zoom-extended-1.21.7-forge-1.3.0.jar` | `3LM1n5LG` |
+| `cinematic-zoom-extended-1.21.7-neoforge-1.3.0.jar` | `27xcB5xX` |
+| `cinematic-zoom-extended-1.21.9-1.21.11-fabric-1.3.0.jar` | `hq5reX75` |
+| `cinematic-zoom-extended-26.1-fabric-1.3.0.jar` | `lu3RdnqX` |
+| `cinematic-zoom-extended-26.1-forge-1.3.0.jar` | `jQUETb1T` |
+| `cinematic-zoom-extended-26.1-neoforge-1.3.0.jar` | `EfFCSZzy` |
+| `cinematic-zoom-extended-26.2-fabric-1.3.0.jar` | `d8PcyqtS` |
+| `cinematic-zoom-extended-26.2-forge-1.3.0.jar` | `RoFFG0aB` |
+| `cinematic-zoom-extended-26.2-neoforge-1.3.0.jar` | `oewt9PNZ` |
+| `cinematic-zoom-extended-26.3-fabric-1.3.0.jar` | `ycm9yr7d` |
+| `cinematic-zoom-extended-26.3-forge-1.3.0.jar` | `vGWr3phD` |
+| `cinematic-zoom-extended-26.3-neoforge-1.3.0.jar` | `6EyM1dHT` |
+
 The uploaded 1.2.0 files and their version IDs:
 
 | JAR | Version ID |
